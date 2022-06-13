@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Implementation-Title: Second Hand Ecommerce
+Implementation-Version: 1.0.0
+Main-Class: com.secondhand.ecommerce.SecondHandApplication
+
