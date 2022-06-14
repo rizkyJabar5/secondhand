@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -27,23 +28,21 @@ public class AppUsers implements UserDetails {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "user_code")
-    private String userCode;
-
     @Column(name = "name")
     private String fullName;
 
     @Column(name = "email")
     private String email;
 
-    @Column(name = "address")
-    private String address;
-
     @Column(name = "password")
     private String password;
 
+    @Embedded
+    @Column(name = "address")
+    private Address address;
+
     @Column(name = "join_date")
-    private String joinDate;
+    private Date joinDate;
 
     @Column(name = "phone_number")
     private Integer phoneNumber;
