@@ -1,10 +1,11 @@
-package com.secondhand.ecommerce.service;
+package com.secondhand.ecommerce.service.impl;
 
 import com.secondhand.ecommerce.models.dto.authentication.RegisterRequest;
 import com.secondhand.ecommerce.models.dto.users.ProfileUser;
 import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.repository.AppRolesRepository;
 import com.secondhand.ecommerce.repository.AppUserRepository;
+import com.secondhand.ecommerce.service.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
