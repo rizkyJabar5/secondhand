@@ -12,7 +12,6 @@ import java.util.Objects;
 @Setter
 @MappedSuperclass
 public abstract class AbstractEntity implements Serializable {
-
     @Id
     @SequenceGenerator(name = "apps_sequence",
             sequenceName = "apps_sequence",
@@ -21,8 +20,6 @@ public abstract class AbstractEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "apps_sequence")
     private Long id;
-
-
 
     @Override
     public boolean equals(Object o) {
