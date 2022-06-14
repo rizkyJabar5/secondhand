@@ -14,6 +14,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "app_users")
 public class AppUsers implements UserDetails {
 
     @Id
@@ -29,11 +30,9 @@ public class AppUsers implements UserDetails {
     @Column(name = "user_code")
     private String userCode;
 
-    @Column(name = "firstname")
-    private String firstname;
+    @Column(name = "name")
+    private String fullName;
 
-    @Column(name = "lastname")
-    private String lastname;
     @Column(name = "email")
     private String email;
 
@@ -49,13 +48,13 @@ public class AppUsers implements UserDetails {
     @Column(name = "phone_number")
     private Integer phoneNumber;
 
-    @ManyToMany(fetch= FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     @Column(name = "roles")
-    private Collection<Roles> roles;
+    private Collection<AppRoles> roles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
