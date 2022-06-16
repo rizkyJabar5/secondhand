@@ -34,7 +34,7 @@ public class AppUserServiceImpl implements AppUserService {
         requestUser.setEmail(appUsers.getEmail());
         requestUser.setPassword(encodePassword);
 
-        userRepository.saveAndFlush(requestUser);
+        userRepository.save(requestUser);
 
         getLogger().info("Create new user is successful");
         return "Create new user is successful";
