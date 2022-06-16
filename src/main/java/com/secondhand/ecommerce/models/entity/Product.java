@@ -1,21 +1,17 @@
 package com.secondhand.ecommerce.models.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Null;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class Product {
-    @Id
-    private Long id;
-
+@AllArgsConstructor
+@Table(name = "products")
+public class Product extends AbstractEntity {
     private String name;
     private Long price;
     private String location;
