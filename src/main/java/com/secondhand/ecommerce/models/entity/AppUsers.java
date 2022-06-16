@@ -11,7 +11,6 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -38,7 +37,6 @@ public class AppUsers implements UserDetails {
     private String password;
 
     @Embedded
-    @Column(name = "address")
     private Address address;
 
     @Column(name = "join_date")
@@ -49,11 +47,18 @@ public class AppUsers implements UserDetails {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"),
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
-    @Column(name = "roles")
     private Collection<AppRoles> roles;
+
+
+    public AppUsers(String fullname, String email, String password) {
+        this.fullName = fullname;
+        this.email = email;
+        this.password = password;
+
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

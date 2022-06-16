@@ -1,4 +1,4 @@
-package com.secondhand.ecommerce.models.dto.authentication;
+package com.secondhand.ecommerce.security.authentication.login;
 
 
 import lombok.Getter;
