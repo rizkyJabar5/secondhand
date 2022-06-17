@@ -2,11 +2,13 @@ package com.secondhand.ecommerce.models.entity;
 
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -37,7 +39,6 @@ public class AppUsers implements UserDetails {
     private String password;
 
     @Embedded
-    @Column(name = "address")
     private Address address;
 
     @Column(name = "join_date")
@@ -48,15 +49,26 @@ public class AppUsers implements UserDetails {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
-    @Column(name = "roles")
     private Collection<AppRoles> roles;
+
+
+    public AppUsers(String fullname, String email, String password) {
+        this.fullName = fullname;
+        this.email = email;
+        this.password = password;
+
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+
+        return roles.stream()
+                .map(roles -> new SimpleGrantedAuthority(roles.getRoleNames().name()))
+                .collect(Collectors.toList());
+
     }
 
     @Override

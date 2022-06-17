@@ -1,15 +1,17 @@
 package com.secondhand.ecommerce.service;
 
-import com.secondhand.ecommerce.models.dto.authentication.RegisterRequest;
 import com.secondhand.ecommerce.models.dto.users.ProfileUser;
 import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.utils.HasLogger;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface AppUserService extends HasLogger {
+import java.util.Optional;
 
-    RegisterRequest registerNewUser(AppUsers appUsers);
+public interface AppUserService extends UserDetailsService, HasLogger {
 
-    AppUsers findUserByEmail(String email);
+    String registerNewUser(AppUsers appUsers);
+
+    Optional<AppUsers> findUserByEmail(String email);
 
     ProfileUser updateProfileUser(AppUsers appUsers);
 

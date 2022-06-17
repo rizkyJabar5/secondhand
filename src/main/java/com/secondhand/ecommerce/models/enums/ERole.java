@@ -1,10 +1,19 @@
 package com.secondhand.ecommerce.models.enums;
 
+import java.util.Arrays;
+
 public enum ERole {
 
-    BUYER,
-    SELLER;
+    BUYER("buyer"),
+    SELLER("seller");
 
-    ERole() {
+    private final String roleName;
+
+    ERole(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public static String getAllRoles() {
+        return Arrays.toString(ERole.class.getEnumConstants());
     }
 }
