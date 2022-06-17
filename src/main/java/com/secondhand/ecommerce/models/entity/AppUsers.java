@@ -2,11 +2,13 @@ package com.secondhand.ecommerce.models.entity;
 
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -62,7 +64,11 @@ public class AppUsers implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+
+        return roles.stream()
+                .map(roles -> new SimpleGrantedAuthority(roles.getRoleNames().name()))
+                .collect(Collectors.toList());
+
     }
 
     @Override

@@ -10,12 +10,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 public class RegisterServiceTest {
 
     @Mock
     AppUserService userService;
+
+    @Mock
+    PasswordEncoder passwordEncoder;
 
     RegisterService registerService;
 
@@ -31,18 +35,17 @@ public class RegisterServiceTest {
         request.setEmail("slsls@mail.com");
         request.setPassword("mushsssss");
         request.setFullName("rizky");
-        Mockito.when(userService.registerNewUser(new AppUsers(
+
+        AppUsers newUser = new AppUsers(
                 request.getFullName(),
                 request.getEmail(),
                 request.getPassword()
-        ))).thenReturn("Pendaftaran berhasil");
+        );
+        Mockito.when(userService.registerNewUser(newUser)).thenReturn("Pendaftaran berhasil");
 
         registerService.registeredUser(request);
 
-        Mockito.verify(userService).registerNewUser(new AppUsers(
-                request.getFullName(),
-                request.getEmail(),
-                request.getPassword()));
+        Mockito.verify(userService).registerNewUser(newUser);
 
     }
 }

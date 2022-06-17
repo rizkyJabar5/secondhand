@@ -15,8 +15,6 @@ public class RegisterService {
 
     public String registeredUser(RegisterRequest request) {
 
-//        Todo: Validator email
-
         return userService.registerNewUser(
                 new AppUsers(
                         request.getFullName(),
