@@ -42,10 +42,10 @@ public class LoginController {
 
         return ResponseEntity.ok(
                 new JwtResponse(
-                        jwt, userDetails.getUserId(),
+                        jwt,
+                        userDetails.getUserId(),
                         userDetails.getUsername(),
-                        userDetails.getEmail(),
-                        roles)
+                        userDetails.getEmail())
         );
     }
 
