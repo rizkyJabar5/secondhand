@@ -2,6 +2,7 @@ package com.secondhand.ecommerce.security.authentication.register;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ public class RegisterController {
 
     private final RegisterService register;
 
-    @PostMapping("/register")
+    @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> postRegister(
             @Valid @RequestBody RegisterRequest request) {
 
