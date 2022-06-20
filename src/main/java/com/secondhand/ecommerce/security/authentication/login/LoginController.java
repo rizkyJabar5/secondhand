@@ -1,10 +1,10 @@
 package com.secondhand.ecommerce.security.authentication.login;
 
+import com.secondhand.ecommerce.models.enums.OperationStatus;
 import com.secondhand.ecommerce.models.enums.TokenType;
 import com.secondhand.ecommerce.security.CookieService;
 import com.secondhand.ecommerce.security.SecurityUtils;
 import com.secondhand.ecommerce.security.authentication.LogoutResponse;
-import com.secondhand.ecommerce.security.authentication.OperationStatus;
 import com.secondhand.ecommerce.security.config.EncryptionConfig;
 import com.secondhand.ecommerce.security.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
