@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 public class SecondHandConst {
 
-    public static final String EMAIL_ALREADY_TAKEN = "E-mail: %s has already taken by other user";
+    public static final String EMAIL_ALREADY_TAKEN = "E-mail has already taken by other user";
 
     public static final String EMAIL_NOT_FOUND_MSG = "E-mail: %s is not found.";
     public static final String ROLE_IS_NOT_FOUND_MSG = "Error: Role %s is not found";

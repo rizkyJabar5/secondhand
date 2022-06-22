@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.time.Duration;
 import java.util.Date;
 
+import static com.secondhand.ecommerce.security.authentication.CookieService.getCookies;
 import static com.secondhand.ecommerce.utils.SecondHandConst.AUTHENTICATION_URL;
 
 @RestController
@@ -40,15 +40,16 @@ public class LoginController {
 
     private final CookieService cookieService;
 
-
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-
     public ResponseEntity<LoginJwtResponse> authenticationUserLogin(
             @CookieValue(required = false) String refreshToken,
             @Valid @RequestBody LoginRequest loginRequest) {
 
         String email = loginRequest.getEmail();
-        SecurityUtils.authenticateUser(authenticationManager, email, loginRequest.getPassword());
+        SecurityUtils.authenticateUser(
+                authenticationManager,
+                email,
+                loginRequest.getPassword());
 
         String decryptRefreshJwt = encryptionConfig.decrypt(refreshToken);
         boolean isRefreshValidJwtToken = jwtUtils.isValidJwtToken(decryptRefreshJwt);
@@ -60,24 +61,6 @@ public class LoginController {
         return ResponseEntity.ok()
                 .headers(responseHeaders)
                 .body(LoginJwtResponse.buildJwtResponse(encryptAccessToken));
-    }
-
-    private String updateCookies(String email, boolean isRefreshValid, HttpHeaders responseHeaders) {
-        if (!isRefreshValid) {
-            String token = jwtUtils.generateJwtToken(email);
-            Duration refreshDuration = Duration.ofDays(10);
-
-            String encrypt = encryptionConfig.encrypt(token);
-            cookieService.addCookieToHeaders(
-                    responseHeaders,
-                    TokenType.REFRESH,
-                    encrypt,
-                    refreshDuration);
-        }
-
-        Date accessTokenExpiration = DateUtils.addMinutes(new Date(), 30);
-        return jwtUtils.generateJwtToken(email, accessTokenExpiration);
-
     }
 
     /**
@@ -129,4 +112,8 @@ public class LoginController {
         return ResponseEntity.ok().headers(responseHeaders).body(logoutResponse);
     }
 
+    private String updateCookies(String email, boolean isRefreshValid, HttpHeaders responseHeaders) {
+        return getCookies(email, isRefreshValid, responseHeaders, jwtUtils, encryptionConfig, cookieService);
+
+    }
 }
