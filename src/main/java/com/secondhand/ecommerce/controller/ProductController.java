@@ -2,7 +2,7 @@ package com.secondhand.ecommerce.controller;
 
 import com.secondhand.ecommerce.models.entity.Product;
 import com.secondhand.ecommerce.service.impl.ProductServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+@RequiredArgsConstructor
 @RestController
-@RequestMapping("products")
+@RequestMapping("/api/v1/products")
 public class ProductController {
 
-    @Autowired
-    ProductServiceImpl productService;
+    final ProductServiceImpl productService;
 
     @PostMapping("/")
     public ResponseEntity<Map<String, Object>> addProduct(@RequestBody Product product){
