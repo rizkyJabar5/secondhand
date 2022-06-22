@@ -1,23 +1,24 @@
 package com.secondhand.ecommerce.service.impl;
 
 import com.secondhand.ecommerce.exceptions.DuplicateDataExceptions;
+import com.secondhand.ecommerce.models.dto.users.AppUserBuilder;
 import com.secondhand.ecommerce.models.dto.users.ProfileUser;
 import com.secondhand.ecommerce.models.entity.AppRoles;
 import com.secondhand.ecommerce.models.entity.AppUsers;
-import com.secondhand.ecommerce.models.enums.ERole;
 import com.secondhand.ecommerce.repository.AppRolesRepository;
 import com.secondhand.ecommerce.repository.AppUserRepository;
 import com.secondhand.ecommerce.service.AppUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.User;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static com.secondhand.ecommerce.utils.SecondHandConst.EMAIL_ALREADY_TAKEN;
 import static com.secondhand.ecommerce.utils.SecondHandConst.EMAIL_NOT_FOUND_MSG;
@@ -43,6 +44,7 @@ public class AppUserServiceImpl implements AppUserService {
         requestUser.setFullName(appUsers.getFullName());
         requestUser.setEmail(appUsers.getEmail());
         requestUser.setPassword(encodePassword);
+        addRoleToUsers(requestUser, appUsers.getRoles());
 
         userRepository.save(requestUser);
 
@@ -84,6 +86,11 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
+        if (StringUtils.isAnyBlank(username)) {
+            throw new UsernameNotFoundException("Email must be provided");
+        }
+
+        getLogger().info("No user present with email: {} ", username);
         AppUsers appUser = findUserByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException(
                         String.format(
@@ -91,12 +98,7 @@ public class AppUserServiceImpl implements AppUserService {
                                 username))
                 );
 
-        getLogger().info("No user present with email: {} ", username);
-        return new User(
-                appUser.getUsername(),
-                appUser.getPassword(),
-                appUser.getAuthorities()
-        );
+        return AppUserBuilder.buildUserDetails(appUser);
 
     }
 
@@ -111,20 +113,12 @@ public class AppUserServiceImpl implements AppUserService {
         }
     }
 
-    private void addRoleToUsers(AppUsers users, Set<String> request) {
+    private void addRoleToUsers(AppUsers users, Collection<AppRoles> request) {
 
-        Set<AppRoles> roles = new HashSet<>();
-
+        List<AppRoles> roles = new ArrayList<>();
         if (request == null) {
-            AppRoles defaultRole = roleRepository.findByRoleNames(ERole.SELLER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found"));
-            roles.add(defaultRole);
-        } else {
-            request.forEach(role -> {
-                AppRoles allRoles = roleRepository.findByRoleNames(ERole.valueOf(role))
-                        .orElseThrow(() -> new RuntimeException("Error: Role " + role + "  is not found"));
-                roles.add(allRoles);
-            });
+            List<AppRoles> allRoles = roleRepository.findAll();
+            roles.addAll(allRoles);
         }
 
         users.setRoles(roles);

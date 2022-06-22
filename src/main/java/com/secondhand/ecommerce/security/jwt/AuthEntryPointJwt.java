@@ -1,4 +1,4 @@
-package com.secondhand.ecommerce.security.filter;
+package com.secondhand.ecommerce.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.secondhand.ecommerce.utils.HasLogger;
@@ -22,8 +22,6 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint, HasLogger {
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
 
-
-        getLogger().error("Unauthorized error: {}", authException.getMessage());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
@@ -33,6 +31,7 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint, HasLogger {
         body.put("message", authException.getMessage());
         body.put("path", request.getServletPath());
 
+        getLogger().error("Unauthorized error: {}", authException.getMessage());
         final ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(response.getOutputStream(), body);
     }

@@ -1,41 +1,41 @@
-package com.secondhand.ecommerce.security;
+package com.secondhand.ecommerce.security.config;
 
-import com.secondhand.ecommerce.service.AppUserService;
+import com.secondhand.ecommerce.security.jwt.AuthEntryPointJwt;
+import com.secondhand.ecommerce.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static com.secondhand.ecommerce.utils.SecondHandConst.*;
 
 @Configuration
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
-public class AppsSecurityConfig {
+public class AuthenticationManagerConfig {
 
-    private final AppUserService userService;
-
-    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final AuthEntryPointJwt authEntryPointJwt;
+    private final JwtAuthenticationFilter authenticationFilter;
 
 
     @Bean
+    @Order(1)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http
-                .cors()
+        http.cors();
+
+        http.csrf().disable()
+                .exceptionHandling()
+                .authenticationEntryPoint(authEntryPointJwt)
                 .and()
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                //PUBLIC End points
-                .authorizeRequests()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        //PUBLIC End points
+        http.authorizeRequests()
                 .antMatchers("/", "index", "/js/*", "/css/*", "/images/*").permitAll()
                 .antMatchers("/api/v1/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
@@ -55,14 +55,11 @@ public class AppsSecurityConfig {
                 .logout()
                 .logoutSuccessUrl(LOGOUT);
 
+        http.authenticationManager(authenticationManager);
+
+        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring()
-                .antMatchers("/images/*.png");
-    }
-
 }
-
