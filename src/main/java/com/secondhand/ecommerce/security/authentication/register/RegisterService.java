@@ -13,14 +13,13 @@ public class RegisterService {
         this.userService = userService;
     }
 
-    public String registeredUser(RegisterRequest request) {
+    public void registeredUser(RegisterRequest request) {
 
-        return userService.registerNewUser(
+        userService.registerNewUser(
                 new AppUsers(
                         request.getFullName(),
                         request.getEmail(),
                         request.getPassword()
                 ));
-
     }
 }

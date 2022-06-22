@@ -7,6 +7,7 @@ import com.secondhand.ecommerce.models.entity.AppRoles;
 import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.repository.AppRolesRepository;
 import com.secondhand.ecommerce.repository.AppUserRepository;
+import com.secondhand.ecommerce.security.authentication.login.LoginRequest;
 import com.secondhand.ecommerce.service.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -34,7 +35,7 @@ public class AppUserServiceImpl implements AppUserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public String registerNewUser(AppUsers appUsers) {
+    public LoginRequest registerNewUser(AppUsers appUsers) {
 
         validateDuplicateEmail(appUsers.getEmail());
 
@@ -49,8 +50,10 @@ public class AppUserServiceImpl implements AppUserService {
         userRepository.save(requestUser);
 
         getLogger().info("Create new user is successful");
-        return "Registered user is successful";
-
+        return new LoginRequest(
+                requestUser.getEmail(),
+                requestUser.getPassword()
+        );
     }
 
     @Override
@@ -108,7 +111,7 @@ public class AppUserServiceImpl implements AppUserService {
         if (present) {
 
             getLogger().info("{} has already taken by other user", email.toUpperCase());
-            throw new DuplicateDataExceptions(String.format(EMAIL_ALREADY_TAKEN, email));
+            throw new DuplicateDataExceptions(EMAIL_ALREADY_TAKEN);
 
         }
     }
