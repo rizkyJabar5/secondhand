@@ -21,10 +21,10 @@ Final project Second hand E-commerce Backend using Spring boot
 
 ### Features
 
-- [OpenApi3 Swagger](documents/SWAGGER.md)
+- [OpenApi3 Swagger]()
 - [Form Validation](https://formvalidation.io/)
-- [API Login Controller](documents/API_LOGIN_CONTROLLER.MD)
-- [Advanced CORS Configuration](documents/advanced-cors-configuration.md)
-- [Production Ready Folder Structure](README.md#production-ready-folder-structure)
-- [Authentication and Authorization with JWT](documents/AUTHENTICATION.MD)
+- [API Login Controller]()
+- [Advanced CORS Configuration]()
+- [Production Ready Folder Structure]()
+- [Authentication and Authorization with JWT]()
 - [Security Configuration Without WebSecurityConfigurerAdapter](https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter#ldap-authentication)
