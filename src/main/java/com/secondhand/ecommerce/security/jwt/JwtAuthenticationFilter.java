@@ -1,13 +1,12 @@
 package com.secondhand.ecommerce.security.jwt;
 
-import com.google.common.base.Strings;
-import com.secondhand.ecommerce.security.SecurityUtils;
-import com.secondhand.ecommerce.security.config.EncryptionConfig;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -22,7 +21,6 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
-    private final EncryptionConfig encryptionConfig;
     private final UserDetailsService userDetailsService;
 
 
@@ -31,20 +29,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        String jwt = jwtUtils.getJwtToken(request, true);
-
-        if (Strings.isNullOrEmpty(jwt)) {
-            jwt = jwtUtils.getJwtToken(request, true);
-        }
-
-        if (StringUtils.isNotBlank(jwt)) {
-            String accessToken = encryptionConfig.decrypt(jwt);
-
-            if (StringUtils.isNotBlank(accessToken) && jwtUtils.isValidJwtToken(accessToken)) {
-                String email = jwtUtils.getUsernameFromToken(accessToken);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                SecurityUtils.authenticateUser(request, userDetails);
+        try {
+            String jwt = jwtUtils.getJwtToken(request);
+            if (jwt != null && jwtUtils.isValidJwtToken(jwt)) {
+                String username = jwtUtils.getUsernameFromToken(jwt);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities()
+                        );
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
+
+        } catch (Exception e) {
+            logger.error("Cannot set user authentication: {}", e);
         }
         filterChain.doFilter(request, response);
     }

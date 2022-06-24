@@ -16,7 +16,7 @@ import static com.secondhand.ecommerce.utils.SecondHandConst.*;
 
 @Configuration
 @RequiredArgsConstructor
-public class AuthenticationManagerConfig {
+public class ApiWebSecurityConfig {
 
     private final AuthenticationManager authenticationManager;
     private final AuthEntryPointJwt authEntryPointJwt;
@@ -36,8 +36,8 @@ public class AuthenticationManagerConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         //PUBLIC End points
         http.authorizeRequests()
-                .antMatchers("/", "index", "/js/*", "/css/*", "/images/*").permitAll()
-                .antMatchers("/api/v1/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .antMatchers("/api/v1/auth/**",
+                        SWAGGER_API, SWAGGER_API_DOCS, HOME_PAGE).permitAll()
 
                 //Authenticated request
                 .anyRequest()
