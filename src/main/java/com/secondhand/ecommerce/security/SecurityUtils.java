@@ -37,9 +37,11 @@ public final class SecurityUtils {
     }
 
     public static AppUserBuilder getAuthenticatedUserDetails() {
+
         if (isAuthenticated()) {
             return (AppUserBuilder) getAuthentication().getPrincipal();
         }
+
         return null;
     }
 
@@ -62,27 +64,18 @@ public final class SecurityUtils {
     }
 
     /**
-     * Sets the provided authentication object to the SecurityContextHolder.
-     *
-     * @param authentication the authentication
-     */
-    public static void setAuthentication(Authentication authentication) {
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-
-    /**
      * Clears the securityContextHolder.
      */
     public static void clearAuthentication() {
         SecurityContextHolder.getContext().setAuthentication(null);
     }
 
-    //    /**
-//     * Creates an authentication object with the userDetails then set authentication to
-//     * SecurityContextHolder.
-//     *
-//     * @param userDetails the userDetails
-//     */
+    /**
+     * Creates an authentication object with the userDetails then set authentication to
+     * SecurityContextHolder.
+     *
+     * @param authenticationManager the userDetails
+     */
     public static void authenticateUser(AuthenticationManager authenticationManager,
                                         String emails,
                                         String password) {
@@ -90,8 +83,7 @@ public final class SecurityUtils {
                 emails,
                 password);
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
-
-        setAuthentication(authenticate);
+        SecurityContextHolder.getContext().setAuthentication(authenticate);
     }
 
     /**
@@ -109,7 +101,7 @@ public final class SecurityUtils {
                     authorities);
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
     }
 
