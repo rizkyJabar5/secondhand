@@ -18,9 +18,12 @@ public class SecondHandConst {
     public static final String TOKEN_PREFIX = "Bearer ";
 
 
-    // Authentication url
+    //List url
     public static final String AUTHENTICATION_URL = "/api/v1/auth";
-    public static final String HOME_PAGE = "/beranda";
+
+    public static final String SWAGGER_API_DOCS = "/v3/api-docs/**";
+    public static final String SWAGGER_API = "/swagger-ui/**";
+    public static final String HOME_PAGE = "/home";
     public static final String LOGIN_FAILURE_URL = "/login?error";
     public static final String LOGIN_URL = "/api/v1/auth/login-page";
     public static final String LOGOUT = "/";

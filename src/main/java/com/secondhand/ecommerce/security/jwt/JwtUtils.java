@@ -1,7 +1,6 @@
 package com.secondhand.ecommerce.security.jwt;
 
 
-import com.secondhand.ecommerce.models.enums.TokenType;
 import com.secondhand.ecommerce.utils.HasLogger;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -15,10 +14,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.Objects;
 
 import static com.secondhand.ecommerce.utils.SecondHandConst.*;
 
@@ -29,28 +26,21 @@ public class JwtUtils implements HasLogger {
     private static final String TOKEN_CREATED_SUCCESS = "Token successfully created as {}";
     private final SecretKey secretKey;
 
-    public String generateJwtToken(String username) {
-        Validate.notBlank(username, BLANK_USERNAME);
-
-        return generateJwtToken(
-                username,
-                new Date(System.currentTimeMillis() + EXPIRATION_TIME_JWT)); // expired at 10 days
-    }
 
     /**
-     * Generate a JwtToken for the specified username.
+     * Generate a JwtToken for the specified email.
      *
-     * @param username   the username
-     * @param expiration the expiration date
+     * @param email the email
      * @return the token
      */
-    public String generateJwtToken(String username, Date expiration) {
-        Validate.notBlank(username, BLANK_USERNAME);
+    public String generateJwtToken(String email) {
+
+        Validate.notBlank(email, BLANK_USERNAME);
 
         String jwtToken = Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(expiration)
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_JWT))
                 .signWith(secretKey)
                 .compact();
 
@@ -78,14 +68,10 @@ public class JwtUtils implements HasLogger {
     /**
      * Retrieves the jwt token from the request cookie or request header if present and valid.
      *
-     * @param request    the httpRequest
-     * @param fromCookie if jwt should be retrieved from the cookies.
+     * @param request the httpRequest
      * @return the jwt token
      */
-    public String getJwtToken(HttpServletRequest request, boolean fromCookie) {
-        if (fromCookie) {
-            return getJwtFromCookie(request);
-        }
+    public String getJwtToken(HttpServletRequest request) {
 
         return getJwtFromRequest(request);
     }
@@ -124,29 +110,12 @@ public class JwtUtils implements HasLogger {
      * @return the jwt token
      */
     private String getJwtFromRequest(HttpServletRequest request) {
+
         String headerAuth = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (StringUtils.isNotBlank(headerAuth)
                 && headerAuth.startsWith(TOKEN_PREFIX)) {
-            return headerAuth.split(StringUtils.SPACE)[10]; // 10 day of expired at token
-        }
-        return null;
-    }
-
-    /**
-     * Retrieves the jwt token from the request cookie if present and valid.
-     *
-     * @param request the httpRequest
-     * @return the jwt token
-     */
-    private String getJwtFromCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (Objects.nonNull(cookies)) {
-            for (Cookie cookie : cookies) {
-                if (TokenType.ACCESS.getName().equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
+            return headerAuth.substring(7); // 10 day of expired at token
         }
         return null;
     }
