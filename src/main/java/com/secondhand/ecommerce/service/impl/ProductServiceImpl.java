@@ -1,6 +1,7 @@
 package com.secondhand.ecommerce.service.impl;
 
 import com.secondhand.ecommerce.models.entity.Categories;
+import com.secondhand.ecommerce.models.entity.Images;
 import com.secondhand.ecommerce.models.entity.Product;
 import com.secondhand.ecommerce.repository.ProductRepository;
 import com.secondhand.ecommerce.service.ProductService;

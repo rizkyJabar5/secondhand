@@ -19,7 +19,6 @@ public class ProductController {
 
     final ProductServiceImpl productService;
 
-
     @PostMapping("/add")
     public ResponseEntity<Map<String, Object>> addProduct(@RequestBody Product product){
         product = productService.addProduct(product);
