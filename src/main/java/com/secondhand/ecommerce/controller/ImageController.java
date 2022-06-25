@@ -44,7 +44,10 @@ public class ImageController {
         String[] url = new String[1];
         url[0] = result.get("url").toString();
         response.setUrl(url);
-
+        Images images = new Images();
+        images.setImageName(image.getOriginalFilename());
+        images.setImageFile(image.getBytes());
+        imagesRepository.save(images);
         return new ResponseEntity(response, HttpStatus.OK);
     }
 
