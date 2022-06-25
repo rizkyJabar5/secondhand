@@ -1,15 +1,13 @@
 package com.secondhand.ecommerce.service.impl;
 
+import com.secondhand.ecommerce.models.entity.Categories;
 import com.secondhand.ecommerce.models.entity.Product;
 import com.secondhand.ecommerce.repository.ProductRepository;
 import com.secondhand.ecommerce.service.ProductService;
 import com.secondhand.ecommerce.utils.Datatable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,6 +31,12 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
 
     @Override
     public Product addProduct(Product product) {
+        repository.save(product);
+        return product;
+    }
+
+    @Override
+    public Product updateProduct(Product product) {
         repository.save(product);
         return product;
     }

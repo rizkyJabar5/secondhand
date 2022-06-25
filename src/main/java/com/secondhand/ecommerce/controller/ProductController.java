@@ -1,5 +1,6 @@
 package com.secondhand.ecommerce.controller;
 
+import com.secondhand.ecommerce.models.entity.Categories;
 import com.secondhand.ecommerce.models.entity.Product;
 import com.secondhand.ecommerce.service.impl.ProductServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,8 @@ public class ProductController {
 
     final ProductServiceImpl productService;
 
-    @PostMapping("/")
+
+    @PostMapping("/add")
     public ResponseEntity<Map<String, Object>> addProduct(@RequestBody Product product){
         product = productService.addProduct(product);
         Map<String, Object> response = new HashMap<>();
@@ -27,7 +29,16 @@ public class ProductController {
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/")
+    @PutMapping("/update")
+    public ResponseEntity<Map<String, Object>>updateProduct(@RequestBody Product product){
+        product = productService.updateProduct(product);
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("data", product);
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/show")
     public ResponseEntity<Map<String, Object>> getProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int limit,
@@ -62,7 +73,7 @@ public class ProductController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Map<String, Object>> deleteProduct(@PathVariable long id){
         Optional<Product> product = productService.deleteProductById(id);
 
