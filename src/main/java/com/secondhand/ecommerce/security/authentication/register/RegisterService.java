@@ -4,6 +4,8 @@ import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.service.AppUserService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+
 @Service
 public class RegisterService {
 
@@ -15,11 +17,14 @@ public class RegisterService {
 
     public void registeredUser(RegisterRequest request) {
 
-        userService.registerNewUser(
-                new AppUsers(
-                        request.getFullName(),
-                        request.getEmail(),
-                        request.getPassword()
-                ));
+        AppUsers user = new AppUsers(
+                request.getFullName(),
+                request.getEmail(),
+                request.getPassword()
+                );
+
+        user.setRoles(Collections.emptyList());
+
+        userService.registerNewUser(user);
     }
 }
