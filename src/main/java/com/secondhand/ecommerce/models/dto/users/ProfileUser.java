@@ -10,8 +10,8 @@ public class ProfileUser implements Serializable {
 
     private Long userId;
     private String name;
-    private String cityName;
-    private String address;
-    private Integer phoneNumber;
+    private String city;
+    private String street;
+    private String phoneNumber;
     private MultipartFile picture;
 }

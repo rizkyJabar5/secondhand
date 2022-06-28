@@ -3,6 +3,7 @@ package com.secondhand.ecommerce.service.impl;
 import com.secondhand.ecommerce.exceptions.DuplicateDataExceptions;
 import com.secondhand.ecommerce.models.dto.users.AppUserBuilder;
 import com.secondhand.ecommerce.models.dto.users.ProfileUser;
+import com.secondhand.ecommerce.models.entity.Address;
 import com.secondhand.ecommerce.models.entity.AppRoles;
 import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.repository.AppRolesRepository;
@@ -21,8 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static com.secondhand.ecommerce.utils.SecondHandConst.EMAIL_ALREADY_TAKEN;
-import static com.secondhand.ecommerce.utils.SecondHandConst.EMAIL_NOT_FOUND_MSG;
+import static com.secondhand.ecommerce.utils.SecondHandConst.*;
 
 @RequiredArgsConstructor
 @Service
@@ -59,30 +59,40 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public Optional<AppUsers> findUserByEmail(String email) {
 
-        getLogger().error("Username {} is not found. Please create one", email);
+        getLogger().error(EMAIL_NOT_FOUND_MSG + email);
         return Optional.ofNullable(userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(
                         String.format(EMAIL_NOT_FOUND_MSG, email.toUpperCase()))
-                ));
 
+                ));
     }
 
     @Override
-    public ProfileUser updateProfileUser(AppUsers appUsers) {
-
-
-        ProfileUser profileUser = new ProfileUser();
-        userRepository.findByUserId(profileUser.getUserId())
+    public AppUsers checkProfileUser(Long userId) {
+        return Optional.ofNullable(userRepository.checkProfileUser(userId))
                 .orElseThrow(() -> new UsernameNotFoundException(
-                        String.format("User not found with ID: %s", profileUser.getUserId()))
+                        String.format(USER_NOT_FOUND_MSG, userId))
+                );
+    }
+
+    @Override
+    public ProfileUser updateProfileUser(ProfileUser profileUser) {
+
+        AppUsers appUsers = userRepository.findByUserId(profileUser.getUserId())
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        String.format(USER_NOT_FOUND_MSG, profileUser.getUserId()))
                 );
 
-        appUsers.setFullName(profileUser.getName());
-        appUsers.getAddress().setCity(profileUser.getCityName());
-        appUsers.getAddress().setStreet(profileUser.getAddress());
-        appUsers.setPhoneNumber(profileUser.getPhoneNumber());
+        if (appUsers != null) {
+            Address address = new Address();
+            appUsers.setFullName(profileUser.getName());
+            address.setCity(profileUser.getCity());
+            address.setStreet(profileUser.getStreet());
+            appUsers.setAddress(address);
+            appUsers.setPhoneNumber(profileUser.getPhoneNumber());
 
-        userRepository.save(appUsers);
+            userRepository.saveAndFlush(appUsers);
+        }
         return profileUser;
     }
 

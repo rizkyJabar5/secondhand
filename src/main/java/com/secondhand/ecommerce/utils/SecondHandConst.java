@@ -8,6 +8,8 @@ public class SecondHandConst {
 
     public static final String EMAIL_NOT_FOUND_MSG = "E-mail: %s is not found.";
     public static final String ROLE_IS_NOT_FOUND_MSG = "Error: Role %s is not found";
+    public static final String USER_NOT_FOUND_MSG = "Error: User %s is not found";
+    public static final String PROFILE_MUST_BE_COMPLETED_MSG = "Data user must be completed.";
     public static final long EXPIRATION_TIME_JWT = 864000000; // 10 days
     public static final String DELETING_SELF_NOT_PERMITTED_MSG = "Pengguna terblokir! Silahkan hubungi Administrator.";
     public static final String MODIFY_LOCKED_USER_NOT_PERMITTED_MSG = "Pengguna terkunci! Tidak bisa diubah ataupun dihapus";

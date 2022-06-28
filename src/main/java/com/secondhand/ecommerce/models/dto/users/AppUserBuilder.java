@@ -21,7 +21,7 @@ public final class AppUserBuilder implements UserDetails {
     private String password;
     private Address address;
     private Date joinDate;
-    private Integer phoneNumber;
+    private String phoneNumber;
     private boolean accountNonExpired;
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
