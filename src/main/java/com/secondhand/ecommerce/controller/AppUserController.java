@@ -1,6 +1,9 @@
 package com.secondhand.ecommerce.controller;
 
+import com.secondhand.ecommerce.models.dto.response.CompletedResponse;
 import com.secondhand.ecommerce.models.dto.users.ProfileUser;
+import com.secondhand.ecommerce.models.entity.AppUsers;
+import com.secondhand.ecommerce.models.enums.OperationStatus;
 import com.secondhand.ecommerce.service.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,12 +36,19 @@ public class AppUserController {
     }
 
     @GetMapping("/check-data-user/{id}")
-    public ResponseEntity<Map<String, Object>> getCheckProfileUsers(@PathVariable("id") Long userId) {
+    public ResponseEntity<Object> getCheckProfileUsers(@PathVariable("id") Long userId) {
 
         Map<String, Object> response = new HashMap<>();
+        AppUsers value = userService.checkProfileUser(userId);
 
-        response.put("success", true);
-        response.put("data", userService.checkProfileUser(userId));
+        if (value == null) {
+            CompletedResponse completedResponse = new CompletedResponse(OperationStatus.COMPLETED);
+            return new ResponseEntity<>(completedResponse, HttpStatus.OK);
+        } else {
+            response.put("success", true);
+            response.put("data", value);
+        }
+
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }

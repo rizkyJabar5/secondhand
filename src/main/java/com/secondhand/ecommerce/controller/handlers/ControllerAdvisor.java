@@ -1,5 +1,6 @@
 package com.secondhand.ecommerce.controller.handlers;
 
+import com.secondhand.ecommerce.exceptions.DataViolationException;
 import com.secondhand.ecommerce.exceptions.DuplicateDataExceptions;
 import com.secondhand.ecommerce.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -41,6 +42,16 @@ public class ControllerAdvisor extends ResponseStatusExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Object> notFoundHandler(NotFoundException notFoundException) {
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("message", notFoundException.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DataViolationException.class)
+    public ResponseEntity<Object> nonAccessibleHandler(DataViolationException notFoundException) {
 
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("timestamp", LocalDateTime.now());

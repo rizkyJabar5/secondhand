@@ -34,6 +34,7 @@ public class ApiWebSecurityConfig {
                 .authenticationEntryPoint(authEntryPointJwt)
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         //PUBLIC End points
         http.authorizeRequests()
                 .antMatchers("/api/v1/auth/**",
@@ -41,19 +42,7 @@ public class ApiWebSecurityConfig {
 
                 //Authenticated request
                 .anyRequest()
-                .authenticated()
-                .and()
-
-                //Configure for form Login
-                .formLogin()
-                .loginPage(LOGIN_URL)
-                .defaultSuccessUrl(HOME_PAGE, true)
-                .failureUrl(LOGIN_FAILURE_URL).permitAll()
-
-                //Logout Handler
-                .and()
-                .logout()
-                .logoutSuccessUrl(LOGOUT);
+                .authenticated();
 
         http.authenticationManager(authenticationManager);
 
