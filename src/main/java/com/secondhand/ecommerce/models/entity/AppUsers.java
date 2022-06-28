@@ -45,10 +45,13 @@ public class AppUsers implements UserDetails {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "join_date")
-    private Date joinDate;
+    private Date joinDate = new Date(System.currentTimeMillis());
 
     @Column(name = "phone_number")
     private String phoneNumber;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
