@@ -14,6 +14,6 @@ public interface AppUserService extends UserDetailsService, HasLogger {
 
     Optional<AppUsers> findUserByEmail(String email);
 
-    ProfileUser updateProfileUser(AppUsers appUsers);
+    ProfileUser updateProfileUser(ProfileUser appUsers);
 
 }

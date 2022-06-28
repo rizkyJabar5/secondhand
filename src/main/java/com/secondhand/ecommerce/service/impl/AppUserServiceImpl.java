@@ -68,21 +68,22 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public ProfileUser updateProfileUser(AppUsers appUsers) {
+    public ProfileUser updateProfileUser(ProfileUser profileUser) {
 
 
-        ProfileUser profileUser = new ProfileUser();
-        userRepository.findByUserId(profileUser.getUserId())
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        String.format("User not found with ID: %s", profileUser.getUserId()))
-                );
+//        ProfileUser profileUser = new ProfileUser();
+//        userRepository.findByUserId(profileUser.getUserId())
+//                .orElseThrow(() -> new UsernameNotFoundException(
+//                        String.format("User not found with ID: %s", profileUser.getUserId()))
+//                );
+//
+//        appUsers.setFullName(profileUser.getName());
+//        appUsers.getAddress().setCity(profileUser.getCityName());
+//        appUsers.getAddress().setStreet(profileUser.getAddress());
+//        appUsers.setPhoneNumber(profileUser.getPhoneNumber());
+//        appUsers.setImageName(profileUser.getPicture(imageName));
 
-        appUsers.setFullName(profileUser.getName());
-        appUsers.getAddress().setCity(profileUser.getCityName());
-        appUsers.getAddress().setStreet(profileUser.getAddress());
-        appUsers.setPhoneNumber(profileUser.getPhoneNumber());
-
-        userRepository.save(appUsers);
+//        profileUserRepository.save(profileUser);
         return profileUser;
     }
 
