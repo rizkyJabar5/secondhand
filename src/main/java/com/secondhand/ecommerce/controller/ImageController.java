@@ -3,7 +3,7 @@ package com.secondhand.ecommerce.controller;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.secondhand.ecommerce.models.entity.Images;
-import com.secondhand.ecommerce.models.entity.UploadResponse;
+import com.secondhand.ecommerce.models.dto.products.UploadResponse;
 import com.secondhand.ecommerce.repository.ImagesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

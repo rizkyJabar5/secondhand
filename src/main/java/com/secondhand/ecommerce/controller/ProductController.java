@@ -2,8 +2,11 @@ package com.secondhand.ecommerce.controller;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.secondhand.ecommerce.models.dto.products.ProductResponse;
+import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.models.entity.Product;
-import com.secondhand.ecommerce.models.entity.UploadResponse;
+import com.secondhand.ecommerce.models.entity.ProductImage;
+import com.secondhand.ecommerce.models.dto.products.UploadResponse;
 import com.secondhand.ecommerce.repository.ImagesRepository;
 import com.secondhand.ecommerce.repository.ProductRepository;
 import com.secondhand.ecommerce.service.impl.ProductServiceImpl;
@@ -15,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -32,35 +34,48 @@ public class ProductController {
             "api_key", "612217844351516",
             "api_secret", "Efcd1QUtlgJO7FAdO4M5Vw7hag8"));
 
-    @PostMapping("/add")
-    public ResponseEntity<Map<String, Object>> uploadImage(@RequestParam("image") MultipartFile image, @RequestParam String name,
-                                                           @RequestParam Long price, @RequestParam String description) throws IOException {
-        Map<String, Object> response = new HashMap<>();
-        UploadResponse responses = new UploadResponse();
-        File file = new File(image.getOriginalFilename());
-        FileOutputStream os = new FileOutputStream(file);
-        os.write(image.getBytes());
-        os.close();
-        Map result = cloudinary.uploader().upload(file,
-                ObjectUtils.asMap("image_id", "product_image"));
-        responses.setMessage("Upload successful");
-        String[] url = new String[1];
-        url[0] = result.get("url").toString();
-        responses.setUrl(url);
+    @PostMapping("/add/{userId}")
+    public ResponseEntity<Map<String, Object>> addProduct(
+            @PathVariable Long userId,
+            @RequestParam("files") MultipartFile[] files,
+            @RequestParam String name,
+            @RequestParam Long price,
+            @RequestParam String description,
+            @RequestParam String category,
+            @RequestParam Long productId) throws IOException {
+        Integer size = files.length;
+        String[] url = new String[size];
+        for(int i = 0; i < size; i++) {
+            File file = new File(files[i].getOriginalFilename());
+            FileOutputStream os = new FileOutputStream(file);
+            os.write(files[i].getBytes());
+            os.close();
+            Map result = cloudinary.uploader().upload(file,
+                    ObjectUtils.asMap("image_id", "product_image"));
+            url[i] = result.get("url").toString();
+            UploadResponse responses = new UploadResponse();
+            responses.setMessage("Success Upload Image");
+            responses.setUrl(url);
 
-        Product product = new Product();
-        product.setName(name);
-        product.setPrice(price);
-        product.setDescription(description);
-        product.product(image.getOriginalFilename(),image.getBytes());
-        product.setUrl(url[0]);
-        productService.addProduct(product);
+            Product product = new Product();
+            product.setProductId(productId);
+            product.setName(name);
+            product.setPrice(price);
+            product.setDescription(description);
+            product.setCategory(category);
 
-        response.put("success", true);
-        response.put("responses", responses);
-        response.put("data",product);
+            AppUsers users = new AppUsers();
+            users.setUserId(userId);
+            product.setUserId(users);
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+            ProductImage productImage = new ProductImage();
+            productImage.setProductImageName(files[i].getOriginalFilename());
+            productImage.setProductImageFile(files[i].getBytes());
+            productService.addProduct(product);
+            productService.saveProductImage(productImage);
+        }
+        return new ResponseEntity(new ProductResponse(userId, productId, name, description, price,
+                category, Arrays.asList(url)),HttpStatus.OK);
     }
 
 
@@ -90,13 +105,13 @@ public class ProductController {
             @RequestParam(defaultValue = "", name = "order") String sorts
     ){
         // Sort by comma separated values => id,desc;price,asc etc.
-
-        productService.getProducts();
-        Product product = productRepository.getById(productId);
-        InputStream in = getClass().getResourceAsStream(productRepository.toString());
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + product.getImageName() + "\"")
-                .body(product.getImageFile());
+//
+//        productService.getProducts();
+//        Product product = productRepository.getById(productId);
+//        InputStream in = getClass().getResourceAsStream(productRepository.toString());
+//        return ResponseEntity.ok()
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + product.getImageName() + "\"")
+//                .body(product.getImageFile());
 
 //        try {
 //            List<Sort.Order> orders = new ArrayList<>();
@@ -122,6 +137,7 @@ public class ProductController {
 //            e.printStackTrace();
 //            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 //        }
+        return null;
     }
 
     @DeleteMapping("/delete/{id}")

@@ -1,4 +1,4 @@
-package com.secondhand.ecommerce.models.entity;
+package com.secondhand.ecommerce.models.dto.products;
 
 import lombok.Data;
 

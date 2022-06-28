@@ -1,7 +1,7 @@
 package com.secondhand.ecommerce.service;
 
-import com.secondhand.ecommerce.models.entity.Categories;
 import com.secondhand.ecommerce.models.entity.Product;
+import com.secondhand.ecommerce.models.entity.ProductImage;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,4 +12,5 @@ public interface ProductService {
     Product addProduct(Product product);
     Product updateProduct(Product product);
     Optional<Product> deleteProductById(Long id);
+    ProductImage saveProductImage(ProductImage productImage);
 }
