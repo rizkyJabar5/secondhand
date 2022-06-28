@@ -47,6 +47,7 @@ public class AppUsers implements UserDetails {
     @Column(name = "phone_number")
     private Integer phoneNumber;
 
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
@@ -95,5 +96,8 @@ public class AppUsers implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
+
 
 }
