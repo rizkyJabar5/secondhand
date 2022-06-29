@@ -9,5 +9,9 @@ public enum OperationStatus {
     /**
      * If an operation is unsuccessful.
      */
-    FAILURE;
+    FAILURE,
+    /**
+     * If an operation is completed.
+     */
+    COMPLETED
 }

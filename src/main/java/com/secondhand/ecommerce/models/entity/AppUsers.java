@@ -1,5 +1,6 @@
 package com.secondhand.ecommerce.models.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -36,16 +37,21 @@ public class AppUsers implements UserDetails {
     private String email;
 
     @Column(name = "password")
+    @JsonIgnore
     private String password;
 
     @Embedded
     private Address address;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "join_date")
-    private Date joinDate;
+    private Date joinDate = new Date(System.currentTimeMillis());
 
     @Column(name = "phone_number")
-    private Integer phoneNumber;
+    private String phoneNumber;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 
 
     @ManyToMany(fetch = FetchType.EAGER)

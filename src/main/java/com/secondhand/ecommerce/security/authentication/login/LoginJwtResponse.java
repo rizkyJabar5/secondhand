@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,6 +23,7 @@ public class LoginJwtResponse implements Serializable {
     private String accessToken;
     private String email;
     private String type;
+    private Date joinDate;
     private List<String> roles;
 
     /**
@@ -60,6 +62,7 @@ public class LoginJwtResponse implements Serializable {
                     .email(localUserDetails.getEmail())
                     .type(TOKEN_PREFIX)
                     .roles(roleList)
+                    .joinDate(localUserDetails.getJoinDate())
                     .build();
         }
         return LoginJwtResponse.builder().build();

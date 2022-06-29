@@ -12,33 +12,9 @@ public class ProfileUser implements Serializable {
 
     private Long userId;
     private String name;
-    private String cityName;
-    private String address;
-    private Integer phoneNumber;
-    @Column(name = "image_name")
-    private String imageName;
+    private String city;
+    private String street;
+    private String phoneNumber;
+    private MultipartFile picture;
 
-    @Lob
-    @Column(name = "image_file")
-    private byte[] imageFile;
-
-    @Column(name = "image_url")
-    private String url;
-
-    public String getImageName(){
-        return imageName;
-    }
-    public byte[] getImageFile(){
-        return imageFile;
-    }
-    public void setUrl(String url) {
-        this.url = url;
-    }
-    public void AppUsers(String url){
-        this.url = url;
-    }
-    public void AppUsers(String imageName, byte[] imageFile) {
-        this.imageName = imageName;
-        this.imageFile = imageFile;
-    }
 }

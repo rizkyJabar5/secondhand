@@ -7,6 +7,8 @@ import com.secondhand.ecommerce.utils.HasLogger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static com.secondhand.ecommerce.utils.SecondHandConst.ROLE_IS_NOT_FOUND_MSG;
+
 
 @Configuration
 public class AuthenticatedUser implements HasLogger {
@@ -28,11 +30,10 @@ public class AuthenticatedUser implements HasLogger {
         for (ERole eRole : ERole.values()) {
             try {
                 AppRoles role = repository.findByRoleNames(eRole)
-                        .orElseThrow(() -> new RuntimeException("Roles not found"));
-                getLogger().error("{} not found", role);
+                        .orElseThrow(() -> new RuntimeException(String.format(ROLE_IS_NOT_FOUND_MSG, eRole)));
+                getLogger().info("{} is found", role);
             } catch (RuntimeException e) {
-                String msg = "Role " + eRole.name() + " is not found. Please create one...";
-                getLogger().info(msg);
+                getLogger().info(String.format(ROLE_IS_NOT_FOUND_MSG + "It will be create ...", eRole.name()));
 
                 AppRoles roleName = new AppRoles();
                 roleName.setRoleNames(eRole);

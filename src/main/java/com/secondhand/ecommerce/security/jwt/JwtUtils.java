@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -25,6 +27,7 @@ public class JwtUtils implements HasLogger {
 
     private static final String TOKEN_CREATED_SUCCESS = "Token successfully created as {}";
     private final SecretKey secretKey;
+    private final UserDetailsService userDetailsService;
 
 
     /**
@@ -37,8 +40,11 @@ public class JwtUtils implements HasLogger {
 
         Validate.notBlank(email, BLANK_USERNAME);
 
+        UserDetails users = userDetailsService.loadUserByUsername(email);
+
         String jwtToken = Jwts.builder()
                 .setSubject(email)
+                .claim("authorities", users.getAuthorities())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_JWT))
                 .signWith(secretKey)
