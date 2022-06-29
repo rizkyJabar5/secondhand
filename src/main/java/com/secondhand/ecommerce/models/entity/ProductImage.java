@@ -1,30 +1,43 @@
 package com.secondhand.ecommerce.models.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.hibernate.Hibernate;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import java.util.List;
+import java.util.Objects;
 
 
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Entity
-public class ProductImage {
+public class ProductImage extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "product_image_id")
-    private Long productImageId;
+    @Column(name = "image_name")
+    private String imageName;
 
-    @Column(name = "product_image_name")
-    private String productImageName;
+    @Column(name = "url_file")
+    private String urlFile;
 
-    @Column(name = "product_image_file")
-    private byte[] productImageFile;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product_image")
+    private List<Product> products;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product productId;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        ProductImage that = (ProductImage) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
+    }
 
-    public ProductImage(){
-
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

@@ -17,7 +17,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Table(name = "app_roles")
-public class AppRoles extends AbstractEntity {
+public class AppRoles extends BaseEntity {
 
     private ERole roleNames;
 

@@ -1,34 +1,52 @@
 package com.secondhand.ecommerce.models.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.math.BigInteger;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Entity
 @Table(name = "products")
-public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productId;
+public class Product extends BaseEntity {
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "description")
     private String description;
-    private Long price;
-    private String category;
+
+    @Column(name = "price")
+    private BigInteger price;
+
+    @ManyToOne
+    @JoinColumn(name = "product_image")
+    private ProductImage productImage;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private AppUsers userId;
+    private AppUsers appUsers;
 
-    public String getName() {return name;}
-    public void setName(String name) {this.name = name;}
-    public String getDescription() {return description;}
-    public void setDescription(String description) {this.description = description;}
-    public Long getPrice() {return price;}
-    public void setPrice(Long price) {this.price = price;}
-    public void setCategory(String category){this.category = category;}
-    public String getCategory(){return category;}
-    public void setUserId(AppUsers users) {this.userId = userId;}
-    public void setProductId(Long productId) {this.productId = productId;}
-    public Long getProductId(){return productId;}
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Categories category;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Product product = (Product) o;
+        return getId() != null && Objects.equals(getId(), product.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
