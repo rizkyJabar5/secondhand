@@ -12,5 +12,6 @@ public class ProfileUser implements Serializable {
     private String city;
     private String street;
     private String phoneNumber;
+    private String imageProfile;
 
 }

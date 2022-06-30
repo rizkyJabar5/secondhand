@@ -3,9 +3,12 @@ package com.secondhand.ecommerce.models.entity;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 @Getter
@@ -20,6 +23,14 @@ public abstract class BaseEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "apps_sequence")
     private Long id;
+
+    @CreatedBy
+    @Column(name = "created_by", nullable = false, updatable = false)
+    private String createdBy;
+
+    @CreatedDate
+    @Column(name = "created_date", nullable = false)
+    private Date createdDate = new Date(System.currentTimeMillis());
 
     @Override
     public boolean equals(Object o) {

@@ -7,6 +7,7 @@ import com.secondhand.ecommerce.models.enums.OperationStatus;
 import com.secondhand.ecommerce.service.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,19 +24,20 @@ public class AppUserController {
 
     private final AppUserService userService;
 
-    @PutMapping("/profile-user")
+    @PutMapping(value = "/profile-user",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> updateUserProfile(
             @Valid @ModelAttribute ProfileUser profileUser,
-            @RequestParam(required = false) MultipartFile imageProfile) {
+            @RequestParam(required = false) MultipartFile image) {
 
         Map<String, Object> response = new HashMap<>();
         response.put("timestamp", LocalDateTime.now());
         response.put("success", true);
-        response.put("data", userService.updateProfileUser(profileUser, imageProfile));
+        response.put("data", userService.updateProfileUser(profileUser, image));
+
 
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
-
-
     }
 
     @GetMapping("/check-data-user/{id}")

@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Getter
@@ -17,8 +16,11 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Table(name = "app_roles")
-public class AppRoles extends BaseEntity {
-
+public class AppRoles {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "role_id")
+    private Long roleId;
     private ERole roleNames;
 
     @Override
@@ -26,7 +28,7 @@ public class AppRoles extends BaseEntity {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         AppRoles roles = (AppRoles) o;
-        return getId() != null && Objects.equals(getId(), roles.getId());
+        return roleId != null && Objects.equals(roleId, roles.roleId);
     }
 
     @Override

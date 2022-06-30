@@ -17,6 +17,6 @@ public interface AppUserService extends UserDetailsService, HasLogger {
 
     AppUsers checkProfileUser(Long UserId);
 
-    ProfileUser updateProfileUser(ProfileUser profileUser, MultipartFile imageProfile);
+    ProfileUser updateProfileUser(ProfileUser profileUser, MultipartFile image);
 
 }

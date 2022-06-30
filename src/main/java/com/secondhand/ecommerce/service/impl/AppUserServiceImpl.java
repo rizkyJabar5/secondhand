@@ -77,7 +77,7 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public ProfileUser updateProfileUser(ProfileUser profileUser, MultipartFile imageProfile) {
+    public ProfileUser updateProfileUser(ProfileUser profileUser, MultipartFile image) {
 
         AppUsers appUsers = userRepository.findByUserId(profileUser.getUserId())
                 .orElseThrow(() -> new UsernameNotFoundException(
@@ -99,16 +99,13 @@ public class AppUserServiceImpl implements AppUserService {
             appUsers.setPhoneNumber(profileUser.getPhoneNumber());
 
             try {
-                Map uploadResult = cloudinary.upload(
-                        imageProfile.getBytes(),
+                Map uploadResult = cloudinary.upload(image.getBytes(),
                         ObjectUtils.asMap("resourceType", "auto"));
+                profileUser.setImageProfile(uploadResult.get("url").toString());
                 appUsers.setImageUrl(uploadResult.get("url").toString());
             } catch (IOException e) {
-                throw new AppBaseException("upload file failed", e);
+                throw new AppBaseException("Upload failed", e);
             }
-//            catch (NullPointerException e) {
-//                throw new AppBaseException("file is null", e);
-//            }
 
             userRepository.save(appUsers);
         } else {
