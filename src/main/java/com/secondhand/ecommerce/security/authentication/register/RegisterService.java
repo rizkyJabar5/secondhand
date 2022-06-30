@@ -22,9 +22,6 @@ public class RegisterService {
                 request.getEmail(),
                 request.getPassword()
                 );
-
-        user.setRoles(Collections.emptyList());
-
         userService.registerNewUser(user);
     }
 }

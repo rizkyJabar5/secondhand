@@ -20,11 +20,18 @@ public class ProductImage {
     @Column(name = "product_image_file")
     private byte[] productImageFile;
 
+    @Column(name = "product_url")
+    private String[] url;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product productId;
 
     public ProductImage(){
 
+    }
+
+    public void setUrl(String[] url) {
+        this.url = url;
     }
 }

@@ -31,4 +31,5 @@ public class Product {
     public void setUserId(AppUsers users) {this.userId = userId;}
     public void setProductId(Long productId) {this.productId = productId;}
     public Long getProductId(){return productId;}
+
 }
