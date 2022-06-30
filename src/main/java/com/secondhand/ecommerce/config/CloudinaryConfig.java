@@ -1,16 +1,17 @@
 package com.secondhand.ecommerce.config;
 
 import com.cloudinary.Cloudinary;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
-@ConfigurationProperties(prefix = "cloudinary.config")
+@RequiredArgsConstructor
+@Configuration
 public class CloudinaryConfig {
 
     @Value("${cloud.name}")
@@ -21,7 +22,7 @@ public class CloudinaryConfig {
     private String apiSecret;
 
     @Bean
-    public Cloudinary cloudinaryConfig() {
+    public Cloudinary cloudinary() {
 
         Map<String, Object> config = new HashMap<>();
         config.put("cloud_name", cloudName);
@@ -31,5 +32,22 @@ public class CloudinaryConfig {
         return new Cloudinary(config);
     }
 
+    public Map upload(Object file, Map options) {
 
+        try {
+            return cloudinary().uploader().upload(file, options);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Map delete(String file, Map options) {
+        try {
+            return cloudinary().uploader().destroy(file, options);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

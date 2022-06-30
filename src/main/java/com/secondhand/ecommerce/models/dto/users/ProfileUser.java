@@ -1,10 +1,7 @@
 package com.secondhand.ecommerce.models.dto.users;
 
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Column;
-import javax.persistence.Lob;
 import java.io.Serializable;
 
 @Data
@@ -15,6 +12,5 @@ public class ProfileUser implements Serializable {
     private String city;
     private String street;
     private String phoneNumber;
-    private MultipartFile picture;
 
 }

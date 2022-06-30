@@ -1,28 +1,31 @@
 package com.secondhand.ecommerce.service.impl;
 
+import com.secondhand.ecommerce.config.CloudinaryConfig;
+import com.secondhand.ecommerce.models.dto.products.ProductRequest;
 import com.secondhand.ecommerce.models.entity.Product;
 import com.secondhand.ecommerce.models.entity.ProductImage;
 import com.secondhand.ecommerce.repository.ProductImageRepository;
 import com.secondhand.ecommerce.repository.ProductRepository;
 import com.secondhand.ecommerce.service.Datatable;
 import com.secondhand.ecommerce.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-
+@Transactional
+@RequiredArgsConstructor
 @Service
 public class ProductServiceImpl extends Datatable<Product, Long> implements ProductService {
 
-    @Autowired
-    ProductRepository repository;
+    private final ProductRepository repository;
+    private final ProductImageRepository productImageRepository;
 
-    @Autowired
-    private ProductImageRepository productImageRepository;
+    private final CloudinaryConfig cloudinaryConfig;
 
     @Override
     public List<Product> getProducts() {
@@ -30,14 +33,15 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
     }
 
 
-    public Optional<Product> getProductById(Long id){
+    public Optional<Product> getProductById(Long id) {
         return repository.findById(id);
     }
 
     @Override
-    public Product addProduct(Product product) {
+    public ProductRequest addProduct(Product product) {
+
         repository.save(product);
-        return product;
+        return ProductRequest.productBuilder(product);
     }
 
     @Override

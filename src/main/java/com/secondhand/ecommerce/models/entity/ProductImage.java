@@ -5,10 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,6 +14,7 @@ import java.util.Objects;
 @Setter
 @RequiredArgsConstructor
 @Entity
+@Table(name = "product_image")
 public class ProductImage extends BaseEntity {
 
     @Column(name = "image_name")
@@ -25,7 +23,7 @@ public class ProductImage extends BaseEntity {
     @Column(name = "url_file")
     private String urlFile;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product_image")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "productImage")
     private List<Product> products;
 
     @Override

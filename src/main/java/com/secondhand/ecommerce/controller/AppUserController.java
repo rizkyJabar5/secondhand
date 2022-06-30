@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -23,15 +24,17 @@ public class AppUserController {
     private final AppUserService userService;
 
     @PutMapping("/profile-user")
-    public ResponseEntity<Map<String, Object>> updateUserProfile(
-            @Valid @RequestBody ProfileUser profileUser) {
+    public ResponseEntity<?> updateUserProfile(
+            @Valid @ModelAttribute ProfileUser profileUser,
+            @RequestParam(required = false) MultipartFile imageProfile) {
 
         Map<String, Object> response = new HashMap<>();
         response.put("timestamp", LocalDateTime.now());
         response.put("success", true);
-        response.put("data", userService.updateProfileUser(profileUser));
+        response.put("data", userService.updateProfileUser(profileUser, imageProfile));
 
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+
 
     }
 
