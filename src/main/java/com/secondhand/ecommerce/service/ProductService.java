@@ -3,6 +3,7 @@ package com.secondhand.ecommerce.service;
 import com.secondhand.ecommerce.models.dto.products.ProductDto;
 import com.secondhand.ecommerce.models.entity.Product;
 import com.secondhand.ecommerce.models.entity.ProductImage;
+import com.secondhand.ecommerce.utils.BaseResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public interface ProductService {
 
     Optional<Product> getProductById(Long id);
 
-    ProductDto addProduct(ProductDto product, MultipartFile[] image);
+    BaseResponse addProduct(ProductDto product, MultipartFile[] image);
 
     Product updateProduct(Product product);
 
