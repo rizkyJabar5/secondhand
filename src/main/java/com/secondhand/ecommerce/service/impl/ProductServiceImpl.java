@@ -8,7 +8,6 @@ import com.secondhand.ecommerce.service.Datatable;
 import com.secondhand.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -66,8 +65,8 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
 
     @Override
     public Optional<Product> deleteProductByProductId(long productId) {
-        Optional<Product> deletedProduct = repository.findByProductId(productId);
-        repository.deleteByProductId(productId);
+        Optional<Product> deletedProduct = repository.findById(productId);
+        repository.deleteById(productId);
         return deletedProduct;
     }
 }

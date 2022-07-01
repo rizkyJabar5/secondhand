@@ -1,8 +1,16 @@
 package com.secondhand.ecommerce.models.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.hibernate.Hibernate;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import java.util.List;
+import java.util.Objects;
 
 
 @Getter
@@ -17,8 +25,10 @@ public class ProductImage extends BaseEntity {
     @Column(name = "url_file")
     private String urlFile;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product_image")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "productImage")
     private List<Product> products;
+
+    private String[] url;
 
     @Override
     public boolean equals(Object o) {

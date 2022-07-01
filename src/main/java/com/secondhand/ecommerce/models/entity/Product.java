@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.math.BigInteger;
 import java.util.Objects;
 
 @Getter
@@ -23,7 +22,7 @@ public class Product extends BaseEntity {
     private String description;
 
     @Column(name = "price")
-    private BigInteger price;
+    private Long price;
 
     @ManyToOne
     @JoinColumn(name = "product_image")
@@ -33,9 +32,7 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "user_id")
     private AppUsers appUsers;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Categories category;
+    private String category;
 
     @Override
     public boolean equals(Object o) {

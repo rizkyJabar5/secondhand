@@ -3,13 +3,10 @@
 
 package com.secondhand.ecommerce.models.dto.products;
 
-import com.secondhand.ecommerce.models.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.apache.commons.lang3.Validate;
 
-import java.math.BigInteger;
 import java.util.List;
 
 @Data
@@ -22,26 +19,34 @@ public class ProductResponse {
     private String userFullName;
     private String productName;
     private String description;
-    private BigInteger price;
+    private Long price;
     private Long categoryId;
     private String category;
     private List<String> url;
 
-    public static ProductResponse buildProductDetail(Product product) {
-
-        Validate.notNull(product, "Product must not be null");
-
-        return ProductResponse.builder()
-                .userId(product.getAppUsers().getUserId())
-                .userFullName(product.getAppUsers().getFullName())
-                .productId(product.getId())
-                .productName(product.getName())
-                .description(product.getDescription())
-                .price(product.getPrice())
-                .categoryId(product.getCategory().getId())
-                .category(product.getCategory().getName())
-                .build();
+    public ProductResponse(Long userId, String name, String description, Long price, String category, List<String> asList) {
+        this.userId = userId;
+        this.productName = name;
+        this.description = description;
+        this.price = price;
+        this.category = category;
+        this.url = asList;
     }
+
+//    public static ProductResponse buildProductDetail(Product product) {
+//
+//        Validate.notNull(product, "Product must not be null");
+//
+//        return ProductResponse.builder()
+//                .userId(product.getAppUsers().getUserId())
+//                .userFullName(product.getAppUsers().getFullName())
+//                .productId(product.getId())
+//                .productName(product.getName())
+//                .description(product.getDescription())
+//                .price(product.getPrice())
+//                .category(product.getName())
+//                .build();
+//    }
 
 }
 
