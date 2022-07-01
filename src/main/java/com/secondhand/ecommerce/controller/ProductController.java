@@ -6,6 +6,10 @@ import com.secondhand.ecommerce.models.entity.Product;
 import com.secondhand.ecommerce.service.CategoriesService;
 import com.secondhand.ecommerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -138,5 +143,27 @@ public class ProductController {
 
     }
 
+//    @GetMapping("/seller/get-product-page")
+//    public ResponseEntity<Map<String, Object>> getAllProductPage(
+//            @RequestParam(required = false) String productName,
+//            @RequestParam(required = false) Categories category,
+//            @RequestParam(defaultValue = "1") int page,
+//            @RequestParam(defaultValue = "5") int size
+//    ) {
+//        try {
+//            Pageable paging = PageRequest.of(page - 1, size, Sort.by("productPrice"));
+//
+//            Page<Product> productPage = productService.getAllProductPageByProductNameAndProductCategory(productName, category, paging);
+//            List<Product> products = productPage.getContent();
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("products", products);
+//            response.put("currentPage", productPage.getNumber() + 1);
+//            response.put("totalProducts", productPage.getTotalElements());
+//            response.put("totalPages", productPage.getTotalPages());
+//            return new ResponseEntity<>(response, HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
 }

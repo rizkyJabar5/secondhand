@@ -1,8 +1,12 @@
 package com.secondhand.ecommerce.service;
 
 import com.secondhand.ecommerce.models.dto.products.ProductDto;
+import com.secondhand.ecommerce.models.entity.Categories;
 import com.secondhand.ecommerce.models.entity.Product;
 import com.secondhand.ecommerce.utils.BaseResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -18,4 +22,7 @@ public interface ProductService {
     Product updateProduct(Product product);
 
     Optional<Product> deleteProductById(Long id);
+
+    Page<Product> getAllProductPageByProductNameAndProductCategory(String productName, Categories categoryId, Pageable pageable);
+
 }
