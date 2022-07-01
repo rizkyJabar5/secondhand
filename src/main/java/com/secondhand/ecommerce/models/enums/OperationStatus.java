@@ -4,14 +4,24 @@ public enum OperationStatus {
     /**
      * If an operation is successful.
      */
-    SUCCESS,
+    SUCCESS("Success"),
 
     /**
      * If an operation is unsuccessful.
      */
-    FAILURE,
+    FAILURE("Failure"),
     /**
      * If an operation is completed.
      */
-    COMPLETED
+    COMPLETED("Completed");
+
+    private final String name;
+
+    OperationStatus(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

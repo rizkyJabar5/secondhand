@@ -5,6 +5,7 @@ import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.security.authentication.login.LoginRequest;
 import com.secondhand.ecommerce.utils.HasLogger;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -16,6 +17,6 @@ public interface AppUserService extends UserDetailsService, HasLogger {
 
     AppUsers checkProfileUser(Long UserId);
 
-    ProfileUser updateProfileUser(ProfileUser profileUser);
+    ProfileUser updateProfileUser(ProfileUser profileUser, MultipartFile image);
 
 }

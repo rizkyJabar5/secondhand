@@ -1,5 +1,8 @@
 package com.secondhand.ecommerce.service.impl;
 
+import com.cloudinary.utils.ObjectUtils;
+import com.secondhand.ecommerce.config.CloudinaryConfig;
+import com.secondhand.ecommerce.exceptions.AppBaseException;
 import com.secondhand.ecommerce.exceptions.DataViolationException;
 import com.secondhand.ecommerce.exceptions.DuplicateDataExceptions;
 import com.secondhand.ecommerce.models.dto.users.AppUserBuilder;
@@ -18,7 +21,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 
 import static com.secondhand.ecommerce.utils.SecondHandConst.*;
@@ -32,6 +37,8 @@ public class AppUserServiceImpl implements AppUserService {
     private final AppUserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final CloudinaryConfig cloudinary;
 
     @Override
     public LoginRequest registerNewUser(AppUsers appUsers) {
@@ -70,7 +77,7 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public ProfileUser updateProfileUser(ProfileUser profileUser) {
+    public ProfileUser updateProfileUser(ProfileUser profileUser, MultipartFile image) {
 
         AppUsers appUsers = userRepository.findByUserId(profileUser.getUserId())
                 .orElseThrow(() -> new UsernameNotFoundException(
@@ -91,12 +98,21 @@ public class AppUserServiceImpl implements AppUserService {
             appUsers.setAddress(address);
             appUsers.setPhoneNumber(profileUser.getPhoneNumber());
 
+            try {
+                Map uploadResult = cloudinary.upload(image.getBytes(),
+                        ObjectUtils.asMap("resourceType", "auto"));
+                profileUser.setImageProfile(uploadResult.get("url").toString());
+                appUsers.setImageUrl(uploadResult.get("url").toString());
+            } catch (IOException e) {
+                throw new AppBaseException("Upload failed", e);
+            }
+
             userRepository.save(appUsers);
         } else {
             throw new DataViolationException("You're not required to access this profile");
         }
-        getLogger().info("User with email {} is successfully updated", builder.getEmail());
 
+        getLogger().info("User with email {} is successfully updated", builder.getEmail());
         return profileUser;
     }
 

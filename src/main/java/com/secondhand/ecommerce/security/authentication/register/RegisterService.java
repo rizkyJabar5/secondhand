@@ -20,6 +20,7 @@ public class RegisterService {
                 request.getEmail(),
                 request.getPassword()
                 );
+
         userService.registerNewUser(user);
     }
 }
