@@ -1,12 +1,18 @@
 package com.secondhand.ecommerce.service.impl;
 
+import com.cloudinary.utils.ObjectUtils;
+import com.secondhand.ecommerce.config.CloudinaryConfig;
+import com.secondhand.ecommerce.exceptions.AppBaseException;
+import com.secondhand.ecommerce.exceptions.DataViolationException;
 import com.secondhand.ecommerce.exceptions.DuplicateDataExceptions;
 import com.secondhand.ecommerce.models.dto.users.AppUserBuilder;
 import com.secondhand.ecommerce.models.dto.users.ProfileUser;
+import com.secondhand.ecommerce.models.entity.Address;
 import com.secondhand.ecommerce.models.entity.AppRoles;
 import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.repository.AppRolesRepository;
 import com.secondhand.ecommerce.repository.AppUserRepository;
+import com.secondhand.ecommerce.security.SecurityUtils;
 import com.secondhand.ecommerce.security.authentication.login.LoginRequest;
 import com.secondhand.ecommerce.service.AppUserService;
 import lombok.RequiredArgsConstructor;
@@ -15,14 +21,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.*;
 
-import static com.secondhand.ecommerce.utils.SecondHandConst.EMAIL_ALREADY_TAKEN;
-import static com.secondhand.ecommerce.utils.SecondHandConst.EMAIL_NOT_FOUND_MSG;
+import static com.secondhand.ecommerce.utils.SecondHandConst.*;
 
 @RequiredArgsConstructor
 @Service
@@ -33,6 +37,8 @@ public class AppUserServiceImpl implements AppUserService {
     private final AppUserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final CloudinaryConfig cloudinary;
 
     @Override
     public LoginRequest registerNewUser(AppUsers appUsers) {
@@ -59,30 +65,54 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public Optional<AppUsers> findUserByEmail(String email) {
 
-        getLogger().error("Username {} is not found. Please create one", email);
         return Optional.ofNullable(userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(
                         String.format(EMAIL_NOT_FOUND_MSG, email.toUpperCase()))
                 ));
-
     }
 
     @Override
-    public ProfileUser updateProfileUser(AppUsers appUsers) {
+    public AppUsers checkProfileUser(Long userId) {
+        return userRepository.checkProfileUser(userId);
+    }
 
+    @Override
+    public ProfileUser updateProfileUser(ProfileUser profileUser, MultipartFile image) {
 
-        ProfileUser profileUser = new ProfileUser();
-        userRepository.findByUserId(profileUser.getUserId())
+        AppUsers appUsers = userRepository.findByUserId(profileUser.getUserId())
                 .orElseThrow(() -> new UsernameNotFoundException(
-                        String.format("User not found with ID: %s", profileUser.getUserId()))
+                        String.format(USER_NOT_FOUND_MSG, profileUser.getUserId()))
                 );
 
-        appUsers.setFullName(profileUser.getName());
-        appUsers.getAddress().setCity(profileUser.getCityName());
-        appUsers.getAddress().setStreet(profileUser.getAddress());
-        appUsers.setPhoneNumber(profileUser.getPhoneNumber());
+        AppUserBuilder builder = SecurityUtils.getAuthenticatedUserDetails();
 
-        userRepository.save(appUsers);
+        boolean equalsPrincipal = Objects.requireNonNull(builder)
+                .getUserId()
+                .equals(profileUser.getUserId());
+
+        if (appUsers != null && equalsPrincipal) {
+            Address address = new Address();
+            appUsers.setFullName(profileUser.getName());
+            address.setCity(profileUser.getCity());
+            address.setStreet(profileUser.getStreet());
+            appUsers.setAddress(address);
+            appUsers.setPhoneNumber(profileUser.getPhoneNumber());
+
+            try {
+                Map uploadResult = cloudinary.upload(image.getBytes(),
+                        ObjectUtils.asMap("resourceType", "auto"));
+                profileUser.setImageProfile(uploadResult.get("url").toString());
+                appUsers.setImageUrl(uploadResult.get("url").toString());
+            } catch (IOException e) {
+                throw new AppBaseException("Upload failed", e);
+            }
+
+            userRepository.save(appUsers);
+        } else {
+            throw new DataViolationException("You're not required to access this profile");
+        }
+
+        getLogger().info("User with email {} is successfully updated", builder.getEmail());
         return profileUser;
     }
 
@@ -93,14 +123,13 @@ public class AppUserServiceImpl implements AppUserService {
             throw new UsernameNotFoundException("Email must be provided");
         }
 
-        getLogger().info("No user present with email: {} ", username);
         AppUsers appUser = findUserByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException(
                         String.format(
                                 EMAIL_NOT_FOUND_MSG,
                                 username))
                 );
-
+        getLogger().info("User present with email: {} ", username);
         return AppUserBuilder.buildUserDetails(appUser);
 
     }

@@ -15,11 +15,12 @@ public class RegisterService {
 
     public void registeredUser(RegisterRequest request) {
 
-        userService.registerNewUser(
-                new AppUsers(
-                        request.getFullName(),
-                        request.getEmail(),
-                        request.getPassword()
-                ));
+        AppUsers user = new AppUsers(
+                request.getFullName(),
+                request.getEmail(),
+                request.getPassword()
+        );
+
+        userService.registerNewUser(user);
     }
 }

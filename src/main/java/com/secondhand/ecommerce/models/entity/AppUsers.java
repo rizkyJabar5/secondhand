@@ -1,5 +1,6 @@
 package com.secondhand.ecommerce.models.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,8 +23,7 @@ public class AppUsers implements UserDetails {
     @Id
     @SequenceGenerator(name = "user_sequence",
             sequenceName = "user_sequence",
-            initialValue = 3,
-            allocationSize = 100)
+            allocationSize = 7)
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "user_sequence")
     @Column(name = "user_id")
@@ -36,21 +36,26 @@ public class AppUsers implements UserDetails {
     private String email;
 
     @Column(name = "password")
+    @JsonIgnore
     private String password;
 
     @Embedded
     private Address address;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "join_date")
-    private Date joinDate;
+    private Date joinDate = new Date(System.currentTimeMillis());
 
     @Column(name = "phone_number")
-    private Integer phoneNumber;
+    private String phoneNumber;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     )
     private Collection<AppRoles> roles;
 
@@ -95,5 +100,6 @@ public class AppUsers implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 
 }

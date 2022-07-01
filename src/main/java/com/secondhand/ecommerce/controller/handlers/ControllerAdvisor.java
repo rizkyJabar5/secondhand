@@ -1,8 +1,11 @@
 package com.secondhand.ecommerce.controller.handlers;
 
+import com.secondhand.ecommerce.exceptions.DataViolationException;
 import com.secondhand.ecommerce.exceptions.DuplicateDataExceptions;
+import com.secondhand.ecommerce.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -23,8 +26,37 @@ public class ControllerAdvisor extends ResponseStatusExceptionHandler {
         response.put("timestamp", LocalDateTime.now());
         response.put("message", duplicateDataExceptions.getMessage());
 
-
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<Object> usernameNotFoundHandler(UsernameNotFoundException usernameNotFoundException) {
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("message", usernameNotFoundException.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Object> notFoundHandler(NotFoundException notFoundException) {
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("message", notFoundException.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DataViolationException.class)
+    public ResponseEntity<Object> nonAccessibleHandler(DataViolationException notFoundException) {
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("message", notFoundException.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }
