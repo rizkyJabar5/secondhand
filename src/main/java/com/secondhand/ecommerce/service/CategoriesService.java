@@ -9,5 +9,5 @@ public interface CategoriesService extends HasLogger {
 
     Categories loadCategoryById(Long categoryId);
 
-    void deleteCategoryById(Long categoryId);
+    Categories deleteCategoryById(Long categoryId);
 }

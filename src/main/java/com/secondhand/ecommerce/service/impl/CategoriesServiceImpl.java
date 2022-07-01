@@ -1,8 +1,9 @@
-package com.secondhand.ecommerce.service;
+package com.secondhand.ecommerce.service.impl;
 
 import com.secondhand.ecommerce.exceptions.NotFoundException;
 import com.secondhand.ecommerce.models.entity.Categories;
 import com.secondhand.ecommerce.repository.CategoriesRepository;
+import com.secondhand.ecommerce.service.CategoriesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,8 @@ public class CategoriesServiceImpl implements CategoriesService {
     }
 
     @Override
-    public void deleteCategoryById(Long categoryId) {
+    public Categories deleteCategoryById(Long categoryId) {
         categoryRepository.deleteById(categoryId);
+        return null;
     }
 }

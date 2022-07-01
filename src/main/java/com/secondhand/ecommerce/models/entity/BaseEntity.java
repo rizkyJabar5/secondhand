@@ -16,12 +16,11 @@ import java.util.Objects;
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
     @Id
-    @SequenceGenerator(name = "apps_sequence",
-            sequenceName = "apps_sequence",
-            initialValue = 2,
-            allocationSize = 100)
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "apps_sequence")
+            generator = "product_seq")
+    @SequenceGenerator(name = "product_seq",
+            sequenceName = "seq_product_id",
+            allocationSize = 3)
     private Long id;
 
     @CreatedBy

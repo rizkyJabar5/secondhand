@@ -15,7 +15,11 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Entity
 @Table(name = "product_image")
-public class ProductImage extends BaseEntity {
+public class ProductImage {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "image_name")
     private String imageName;

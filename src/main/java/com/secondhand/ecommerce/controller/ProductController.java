@@ -1,7 +1,9 @@
 package com.secondhand.ecommerce.controller;
 
 import com.secondhand.ecommerce.models.dto.products.ProductDto;
+import com.secondhand.ecommerce.models.entity.Categories;
 import com.secondhand.ecommerce.models.entity.Product;
+import com.secondhand.ecommerce.service.CategoriesService;
 import com.secondhand.ecommerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,7 +22,7 @@ import java.util.Optional;
 public class ProductController {
 
     private final ProductService productService;
-
+    private final CategoriesService categoryService;
 
     @PostMapping(value = "/add",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -111,5 +113,31 @@ public class ProductController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
+
+    @PostMapping("/category/add")
+    public ResponseEntity<Map<String, Object>> addCategories(@RequestBody Categories category) {
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("data", categoryService.addNewCategory(category));
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+
+    }
+
+    @DeleteMapping("/category/remove/{categoryId}")
+    public ResponseEntity<Map<String, Object>> deleteCategories(@PathVariable Long categoryId) {
+        Categories category = categoryService.deleteCategoryById(categoryId);
+
+        Map<String, Object> response = new HashMap<>();
+        if (category != null) {
+            response.put("success", true);
+            response.put("deletedData", category);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
+    }
+
 
 }

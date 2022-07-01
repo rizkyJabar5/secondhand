@@ -73,13 +73,11 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         createNewProduct.setCategory(categories);
         createNewProduct.setCreatedBy(appUsers.getEmail());
 
-
         List<MultipartFile> imageFiles = new ArrayList<>();
         List<String> images = new ArrayList<>();
         if (equalsPrincipal) {
             if (image != null) {
-                imageFiles.stream()
-                        .limit(4)
+                imageFiles
                         .forEach(file -> {
                             try {
                                 Map uploadResult = cloudinaryConfig.upload(
@@ -88,11 +86,10 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
                                 images.add(uploadResult.get("url").toString());
                                 imageProduct.setImageName(uploadResult.get("filename").toString());
                                 imageProduct.setUrlFile(images.toString());
-                                imageProduct.setCreatedBy(appUsers.getEmail());
-                                imageRepository.save(imageProduct);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
+                            imageRepository.save(imageProduct);
                         });
 
 //                for (MultipartFile file : image) {
@@ -121,7 +118,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
                 createNewProduct.getCategory().getName(),
                 createNewProduct.getCreatedBy(),
                 createNewProduct.getCreatedDate().toString(),
-                Arrays.toString(image)
+                Arrays.toString(new List[]{imageFiles})
         );
 
         return new BaseResponse(HttpStatus.OK,
