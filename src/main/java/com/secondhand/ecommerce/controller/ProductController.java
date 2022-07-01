@@ -123,7 +123,7 @@ public class ProductController {
 
     }
 
-    @DeleteMapping("/category/remove/{categoryId}")
+    @DeleteMapping("/category/delete/{categoryId}")
     public ResponseEntity<Map<String, Object>> deleteCategories(@PathVariable Long categoryId) {
         Categories category = categoryService.deleteCategoryById(categoryId);
 
