@@ -99,7 +99,11 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
 
                         createNewProduct.setProductImage(collect);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        return new BaseResponse(HttpStatus.CONFLICT,
+                                "erorr karena image null",
+                                null,
+                                OperationStatus.FAILURE
+                        );
                     }
                 }
 
