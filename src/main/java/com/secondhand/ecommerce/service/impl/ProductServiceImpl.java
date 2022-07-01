@@ -28,10 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.secondhand.ecommerce.utils.SecondHandConst.EMAIL_NOT_FOUND_MSG;
@@ -62,9 +59,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         AppUserBuilder builder = SecurityUtils.getAuthenticatedUserDetails();
         boolean authenticated = SecurityUtils.isAuthenticated();
 
-        boolean ssss = SecurityUtils.isAuthenticated();
-
-        AppUsers appUsers = userService.findUserByEmail(builder.getEmail())
+        AppUsers appUsers = userService.findUserByEmail(Objects.requireNonNull(builder).getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException(
                         String.format(EMAIL_NOT_FOUND_MSG, builder.getEmail())));
 
@@ -92,14 +87,13 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
                         List<ProductImage> collect =
                                 images.stream()
                                         .map(imageFile -> new ProductImage(
-                                                uploadResult.get("filename").toString(),
                                                 uploadResult.get("url").toString()
                                         )).collect(Collectors.toList());
                         images.add(imageProduct);
-
                         createNewProduct.setProductImage(collect);
                     } catch (IOException e) {
                         e.printStackTrace();
+
                     }
                 }
 

@@ -1,6 +1,7 @@
 package com.secondhand.ecommerce.controller;
 
 
+import com.secondhand.ecommerce.models.entity.Categories;
 import com.secondhand.ecommerce.models.entity.Product;
 import com.secondhand.ecommerce.repository.ProductRepository;
 import com.secondhand.ecommerce.service.CategoriesService;
@@ -38,7 +39,7 @@ public class HomeController {
     @GetMapping
     public Page<Product> home(
             @RequestParam(defaultValue = "", required = false) String productName,
-            @RequestParam(defaultValue = "", required = false) String category,
+            @RequestParam(defaultValue = "", required = false) Categories category,
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam(defaultValue = "name, asc", required = false) String[] sort
@@ -53,7 +54,7 @@ public class HomeController {
             orders.add(new Order(Sort.Direction.fromString(sort[1]), sort[0]));
         }
 //        List<Categories> allCategories = categoriesService.findAllCategories();
-        return productRepository.findByNameIgnoreCaseAndCategoryIgnoreCase(productName, category, PageRequest.of(page, size, Sort.by(orders)));
+        return productRepository.findByProductNameIgnoreCaseAndCategoryIgnoreCase(productName, category, PageRequest.of(page, size, Sort.by(orders)));
     }
 
 }

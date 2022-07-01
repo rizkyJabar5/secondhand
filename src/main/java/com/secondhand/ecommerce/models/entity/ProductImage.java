@@ -26,8 +26,7 @@ public class ProductImage {
     @Column(name = "url_file")
     private String urlFile;
 
-    public ProductImage(String imageName, String urlFile) {
-        this.imageName = imageName;
+    public ProductImage(String urlFile) {
         this.urlFile = urlFile;
     }
 
