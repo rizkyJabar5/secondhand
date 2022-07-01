@@ -3,28 +3,25 @@ package com.secondhand.ecommerce.controller;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.secondhand.ecommerce.models.dto.products.ProductResponse;
-import com.secondhand.ecommerce.models.dto.products.UploadResponse;
 import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.models.entity.Product;
 import com.secondhand.ecommerce.models.entity.ProductImage;
+import com.secondhand.ecommerce.models.dto.products.UploadResponse;
 import com.secondhand.ecommerce.repository.ImagesRepository;
 import com.secondhand.ecommerce.repository.ProductRepository;
 import com.secondhand.ecommerce.service.impl.ProductServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.io.InputStream;
+import java.util.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -36,16 +33,16 @@ public class ProductController {
     final ProductRepository productRepository;
 
     private static final Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-            "cloud_name", "secondhandk2",
-            "api_key", "612217844351516",
-            "api_secret", "Efcd1QUtlgJO7FAdO4M5Vw7hag8"));
+            "cloud_name", "secondhand020322",
+            "api_key", "554929973458714",
+            "api_secret", "SROOOVNLkf1sL8z9N8aH3qDGme4"));
 
     @PostMapping("/add/{userId}")
     public ResponseEntity<Map<String, Object>> addProduct(
             @PathVariable Long userId,
             @RequestParam("files") MultipartFile[] files,
             @RequestParam String name,
-            @RequestParam BigInteger price,
+            @RequestParam Long price,
             @RequestParam String description,
             @RequestParam String category,
             @RequestParam Long productId) throws IOException {
@@ -64,7 +61,7 @@ public class ProductController {
             responses.setUrl(url);
 
             Product product = new Product();
-            product.setId(productId);
+            product.setProductId(productId);
             product.setName(name);
             product.setPrice(price);
             product.setDescription(description);
@@ -72,11 +69,10 @@ public class ProductController {
 
             AppUsers users = new AppUsers();
             users.setUserId(userId);
-            product.setAppUsers(users);
+            product.setUserId(users);
 
             ProductImage productImage = new ProductImage();
-            productImage.setImageName(files[i].getOriginalFilename());
-            productImage.setUrlFile();
+            productImage.setUrl(url);
             productService.addProduct(product);
             productService.saveProductImage(productImage);
         }
