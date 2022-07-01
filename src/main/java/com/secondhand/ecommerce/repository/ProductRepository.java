@@ -1,5 +1,6 @@
 package com.secondhand.ecommerce.repository;
 
+import com.secondhand.ecommerce.models.entity.Categories;
 import com.secondhand.ecommerce.models.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,5 +13,5 @@ import javax.transaction.Transactional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    Page<Product> findByNameIgnoreCaseAndCategoryIgnoreCase(String name, String category, Pageable pageable);
+    Page<Product> findByProductNameIgnoreCaseAndCategoryIgnoreCase(String productName, Categories category, Pageable pageable);
 }
