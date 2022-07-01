@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigInteger;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -15,5 +16,5 @@ public class ProductRespone {
     private String categoryName;
     private String createdBy;
     private String createdDate;
-    private String urlImageList;
+    private List<String> urlImageList;
 }

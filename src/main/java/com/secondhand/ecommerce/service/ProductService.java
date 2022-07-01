@@ -2,7 +2,6 @@ package com.secondhand.ecommerce.service;
 
 import com.secondhand.ecommerce.models.dto.products.ProductDto;
 import com.secondhand.ecommerce.models.entity.Product;
-import com.secondhand.ecommerce.models.entity.ProductImage;
 import com.secondhand.ecommerce.utils.BaseResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +18,4 @@ public interface ProductService {
     Product updateProduct(Product product);
 
     Optional<Product> deleteProductById(Long id);
-
-    ProductImage saveProductImage(ProductImage productImage);
 }

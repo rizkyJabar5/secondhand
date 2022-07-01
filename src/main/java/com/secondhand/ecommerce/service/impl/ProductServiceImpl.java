@@ -28,7 +28,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.secondhand.ecommerce.utils.SecondHandConst.EMAIL_NOT_FOUND_MSG;
 
@@ -56,10 +60,9 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
     public BaseResponse addProduct(ProductDto request, MultipartFile[] image) {
 
         AppUserBuilder builder = SecurityUtils.getAuthenticatedUserDetails();
+        boolean authenticated = SecurityUtils.isAuthenticated();
 
-        boolean equalsPrincipal = Objects.requireNonNull(builder)
-                .getUserId()
-                .equals(request.getUserId());
+        boolean ssss = SecurityUtils.isAuthenticated();
 
         AppUsers appUsers = userService.findUserByEmail(builder.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException(
@@ -68,29 +71,37 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         Product createNewProduct = new Product();
         Categories categories = categoryService.loadCategoryById(request.getCategoryId());
         ProductImage imageProduct = new ProductImage();
-        createNewProduct.setAppUsers(appUsers);
-        createNewProduct.setDescription(request.getDescription());
-        createNewProduct.setCategory(categories);
-        createNewProduct.setCreatedBy(appUsers.getEmail());
+        List<ProductImage> images = new ArrayList<>();
 
-        List<MultipartFile> imageFiles = new ArrayList<>();
-        List<String> images = new ArrayList<>();
-        if (equalsPrincipal) {
+        if (authenticated) {
+
+            createNewProduct.setAppUsers(appUsers);
+            createNewProduct.setProductName(request.getProductName());
+            createNewProduct.setDescription(request.getDescription());
+            createNewProduct.setPrice(request.getPrice());
+            createNewProduct.setCategory(categories);
+            createNewProduct.setCreatedBy(appUsers.getEmail());
+
             if (image != null) {
-                imageFiles
-                        .forEach(file -> {
-                            try {
-                                Map uploadResult = cloudinaryConfig.upload(
-                                        file.getBytes(),
-                                        ObjectUtils.asMap("resourcetype", "filename"));
-                                images.add(uploadResult.get("url").toString());
-                                imageProduct.setImageName(uploadResult.get("filename").toString());
-                                imageProduct.setUrlFile(images.toString());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            imageRepository.save(imageProduct);
-                        });
+                for (MultipartFile file : image) {
+                    try {
+                        Map uploadResult = cloudinaryConfig.upload(
+                                file.getBytes(),
+                                ObjectUtils.asMap("resourcetype", "filename"));
+
+                        List<ProductImage> collect =
+                                images.stream()
+                                        .map(imageFile -> new ProductImage(
+                                                uploadResult.get("filename").toString(),
+                                                uploadResult.get("url").toString()
+                                        )).collect(Collectors.toList());
+                        images.add(imageProduct);
+
+                        createNewProduct.setProductImage(collect);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
 
 //                for (MultipartFile file : image) {
 //                    try {
@@ -106,9 +117,14 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
 //                }
 //                imageRepository.save(imageProduct);
             }
-            createNewProduct.setProductImage(imageProduct);
+
+            imageRepository.save(imageProduct);
             productRepository.save(createNewProduct);
         }
+
+        List<String> collect = images.stream()
+                .map(ProductImage::getUrlFile)
+                .collect(Collectors.toList());
 
         ProductRespone response = new ProductRespone(
                 createNewProduct.getAppUsers().getEmail(),
@@ -118,7 +134,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
                 createNewProduct.getCategory().getName(),
                 createNewProduct.getCreatedBy(),
                 createNewProduct.getCreatedDate().toString(),
-                Arrays.toString(new List[]{imageFiles})
+                collect
         );
 
         return new BaseResponse(HttpStatus.OK,
@@ -140,20 +156,8 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         return deletedProduct;
     }
 
-    @Override
-    public ProductImage saveProductImage(ProductImage productImage) {
-        imageRepository.save(productImage);
-        return productImage;
-    }
-
     public Page<Product> getSortedPaginatedProducts(int page, int limit, Sort sort) {
         return super.getSortedPaginatedProducts(productRepository, page, limit, sort);
     }
 
-    @Override
-    public Optional<Product> deleteProductByProductId(long productId) {
-        Optional<Product> deletedProduct = repository.findById(productId);
-        repository.deleteById(productId);
-        return deletedProduct;
-    }
 }

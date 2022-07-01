@@ -36,7 +36,6 @@ public class AppUserController {
         response.put("success", true);
         response.put("data", userService.updateProfileUser(profileUser, image));
 
-
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 

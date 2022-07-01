@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 
 
@@ -19,7 +18,7 @@ public class ProductImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long imageId;
 
     @Column(name = "image_name")
     private String imageName;
@@ -27,17 +26,17 @@ public class ProductImage {
     @Column(name = "url_file")
     private String urlFile;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "productImage")
-    private List<Product> products;
-
-    private String[] url;
+    public ProductImage(String imageName, String urlFile) {
+        this.imageName = imageName;
+        this.urlFile = urlFile;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         ProductImage that = (ProductImage) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
+        return getImageId() != null && Objects.equals(getImageId(), that.getImageId());
     }
 
     @Override

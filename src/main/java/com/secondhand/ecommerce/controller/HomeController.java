@@ -3,7 +3,9 @@ package com.secondhand.ecommerce.controller;
 
 import com.secondhand.ecommerce.models.entity.Product;
 import com.secondhand.ecommerce.repository.ProductRepository;
+import com.secondhand.ecommerce.service.CategoriesService;
 import com.secondhand.ecommerce.service.ProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +22,7 @@ import java.util.List;
 import static com.secondhand.ecommerce.utils.SecondHandConst.HOME_PAGE;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(HOME_PAGE)
 public class HomeController {
 
@@ -29,10 +32,12 @@ public class HomeController {
     @Autowired
     private ProductRepository productRepository;
 
+    private final CategoriesService categoriesService;
+
     //Sort, Seacrhing, Filter with Name
     @GetMapping
     public Page<Product> home(
-            @RequestParam(defaultValue = "", required = false) String name,
+            @RequestParam(defaultValue = "", required = false) String productName,
             @RequestParam(defaultValue = "", required = false) String category,
             @RequestParam int page,
             @RequestParam int size,
@@ -47,7 +52,8 @@ public class HomeController {
         } else {
             orders.add(new Order(Sort.Direction.fromString(sort[1]), sort[0]));
         }
-        return productRepository.findByNameIgnoreCaseAndCategoryIgnoreCase(name, category, PageRequest.of(page, size, Sort.by(orders)));
+//        List<Categories> allCategories = categoriesService.findAllCategories();
+        return productRepository.findByNameIgnoreCaseAndCategoryIgnoreCase(productName, category, PageRequest.of(page, size, Sort.by(orders)));
     }
 
 }

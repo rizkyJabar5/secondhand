@@ -7,6 +7,8 @@ import com.secondhand.ecommerce.service.CategoriesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class CategoriesServiceImpl implements CategoriesService {
@@ -22,6 +24,11 @@ public class CategoriesServiceImpl implements CategoriesService {
     public Categories loadCategoryById(Long categoryId) {
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new NotFoundException("No category with id " + categoryId));
+    }
+
+    @Override
+    public List<Categories> findAllCategories() {
+        return categoryRepository.findAll();
     }
 
     @Override
