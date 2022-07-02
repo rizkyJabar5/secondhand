@@ -3,6 +3,7 @@ package com.secondhand.ecommerce.service;
 import com.secondhand.ecommerce.models.dto.users.ProfileUser;
 import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.security.authentication.login.LoginRequest;
+import com.secondhand.ecommerce.utils.BaseResponse;
 import com.secondhand.ecommerce.utils.HasLogger;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +18,6 @@ public interface AppUserService extends UserDetailsService, HasLogger {
 
     AppUsers checkProfileUser(Long UserId);
 
-    ProfileUser updateProfileUser(ProfileUser profileUser, MultipartFile image);
+    BaseResponse updateProfileUser(ProfileUser profileUser, MultipartFile image);
 
 }

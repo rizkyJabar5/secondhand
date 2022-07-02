@@ -22,9 +22,5 @@ public interface AppUserRepository extends JpaRepository<AppUsers, Long> {
                     "and a.address.city is null " +
                     "and a.address.street is null " +
                     "and a.phoneNumber is null")
-    AppUsers checkProfileUser(Long userId);
-
-    Boolean existsByEmail(String email);
-
-
+    Optional<AppUsers> checkProfileUser(Long userId);
 }

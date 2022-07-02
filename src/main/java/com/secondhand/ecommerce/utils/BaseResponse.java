@@ -7,15 +7,36 @@ import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Component
 public class BaseResponse {
 
+    private Date timestamp = new Date(System.currentTimeMillis());
     private HttpStatus httpStatus;
     private String message;
     private Object data;
     private OperationStatus status;
 
+    public BaseResponse(Date timestamp, String message, OperationStatus status) {
+        this.timestamp = timestamp;
+        this.message = message;
+        this.status = status;
+    }
+
+    public BaseResponse(HttpStatus httpStatus, String message, Object data) {
+        this.httpStatus = httpStatus;
+        this.message = message;
+        this.data = data;
+    }
+
+    public BaseResponse(HttpStatus httpStatus, String message, Object data, OperationStatus status) {
+        this.httpStatus = httpStatus;
+        this.message = message;
+        this.data = data;
+        this.status = status;
+    }
 }

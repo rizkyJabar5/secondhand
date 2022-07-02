@@ -7,6 +7,7 @@ import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -25,9 +26,10 @@ public class Product extends BaseEntity {
     @Column(name = "price")
     private BigInteger price;
 
-    @ManyToOne
-    @JoinColumn(name = "product_image")
-    private ProductImage productImage;
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "product_image",
+            joinColumns = @JoinColumn(name = "produc_image_id"))
+    private List<String> productImages;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

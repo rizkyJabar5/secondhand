@@ -13,14 +13,9 @@ import java.math.BigInteger;
 @Builder
 public class ProductDto {
 
-    private Long userId;
-    private String username;
-    private Long productId;
     private String productName;
     private String description;
     private BigInteger price;
-    private Long imageId;
-    private String urlImage;
     private Long categoryId;
 
 }

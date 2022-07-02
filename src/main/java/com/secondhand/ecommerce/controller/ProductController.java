@@ -1,10 +1,10 @@
 package com.secondhand.ecommerce.controller;
 
 import com.secondhand.ecommerce.models.dto.products.ProductDto;
-import com.secondhand.ecommerce.models.entity.Categories;
 import com.secondhand.ecommerce.models.entity.Product;
-import com.secondhand.ecommerce.service.CategoriesService;
+import com.secondhand.ecommerce.models.enums.OperationStatus;
 import com.secondhand.ecommerce.service.ProductService;
+import com.secondhand.ecommerce.utils.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,31 +22,31 @@ import java.util.Optional;
 public class ProductController {
 
     private final ProductService productService;
-    private final CategoriesService categoryService;
 
     @PostMapping(value = "/add",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, Object>> addProduct(
+    public ResponseEntity<BaseResponse> addProduct(
             @ModelAttribute ProductDto request,
             @RequestParam MultipartFile[] images) {
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("data", productService.addProduct(request, images));
+        if (images.length >= 4) {
+            return new ResponseEntity<>(new BaseResponse(HttpStatus.BAD_REQUEST,
+                    "Maximum upload image not more than 4",
+                    null,
+                    OperationStatus.FAILURE), HttpStatus.BAD_REQUEST);
+        }
 
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(productService.addProduct(request, images), HttpStatus.CREATED);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Map<String, Object>> updateProduct(@RequestBody Product product) {
+    public BaseResponse updateProduct(@RequestBody Product product) {
         product = productService.updateProduct(product);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("data", product);
 
-        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+// TODO add a logic for update Product
+        return null;
     }
 
 
@@ -113,31 +113,5 @@ public class ProductController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
-
-    @PostMapping("/category/add")
-    public ResponseEntity<Map<String, Object>> addCategories(@RequestBody Categories category) {
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("data", categoryService.addNewCategory(category));
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-
-    }
-
-    @DeleteMapping("/category/remove/{categoryId}")
-    public ResponseEntity<Map<String, Object>> deleteCategories(@PathVariable Long categoryId) {
-        Categories category = categoryService.deleteCategoryById(categoryId);
-
-        Map<String, Object> response = new HashMap<>();
-        if (category != null) {
-            response.put("success", true);
-            response.put("deletedData", category);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-
-    }
-
 
 }
