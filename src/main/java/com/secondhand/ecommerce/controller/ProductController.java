@@ -30,7 +30,7 @@ public class ProductController {
             @ModelAttribute ProductDto request,
             @RequestParam MultipartFile[] images) {
 
-        if (images.length >= 4) {
+        if (images.length >= 5) {
             return new ResponseEntity<>(new BaseResponse(HttpStatus.BAD_REQUEST,
                     "Maximum upload image not more than 4",
                     null,
