@@ -26,9 +26,8 @@ public class ProductController {
     @PostMapping(value = "/add",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> addProduct(
-            @ModelAttribute ProductDto request,
-            @RequestParam MultipartFile[] images) {
+    public ResponseEntity<BaseResponse> addProduct(@ModelAttribute ProductDto request,
+                                                   @RequestParam MultipartFile[] images) {
 
         if (images.length >= 5) {
             return new ResponseEntity<>(new BaseResponse(HttpStatus.BAD_REQUEST,
@@ -40,12 +39,20 @@ public class ProductController {
         return new ResponseEntity<>(productService.addProduct(request, images), HttpStatus.CREATED);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<BaseResponse> updateProduct(@RequestBody ProductDto product) {
+    @PutMapping(value = "/update",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> updateProduct(@ModelAttribute ProductDto product,
+                                                      @RequestParam MultipartFile[] images) {
 
+        if (images.length >= 5) {
+            return new ResponseEntity<>(new BaseResponse(HttpStatus.BAD_REQUEST,
+                    "Maximum upload image not more than 4",
+                    null,
+                    OperationStatus.FAILURE), HttpStatus.BAD_REQUEST);
+        }
 
-// TODO add a logic for update Product
-        return null;
+        return new ResponseEntity<>(productService.updateProduct(product, images), HttpStatus.OK);
     }
 
     //    @Transactional

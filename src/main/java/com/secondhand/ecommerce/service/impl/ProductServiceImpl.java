@@ -2,6 +2,7 @@ package com.secondhand.ecommerce.service.impl;
 
 import com.cloudinary.utils.ObjectUtils;
 import com.secondhand.ecommerce.config.CloudinaryConfig;
+import com.secondhand.ecommerce.exceptions.AppBaseException;
 import com.secondhand.ecommerce.exceptions.IllegalException;
 import com.secondhand.ecommerce.models.dto.products.ProductDto;
 import com.secondhand.ecommerce.models.dto.response.ProductRespone;
@@ -72,19 +73,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
             createNewProduct.setCategory(categories);
             createNewProduct.setCreatedBy(appUsers.getEmail());
 
-            Arrays.stream(image)
-                    .limit(4)
-                    .filter(file -> {
-                        if (file.isEmpty()) {
-                            throw new IllegalException("The file is required to create a new");
-                        }
-                        return true;
-                    })
-                    .forEach(file -> {
-                        Map uploadResult = cloudinaryConfig.upload(file,
-                                ObjectUtils.asMap("resourcetype", "auto"));
-                        images.add(uploadResult.get("url").toString());
-                    });
+            uploadProductImage(image, images);
 
             createNewProduct.setProductImages(images);
             productRepository.save(createNewProduct);
@@ -98,8 +87,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
                 createNewProduct.getCategory().getName().name(),
                 createNewProduct.getCreatedBy(),
                 createNewProduct.getCreatedDate().toString(),
-                images
-        );
+                images);
 
         return new BaseResponse(HttpStatus.CREATED,
                 "Success to create new product",
@@ -108,9 +96,41 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
     }
 
     @Override
-    public Product updateProduct(Product product) {
-        productRepository.save(product);
-        return product;
+    public BaseResponse updateProduct(ProductDto request, MultipartFile[] image) {
+
+        boolean authenticated = SecurityUtils.isAuthenticated();
+
+        Product updatedProduct = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new AppBaseException("Product not found"));
+
+        Categories categories = categoryService.loadCategoryById(request.getCategoryId());
+
+        List<String> images = new ArrayList<>();
+
+        if (authenticated) {
+            updatedProduct.setProductName(request.getProductName());
+            updatedProduct.setDescription(request.getDescription());
+            updatedProduct.setPrice(request.getPrice());
+            updatedProduct.setCategory(categories);
+
+            uploadProductImage(image, images);
+            updatedProduct.setProductImages(images);
+
+            productRepository.save(updatedProduct);
+        }
+        ProductRespone response = new ProductRespone(
+                updatedProduct.getProductName(),
+                updatedProduct.getDescription(),
+                updatedProduct.getPrice(),
+                updatedProduct.getCategory().getName().name(),
+                updatedProduct.getCreatedBy(),
+                updatedProduct.getCreatedDate().toString(),
+                images);
+
+        return new BaseResponse(HttpStatus.OK,
+                "Success to updated product",
+                response,
+                OperationStatus.SUCCESS);
     }
 
     @Override
@@ -127,5 +147,21 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
 
     public Page<Product> getSortedPaginatedProducts(int page, int limit, Sort sort) {
         return super.getSortedPaginatedProducts(productRepository, page, limit, sort);
+    }
+
+    private void uploadProductImage(MultipartFile[] image, List<String> images) {
+        Arrays.stream(image)
+                .limit(4)
+                .filter(file -> {
+                    if (file.isEmpty()) {
+                        throw new IllegalException("The file is required to create a new");
+                    }
+                    return true;
+                })
+                .forEach(file -> {
+                    Map uploadResult = cloudinaryConfig.upload(file,
+                            ObjectUtils.asMap("resourcetype", "auto"));
+                    images.add(uploadResult.get("url").toString());
+                });
     }
 }

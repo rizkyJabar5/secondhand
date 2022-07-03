@@ -19,7 +19,7 @@ public interface ProductService {
 
     BaseResponse addProduct(ProductDto product, MultipartFile[] image);
 
-    Product updateProduct(Product product);
+    BaseResponse updateProduct(ProductDto product, MultipartFile[] image);
 
     Optional<Product> deleteProductById(Long id);
 
