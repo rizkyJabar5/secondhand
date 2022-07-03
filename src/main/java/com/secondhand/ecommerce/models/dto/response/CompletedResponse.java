@@ -1,16 +1,13 @@
 package com.secondhand.ecommerce.models.dto.response;
 
-import com.secondhand.ecommerce.models.enums.OperationStatus;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NonNull;
-
-import java.io.Serializable;
 
 @Data
-public class CompletedResponse implements Serializable {
+@AllArgsConstructor
+public class CompletedResponse {
 
-    private String completed = " User is completed to update their profile";
+    private String message;
 
-    @NonNull
-    private OperationStatus status;
+    private String status;
 }

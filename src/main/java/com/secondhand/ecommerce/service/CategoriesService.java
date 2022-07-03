@@ -7,11 +7,8 @@ import java.util.List;
 
 public interface CategoriesService extends HasLogger {
 
-    Categories addNewCategory(Categories category);
-
     Categories loadCategoryById(Long categoryId);
 
     List<Categories> findAllCategories();
 
-    Categories deleteCategoryById(Long categoryId);
 }

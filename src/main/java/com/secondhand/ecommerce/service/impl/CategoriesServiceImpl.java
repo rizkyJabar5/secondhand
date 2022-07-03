@@ -1,10 +1,12 @@
 package com.secondhand.ecommerce.service.impl;
 
-import com.secondhand.ecommerce.exceptions.NotFoundException;
+import com.secondhand.ecommerce.exceptions.AppBaseException;
 import com.secondhand.ecommerce.models.entity.Categories;
+import com.secondhand.ecommerce.models.enums.CategoryList;
 import com.secondhand.ecommerce.repository.CategoriesRepository;
 import com.secondhand.ecommerce.service.CategoriesService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,15 +17,29 @@ public class CategoriesServiceImpl implements CategoriesService {
 
     private final CategoriesRepository categoryRepository;
 
-    @Override
-    public Categories addNewCategory(Categories category) {
-        return categoryRepository.save(category);
+    @Bean
+    public void addNewCategory() {
+
+        for (CategoryList categoryList : CategoryList.values()) {
+            try {
+                Categories category = categoryRepository.findByName(categoryList)
+                        .orElseThrow(() -> new AppBaseException(
+                                String.format("Category: %s not found", categoryList)));
+                getLogger().info("{} is found", category);
+            } catch (RuntimeException e) {
+                getLogger().info(String.format("Category: %s not found." + " It will be create ...", categoryList.name()));
+
+                Categories category = new Categories();
+                category.setName(categoryList);
+                categoryRepository.save(category);
+            }
+        }
     }
 
     @Override
     public Categories loadCategoryById(Long categoryId) {
         return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NotFoundException("No category with id " + categoryId));
+                .orElseThrow(() -> new AppBaseException("No category with id " + categoryId));
     }
 
     @Override
@@ -31,9 +47,4 @@ public class CategoriesServiceImpl implements CategoriesService {
         return categoryRepository.findAll();
     }
 
-    @Override
-    public Categories deleteCategoryById(Long categoryId) {
-        categoryRepository.deleteById(categoryId);
-        return null;
-    }
 }

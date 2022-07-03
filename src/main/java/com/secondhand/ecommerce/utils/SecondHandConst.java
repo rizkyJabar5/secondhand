@@ -20,7 +20,7 @@ public class SecondHandConst {
 
     public static final String SWAGGER_API_DOCS = "/v3/api-docs/**";
     public static final String SWAGGER_API = "/swagger-ui/**";
-    public static final String HOME_PAGE = "/home";
+    public static final String HOME_PAGE = "/api/v1/home";
 
 
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =

@@ -2,15 +2,15 @@ package com.secondhand.ecommerce.service.impl;
 
 import com.cloudinary.utils.ObjectUtils;
 import com.secondhand.ecommerce.config.CloudinaryConfig;
+import com.secondhand.ecommerce.exceptions.AppBaseException;
+import com.secondhand.ecommerce.exceptions.IllegalException;
 import com.secondhand.ecommerce.models.dto.products.ProductDto;
 import com.secondhand.ecommerce.models.dto.response.ProductRespone;
 import com.secondhand.ecommerce.models.dto.users.AppUserBuilder;
 import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.models.entity.Categories;
 import com.secondhand.ecommerce.models.entity.Product;
-import com.secondhand.ecommerce.models.entity.ProductImage;
 import com.secondhand.ecommerce.models.enums.OperationStatus;
-import com.secondhand.ecommerce.repository.ProductImageRepository;
 import com.secondhand.ecommerce.repository.ProductRepository;
 import com.secondhand.ecommerce.security.SecurityUtils;
 import com.secondhand.ecommerce.service.AppUserService;
@@ -20,6 +20,7 @@ import com.secondhand.ecommerce.service.ProductService;
 import com.secondhand.ecommerce.utils.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,9 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.secondhand.ecommerce.utils.SecondHandConst.EMAIL_NOT_FOUND_MSG;
 
@@ -39,7 +38,6 @@ import static com.secondhand.ecommerce.utils.SecondHandConst.EMAIL_NOT_FOUND_MSG
 public class ProductServiceImpl extends Datatable<Product, Long> implements ProductService {
 
     private final ProductRepository productRepository;
-    private final ProductImageRepository imageRepository;
     private final AppUserService userService;
     private final CategoriesService categoryService;
     private final CloudinaryConfig cloudinaryConfig;
@@ -58,93 +56,81 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
 
         AppUserBuilder builder = SecurityUtils.getAuthenticatedUserDetails();
         boolean authenticated = SecurityUtils.isAuthenticated();
-
         AppUsers appUsers = userService.findUserByEmail(Objects.requireNonNull(builder).getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException(
                         String.format(EMAIL_NOT_FOUND_MSG, builder.getEmail())));
 
         Product createNewProduct = new Product();
         Categories categories = categoryService.loadCategoryById(request.getCategoryId());
-        ProductImage imageProduct = new ProductImage();
-        List<ProductImage> images = new ArrayList<>();
+
+        List<String> images = new ArrayList<>();
 
         if (authenticated) {
-
             createNewProduct.setAppUsers(appUsers);
             createNewProduct.setProductName(request.getProductName());
-            createNewProduct.setDescription(request.getDescription());
             createNewProduct.setPrice(request.getPrice());
+            createNewProduct.setDescription(request.getDescription());
             createNewProduct.setCategory(categories);
             createNewProduct.setCreatedBy(appUsers.getEmail());
 
-            if (image != null) {
-                for (MultipartFile file : image) {
-                    try {
-                        Map uploadResult = cloudinaryConfig.upload(
-                                file.getBytes(),
-                                ObjectUtils.asMap("resourcetype", "filename"));
+            uploadProductImage(image, images);
 
-                        List<ProductImage> collect =
-                                images.stream()
-                                        .map(imageFile -> new ProductImage(
-                                                uploadResult.get("url").toString()
-                                        )).collect(Collectors.toList());
-                        images.add(imageProduct);
-
-                        createNewProduct.setProductImage(collect);
-                    } catch (IOException e) {
-                        return new BaseResponse(HttpStatus.CONFLICT,
-                                "erorr karena image null",
-                                null,
-                                OperationStatus.FAILURE
-                        );
-                    }
-                }
-
-//                for (MultipartFile file : image) {
-//                    try {
-//                        Map uploadResult = cloudinaryConfig.upload(
-//                                file.getBytes(),
-//                                ObjectUtils.asMap("resourcetype", "filename"));
-//                        images.add(uploadResult.get("url").toString());
-//                        imageProduct.setUrlFile(String.valueOf(images));
-//                        imageProduct.setCreatedBy(appUsers.getEmail());
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                imageRepository.save(imageProduct);
-            }
-
-            imageRepository.save(imageProduct);
+            createNewProduct.setProductImages(images);
             productRepository.save(createNewProduct);
         }
-
-        List<String> collect = images.stream()
-                .map(ProductImage::getUrlFile)
-                .collect(Collectors.toList());
 
         ProductRespone response = new ProductRespone(
                 createNewProduct.getAppUsers().getEmail(),
                 createNewProduct.getProductName(),
                 createNewProduct.getDescription(),
                 createNewProduct.getPrice(),
-                createNewProduct.getCategory().getName(),
+                createNewProduct.getCategory().getName().name(),
                 createNewProduct.getCreatedBy(),
                 createNewProduct.getCreatedDate().toString(),
-                collect
-        );
+                images);
 
-        return new BaseResponse(HttpStatus.OK,
+        return new BaseResponse(HttpStatus.CREATED,
                 "Success to create new product",
                 response,
                 OperationStatus.SUCCESS);
     }
 
     @Override
-    public Product updateProduct(Product product) {
-        productRepository.save(product);
-        return product;
+    public BaseResponse updateProduct(ProductDto request, MultipartFile[] image) {
+
+        boolean authenticated = SecurityUtils.isAuthenticated();
+
+        Product updatedProduct = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new AppBaseException("Product not found"));
+
+        Categories categories = categoryService.loadCategoryById(request.getCategoryId());
+
+        List<String> images = new ArrayList<>();
+
+        if (authenticated) {
+            updatedProduct.setProductName(request.getProductName());
+            updatedProduct.setDescription(request.getDescription());
+            updatedProduct.setPrice(request.getPrice());
+            updatedProduct.setCategory(categories);
+
+            uploadProductImage(image, images);
+            updatedProduct.setProductImages(images);
+
+            productRepository.save(updatedProduct);
+        }
+        ProductRespone response = new ProductRespone(
+                updatedProduct.getProductName(),
+                updatedProduct.getDescription(),
+                updatedProduct.getPrice(),
+                updatedProduct.getCategory().getName().name(),
+                updatedProduct.getCreatedBy(),
+                updatedProduct.getCreatedDate().toString(),
+                images);
+
+        return new BaseResponse(HttpStatus.OK,
+                "Success to updated product",
+                response,
+                OperationStatus.SUCCESS);
     }
 
     @Override
@@ -154,8 +140,28 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         return deletedProduct;
     }
 
+    @Override
+    public Page<Product> getProductsPage(String productName, Categories category, Pageable pageable) {
+        return null;
+    }
+
     public Page<Product> getSortedPaginatedProducts(int page, int limit, Sort sort) {
         return super.getSortedPaginatedProducts(productRepository, page, limit, sort);
     }
 
+    private void uploadProductImage(MultipartFile[] image, List<String> images) {
+        Arrays.stream(image)
+                .limit(4)
+                .filter(file -> {
+                    if (file.isEmpty()) {
+                        throw new IllegalException("The file is required to create a new");
+                    }
+                    return true;
+                })
+                .forEach(file -> {
+                    Map uploadResult = cloudinaryConfig.upload(file,
+                            ObjectUtils.asMap("resourcetype", "auto"));
+                    images.add(uploadResult.get("url").toString());
+                });
+    }
 }
