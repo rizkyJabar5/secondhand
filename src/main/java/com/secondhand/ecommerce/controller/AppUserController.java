@@ -22,7 +22,7 @@ public class AppUserController {
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<BaseResponse> updateUserProfile(@ModelAttribute ProfileUser profileUser,
-                                                          @RequestParam MultipartFile image) {
+                                                          @RequestParam(required = false) MultipartFile image) {
 
         BaseResponse response = userService.updateProfileUser(profileUser, image);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
