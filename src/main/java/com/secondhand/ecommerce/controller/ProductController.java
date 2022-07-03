@@ -138,5 +138,27 @@ public class ProductController {
 
     }
 
+//    @GetMapping("/seller/get-product-page")
+//    public ResponseEntity<Map<String, Object>> getAllProductPage(
+//            @RequestParam(required = false) String productName,
+//            @RequestParam(required = false) Categories category,
+//            @RequestParam(defaultValue = "1") int page,
+//            @RequestParam(defaultValue = "5") int size
+//    ) {
+//        try {
+//            Pageable paging = PageRequest.of(page - 1, size, Sort.by("productPrice"));
+//
+//            Page<Product> productPage = productService.getProductsPage(productName, category, paging);
+//            List<Product> products = productPage.getContent();
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("products", products);
+//            response.put("currentPage", productPage.getNumber() + 1);
+//            response.put("totalProducts", productPage.getTotalElements());
+//            response.put("totalPages", productPage.getTotalPages());
+//            return new ResponseEntity<>(response, HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
 }

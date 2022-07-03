@@ -20,7 +20,7 @@ import com.secondhand.ecommerce.service.ProductService;
 import com.secondhand.ecommerce.utils.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -150,8 +150,17 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         return deletedProduct;
     }
 
-    public Page<Product> getSortedPaginatedProducts(int page, int limit, Sort sort) {
-        return super.getSortedPaginatedProducts(productRepository, page, limit, sort);
-    }
+    @Override
+    public Page<Product> getProductsPage(String productName, Categories category, Pageable pageable) {
 
+        if (productName == null && category == null) {
+            return productRepository.findAll(pageable);
+        } else if (productName == null) {
+            return productRepository.findByCategoryIdContaining(category, pageable);
+        } else if (category == null) {
+            return productRepository.findByProductNameContaining(productName, pageable);
+        } else {
+            return productRepository.findByProductNameContainingAndCategoryIdContaining(productName, category, pageable);
+        }
+    }
 }
