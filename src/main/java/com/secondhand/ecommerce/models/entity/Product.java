@@ -39,6 +39,12 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "category_id")
     private Categories category;
 
+    @Column(name = "is_published")
+    private Boolean isPublished;
+
+    @Column(name = "is_sold")
+    private Boolean isSold;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
