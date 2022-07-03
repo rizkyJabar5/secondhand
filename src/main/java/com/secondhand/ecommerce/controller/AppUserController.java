@@ -11,8 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/users")
@@ -23,9 +21,8 @@ public class AppUserController {
     @PutMapping(value = "/profile-user",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<BaseResponse> updateUserProfile(
-            @Valid @ModelAttribute ProfileUser profileUser,
-            @RequestParam MultipartFile image) {
+    public ResponseEntity<BaseResponse> updateUserProfile(@ModelAttribute ProfileUser profileUser,
+                                                          @RequestParam MultipartFile image) {
 
         BaseResponse response = userService.updateProfileUser(profileUser, image);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
