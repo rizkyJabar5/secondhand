@@ -1,6 +1,5 @@
 package com.secondhand.ecommerce.models.dto.users;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -8,7 +7,6 @@ import java.io.Serializable;
 @Data
 public class ProfileUser implements Serializable {
 
-    @JsonIgnore
     private Long userId;
     private String name;
     private String city;
