@@ -120,8 +120,7 @@ public class AppUserServiceImpl implements AppUserService {
             } else {
                 Map uploadResult = cloudinary.upload(image,
                         ObjectUtils.asMap("resourceType", "auto"));
-                profileUser.setImageProfile(uploadResult.get("url").toString());
-                appUsers.setImageUrl(profileUser.getImageProfile());
+                appUsers.setImageUrl(uploadResult.get("url").toString());
             }
             userRepository.save(appUsers);
         } else {
