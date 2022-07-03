@@ -28,7 +28,7 @@ public class Product extends BaseEntity {
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "product_image",
-            joinColumns = @JoinColumn(name = "produc_image_id"))
+            joinColumns = @JoinColumn(name = "product_id"))
     private List<String> productImages;
 
     @ManyToOne

@@ -64,10 +64,10 @@ public class ControllerAdvisor extends ResponseStatusExceptionHandler {
     }
 
     @ExceptionHandler(AppBaseException.class)
-    public ResponseEntity<Object> mvcRequestHandler(AppBaseException notFoundException) {
+    public ResponseEntity<Object> mvcRequestHandler(AppBaseException baseException) {
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("timestamp", LocalDateTime.now());
-        response.put("message", notFoundException.getMessage());
+        response.put("message", baseException.getMessage());
         response.put("status", OperationStatus.FAILURE);
         response.put("code", HttpStatus.INTERNAL_SERVER_ERROR.value());
 
