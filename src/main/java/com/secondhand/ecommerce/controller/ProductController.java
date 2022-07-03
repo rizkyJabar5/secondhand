@@ -3,6 +3,7 @@ package com.secondhand.ecommerce.controller;
 import com.secondhand.ecommerce.models.dto.products.ProductDto;
 import com.secondhand.ecommerce.models.entity.Product;
 import com.secondhand.ecommerce.models.enums.OperationStatus;
+import com.secondhand.ecommerce.service.CategoriesService;
 import com.secondhand.ecommerce.service.ProductService;
 import com.secondhand.ecommerce.utils.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,8 @@ import java.util.Optional;
 public class ProductController {
 
     private final ProductService productService;
+
+    private final CategoriesService categoriesService;
 
     @PostMapping(value = "/add",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -119,4 +122,8 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/list-categories")
+    public ResponseEntity<?> getAllCategories() {
+        return new ResponseEntity<>(categoriesService.findAllCategories(), HttpStatus.OK);
+    }
 }
