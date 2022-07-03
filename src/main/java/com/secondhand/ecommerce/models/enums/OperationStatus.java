@@ -13,7 +13,9 @@ public enum OperationStatus {
     /**
      * If an operation is completed.
      */
-    COMPLETED("Completed");
+    COMPLETED("Completed"),
+
+    NOTCOMPLETED("Not Completed");
 
     private final String name;
 

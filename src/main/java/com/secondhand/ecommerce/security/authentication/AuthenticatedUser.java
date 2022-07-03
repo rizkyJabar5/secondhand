@@ -33,7 +33,7 @@ public class AuthenticatedUser implements HasLogger {
                         .orElseThrow(() -> new RuntimeException(String.format(ROLE_IS_NOT_FOUND_MSG, eRole)));
                 getLogger().info("{} is found", role);
             } catch (RuntimeException e) {
-                getLogger().info(String.format(ROLE_IS_NOT_FOUND_MSG + "It will be create ...", eRole.name()));
+                getLogger().info(String.format(ROLE_IS_NOT_FOUND_MSG + ". It will be create ...", eRole.name()));
 
                 AppRoles roleName = new AppRoles();
                 roleName.setRoleNames(eRole);

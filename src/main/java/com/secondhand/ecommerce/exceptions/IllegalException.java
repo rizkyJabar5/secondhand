@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
         value = HttpStatus.BAD_REQUEST,
         code = HttpStatus.BAD_REQUEST,
         reason = "Your request is rejected.")
-public class DuplicateDataExceptions extends IllegalArgumentException {
+public class IllegalException extends IllegalArgumentException {
 
-    public DuplicateDataExceptions(String msg) {
+    public IllegalException(String msg) {
         super(msg);
     }
 }

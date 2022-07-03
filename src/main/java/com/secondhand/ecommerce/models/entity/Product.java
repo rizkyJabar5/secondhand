@@ -26,19 +26,17 @@ public class Product extends BaseEntity {
     @Column(name = "price")
     private BigInteger price;
 
-    @ManyToMany
-    @JoinTable(name = "image_product",
-            joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "image_product_id", referencedColumnName = "imageId")
-    )
-    private List<ProductImage> productImage;
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "product_image",
+            joinColumns = @JoinColumn(name = "produc_image_id"))
+    private List<String> productImages;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private AppUsers appUsers;
 
     @ManyToOne
-    @JoinColumn(name = "category")
+    @JoinColumn(name = "category_id")
     private Categories category;
 
     @Override

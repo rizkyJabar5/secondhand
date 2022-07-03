@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -32,10 +33,10 @@ public class CloudinaryConfig {
         return new Cloudinary(config);
     }
 
-    public Map upload(Object file, Map options) {
+    public Map upload(MultipartFile file, Map options) {
 
         try {
-            return cloudinary().uploader().upload(file, options);
+            return cloudinary().uploader().upload(file.getBytes(), options);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

@@ -1,10 +1,10 @@
 package com.secondhand.ecommerce.controller;
 
 import com.secondhand.ecommerce.models.dto.products.ProductDto;
-import com.secondhand.ecommerce.models.entity.Categories;
 import com.secondhand.ecommerce.models.entity.Product;
-import com.secondhand.ecommerce.service.CategoriesService;
+import com.secondhand.ecommerce.models.enums.OperationStatus;
 import com.secondhand.ecommerce.service.ProductService;
+import com.secondhand.ecommerce.utils.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,31 +22,30 @@ import java.util.Optional;
 public class ProductController {
 
     private final ProductService productService;
-    private final CategoriesService categoryService;
 
     @PostMapping(value = "/add",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, Object>> addProduct(
+    public ResponseEntity<BaseResponse> addProduct(
             @ModelAttribute ProductDto request,
             @RequestParam MultipartFile[] images) {
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("data", productService.addProduct(request, images));
+        if (images.length >= 5) {
+            return new ResponseEntity<>(new BaseResponse(HttpStatus.BAD_REQUEST,
+                    "Maximum upload image not more than 4",
+                    null,
+                    OperationStatus.FAILURE), HttpStatus.BAD_REQUEST);
+        }
 
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(productService.addProduct(request, images), HttpStatus.CREATED);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Map<String, Object>> updateProduct(@RequestBody Product product) {
-        product = productService.updateProduct(product);
+    public ResponseEntity<BaseResponse> updateProduct(@RequestBody ProductDto product) {
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("data", product);
 
-        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+// TODO add a logic for update Product
+        return null;
     }
 
     //    @Transactional
@@ -112,53 +111,5 @@ public class ProductController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
-
-    @PostMapping("/category/add")
-    public ResponseEntity<Map<String, Object>> addCategories(@RequestBody Categories category) {
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("data", categoryService.addNewCategory(category));
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-
-    }
-
-    @DeleteMapping("/category/remove/{categoryId}")
-    public ResponseEntity<Map<String, Object>> deleteCategories(@PathVariable Long categoryId) {
-        Categories category = categoryService.deleteCategoryById(categoryId);
-
-        Map<String, Object> response = new HashMap<>();
-        if (category != null) {
-            response.put("success", true);
-            response.put("deletedData", category);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-
-    }
-
-//    @GetMapping("/seller/get-product-page")
-//    public ResponseEntity<Map<String, Object>> getAllProductPage(
-//            @RequestParam(required = false) String productName,
-//            @RequestParam(required = false) Categories category,
-//            @RequestParam(defaultValue = "1") int page,
-//            @RequestParam(defaultValue = "5") int size
-//    ) {
-//        try {
-//            Pageable paging = PageRequest.of(page - 1, size, Sort.by("productPrice"));
-//
-//            Page<Product> productPage = productService.getProductsPage(productName, category, paging);
-//            List<Product> products = productPage.getContent();
-//            Map<String, Object> response = new HashMap<>();
-//            response.put("products", products);
-//            response.put("currentPage", productPage.getNumber() + 1);
-//            response.put("totalProducts", productPage.getTotalElements());
-//            response.put("totalPages", productPage.getTotalPages());
-//            return new ResponseEntity<>(response, HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
 
 }
