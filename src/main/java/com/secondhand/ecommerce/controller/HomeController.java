@@ -4,11 +4,14 @@ package com.secondhand.ecommerce.controller;
 import com.secondhand.ecommerce.models.entity.Categories;
 import com.secondhand.ecommerce.models.entity.Product;
 import com.secondhand.ecommerce.repository.ProductRepository;
+import com.secondhand.ecommerce.service.CategoriesService;
 import com.secondhand.ecommerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +26,8 @@ import static com.secondhand.ecommerce.utils.SecondHandConst.HOME_PAGE;
 @RequiredArgsConstructor
 @RequestMapping(HOME_PAGE)
 public class HomeController {
+
+    private final CategoriesService categoriesService;
     private final ProductService productService;
     private final ProductRepository productRepository;
 
@@ -49,5 +54,13 @@ public class HomeController {
                 productName,
                 category,
                 PageRequest.of(page, size, Sort.by(orders)));
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<?> getAllCategories() {
+
+        return new ResponseEntity<>(
+                categoriesService.findAllCategories(),
+                HttpStatus.OK);
     }
 }

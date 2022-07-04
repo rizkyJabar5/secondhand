@@ -5,6 +5,7 @@ import com.secondhand.ecommerce.models.dto.users.ProfileUser;
 import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.service.AppUserService;
 import com.secondhand.ecommerce.utils.BaseResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.util.List;
 
+@Tag(name = "Users Management", description = "Api endpoint for user to update their profile information, and check data")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/users")

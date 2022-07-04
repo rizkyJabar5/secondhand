@@ -68,8 +68,16 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
                 OperationStatus.FOUND);
     }
 
-    public BaseResponse getProductById(Long productId) {
-        return null;
+    public BaseResponse getAllProducts() {
+        List<ProductMapper> collect = productRepository.findAll()
+                .stream()
+                .map(productMapper::productToDto)
+                .collect(Collectors.toList());
+
+        return new BaseResponse(HttpStatus.OK,
+                "Product will be to load",
+                collect,
+                OperationStatus.FOUND);
     }
 
     @Override
