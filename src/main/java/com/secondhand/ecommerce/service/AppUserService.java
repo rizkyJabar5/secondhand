@@ -9,7 +9,6 @@ import com.secondhand.ecommerce.utils.HasLogger;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface AppUserService extends UserDetailsService, HasLogger {
@@ -22,5 +21,7 @@ public interface AppUserService extends UserDetailsService, HasLogger {
 
     BaseResponse updateProfileUser(ProfileUser profileUser, MultipartFile image);
 
-    List<AppUsers> getAllUsers();
+    Optional<AppUsers> loadUserById(Long id);
+
+
 }
