@@ -11,12 +11,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
 
-    List<ProductMapper> getProducts();
+    BaseResponse getProductsByUserId(Long userId);
 
     BaseResponse getProductById(Long id);
 

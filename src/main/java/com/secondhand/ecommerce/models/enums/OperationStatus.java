@@ -19,9 +19,13 @@ public enum OperationStatus {
      */
     NOT_COMPLETED("Not Completed"),
     /**
+     * If an operation is Found.
+     */
+    NOT_FOUND("Not Found"),
+    /**
      * If an operation is not Found.
      */
-    NOT_FOUND("Not Found");
+    FOUND("Found");
 
     private final String name;
 
