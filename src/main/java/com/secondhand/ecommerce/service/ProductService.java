@@ -17,7 +17,7 @@ public interface ProductService {
 
     BaseResponse getProductsByUserId(Long userId);
 
-    BaseResponse getProductById(Long id);
+    BaseResponse getAllProducts();
 
     BaseResponse addProduct(ProductDto product, MultipartFile[] image);
 

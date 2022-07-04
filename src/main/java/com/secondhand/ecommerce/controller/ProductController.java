@@ -3,6 +3,7 @@ package com.secondhand.ecommerce.controller;
 import com.secondhand.ecommerce.models.dto.products.ProductDto;
 import com.secondhand.ecommerce.models.dto.response.CompletedResponse;
 import com.secondhand.ecommerce.models.enums.OperationStatus;
+import com.secondhand.ecommerce.service.CategoriesService;
 import com.secondhand.ecommerce.service.ProductService;
 import com.secondhand.ecommerce.utils.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,24 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProductController {
 
     private final ProductService productService;
+
+    private final CategoriesService categoriesService;
+
+    @GetMapping("/{productId}")
+    public ResponseEntity<?> getProductById(@PathVariable Long productId) {
+
+        return new ResponseEntity<>(
+                productService.loadProductById(productId),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<?> getAllProducts() {
+
+        return new ResponseEntity<>(
+                productService.getAllProducts(),
+                HttpStatus.OK);
+    }
 
     @PostMapping(value = "/add",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -51,31 +70,12 @@ public class ProductController {
         return new ResponseEntity<>(productService.updateProduct(product, images), HttpStatus.OK);
     }
 
-    //    @Transactional
     @GetMapping("/show/{userId}")
-    public ResponseEntity<?> getProductsByUserId(@PathVariable Long userId,
-                                                 @RequestParam(defaultValue = "0", required = false) int page,
-                                                 @RequestParam(defaultValue = "10", required = false) int limit,
-                                                 @RequestParam(defaultValue = "productName, asc") String sorts) {
+    public ResponseEntity<?> getProductsByUserId(@PathVariable Long userId) {
 
-        // Sort by comma separated values => id,desc;price,asc etc.
         BaseResponse response = productService.getProductsByUserId(userId);
 
-//        try {
-//            List<Sort.Order> orders = new ArrayList<>();
-//            if(!sorts.isEmpty()){
-//                for (String sortable: sorts.split(";")) {
-//                    String[] desc = sortable.split(",");
-//                    String columnName = desc[0];
-//                    String direction = desc.length > 1? desc[1] : "asc";
-//                    orders.add(new Sort.Order(Sort.Direction.fromString(direction), columnName));
-//                }
-//            }
-
         return new ResponseEntity<>(response, HttpStatus.OK);
-//        } catch (Exception e){
-//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
     }
 
     @DeleteMapping("/delete/{id}")
