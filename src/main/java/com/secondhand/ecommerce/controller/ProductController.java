@@ -58,15 +58,13 @@ public class ProductController {
             produces = MediaType.IMAGE_JPEG_VALUE,
             consumes = MediaType.ALL_VALUE
     )
-    public ResponseEntity<byte[]> getProducts(
+    public ResponseEntity<?> getProducts(
 //            @PathVariable("productId") Long productId,
-            @RequestParam("productId") Long productId,
+            @RequestParam Long productId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int limit,
-            @RequestParam(defaultValue = "", name = "order") String sorts
-    ) {
+            @RequestParam(defaultValue = "", name = "order") String sorts) {
         // Sort by comma separated values => id,desc;price,asc etc.
-//
 //        productService.getProducts();
 //        Product product = productRepository.getById(productId);
 //        InputStream in = getClass().getResourceAsStream(productRepository.toString());

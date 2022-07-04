@@ -21,4 +21,7 @@ public interface AppUserService extends UserDetailsService, HasLogger {
 
     BaseResponse updateProfileUser(ProfileUser profileUser, MultipartFile image);
 
+    Optional<AppUsers> loadUserById(Long id);
+
+
 }

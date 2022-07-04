@@ -136,6 +136,12 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
+    public Optional<AppUsers> loadUserById(Long id) {
+        return Optional.ofNullable(userRepository.findByUserId(id))
+                .orElseThrow(() -> new UsernameNotFoundException("User with id " + id + " not found"));
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         if (StringUtils.isAnyBlank(username)) {
