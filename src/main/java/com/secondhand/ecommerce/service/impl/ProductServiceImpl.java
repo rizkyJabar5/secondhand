@@ -49,11 +49,23 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
     private final ProductMapper productMapper;
 
     @Override
-    public List<ProductMapper> getProducts() {
-        return productRepository.findAll()
+    public BaseResponse getProductsByUserId(Long userId) {
+
+        List<ProductMapper> productUser = productRepository.findProductByAppUsers(userId)
                 .stream()
                 .map(productMapper::productToDto)
                 .collect(Collectors.toList());
+
+        if (productUser.isEmpty()) {
+            return new BaseResponse(HttpStatus.NOT_FOUND,
+                    "Product not found on user: " + userId,
+                    OperationStatus.NOT_FOUND);
+        }
+
+        return new BaseResponse(HttpStatus.OK,
+                "Product found: " + productUser.get(0).getPublishedBy(),
+                productUser,
+                OperationStatus.FOUND);
     }
 
     public BaseResponse getProductById(Long productId) {

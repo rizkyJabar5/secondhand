@@ -52,25 +52,14 @@ public class ProductController {
     }
 
     //    @Transactional
-    @GetMapping(
-//            value = "/show/{productId}",
-            value = "/show",
-            produces = MediaType.IMAGE_JPEG_VALUE,
-            consumes = MediaType.ALL_VALUE
-    )
-    public ResponseEntity<?> getProducts(
-//            @PathVariable("productId") Long productId,
-            @RequestParam Long productId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int limit,
-            @RequestParam(defaultValue = "", name = "order") String sorts) {
+    @GetMapping("/show/{userId}")
+    public ResponseEntity<?> getProductsByUserId(@PathVariable Long userId,
+                                                 @RequestParam(defaultValue = "0", required = false) int page,
+                                                 @RequestParam(defaultValue = "10", required = false) int limit,
+                                                 @RequestParam(defaultValue = "productName, asc") String sorts) {
+
         // Sort by comma separated values => id,desc;price,asc etc.
-//        productService.getProducts();
-//        Product product = productRepository.getById(productId);
-//        InputStream in = getClass().getResourceAsStream(productRepository.toString());
-//        return ResponseEntity.ok()
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + product.getImageName() + "\"")
-//                .body(product.getImageFile());
+        BaseResponse response = productService.getProductsByUserId(userId);
 
 //        try {
 //            List<Sort.Order> orders = new ArrayList<>();
@@ -82,21 +71,11 @@ public class ProductController {
 //                    orders.add(new Sort.Order(Sort.Direction.fromString(direction), columnName));
 //                }
 //            }
-//
-//            Map<String, Object> response = new HashMap<>();
-//            Page<Product> pageProducts = productService.getSortedPaginatedProducts(page, limit, Sort.by(orders));
-//
-//            response.put("results", pageProducts.toList());
-//            response.put("currentPage", pageProducts.getNumber());
-//            response.put("totalItems", pageProducts.getTotalElements());
-//            response.put("totalPages", pageProducts.getTotalPages());
-//
-//            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
 //        } catch (Exception e){
-//            e.printStackTrace();
 //            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 //        }
-        return null;
     }
 
     @DeleteMapping("/delete/{id}")

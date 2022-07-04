@@ -45,6 +45,9 @@ public class HomeController {
             orders.add(new Sort.Order(Sort.Direction.fromString(sort[1]), sort[0]));
         }
 
-        return productRepository.findByProductNameIgnoreCaseAndCategoryIgnoreCase(productName, category, PageRequest.of(page, size, Sort.by(orders)));
+        return productRepository.findByProductNameIgnoreCaseAndCategoryIgnoreCase(
+                productName,
+                category,
+                PageRequest.of(page, size, Sort.by(orders)));
     }
 }
