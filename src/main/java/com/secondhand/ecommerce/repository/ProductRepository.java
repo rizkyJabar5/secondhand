@@ -17,11 +17,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Page<Product> findByProductNameIgnoreCaseAndCategoryIgnoreCase(String productName, Categories categoryId, Pageable pageable);
 
-    Page<Product> findByCategoryIdContaining(Categories categoryId, Pageable pageable);
+    @Query("select  p from Product p where p.category.id =:categoryId")
+    Page<Product> findByCategoryIdContaining(Long categoryId, Pageable pageable);
 
     Page<Product> findByProductNameContaining(String productName, Pageable pageable);
 
-    Page<Product> findByProductNameContainingAndCategoryIdContaining(String productName, Categories categoryId, Pageable pageable);
+    @Query("select p from Product p where p.productName =:productName and p.category.id =:categoryId")
+    Page<Product> findByProductNameContainingAndCategoryIdContaining(String productName, Long categoryId, Pageable pageable);
 
     @Query("select p from Product p where p.appUsers.userId = ?1")
     List<Product> findProductByAppUsers(Long user);

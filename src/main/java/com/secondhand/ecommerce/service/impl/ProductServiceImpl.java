@@ -197,6 +197,19 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
                         String.format(PRODUCT_NOT_FOUND_MSG, productId))));
     }
 
+    @Override
+    public Page<Product> getAllProductPageByProductNameAndProductCategory(String productName, Long categoryId, Pageable paging) {
+        if (productName == null && categoryId == null){
+            return productRepository.findAll(paging);
+        } else if (productName == null) {
+            return productRepository.findByCategoryIdContaining(categoryId, paging);
+        } else if (categoryId == null) {
+            return productRepository.findByProductNameContaining(productName, paging);
+        } else {
+            return productRepository.findByProductNameContainingAndCategoryIdContaining(productName, categoryId, paging);
+        }
+    }
+
     private void uploadProductImage(MultipartFile[] image, List<String> images) {
         Arrays.stream(image)
                 .limit(4)

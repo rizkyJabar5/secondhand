@@ -31,4 +31,5 @@ public interface ProductService {
 
     Optional<ProductMapper> loadProductById(Long id);
 
+    Page<Product> getAllProductPageByProductNameAndProductCategory(String productName, Long categoryId, Pageable paging);
 }
