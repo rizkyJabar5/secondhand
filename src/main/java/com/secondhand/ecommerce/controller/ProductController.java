@@ -1,7 +1,7 @@
 package com.secondhand.ecommerce.controller;
 
 import com.secondhand.ecommerce.models.dto.products.ProductDto;
-import com.secondhand.ecommerce.models.entity.Product;
+import com.secondhand.ecommerce.models.dto.response.CompletedResponse;
 import com.secondhand.ecommerce.models.enums.OperationStatus;
 import com.secondhand.ecommerce.service.ProductService;
 import com.secondhand.ecommerce.utils.BaseResponse;
@@ -11,10 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -106,17 +102,17 @@ public class ProductController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Map<String, Object>> deleteProduct(@PathVariable long id) {
-        Optional<Product> product = productService.deleteProductById(id);
+    public ResponseEntity<?> deleteProduct(@PathVariable long id) {
 
-        Map<String, Object> response = new HashMap<>();
-        if (product.isPresent()) {
-            response.put("success", true);
-            response.put("deletedData", product);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        CompletedResponse response = productService.deleteProductById(id);
+
+        boolean isNotFound = response
+                .getStatus()
+                .equals(OperationStatus.NOT_FOUND.getName());
+        if (isNotFound) {
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 

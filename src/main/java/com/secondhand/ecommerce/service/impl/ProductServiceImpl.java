@@ -5,6 +5,7 @@ import com.secondhand.ecommerce.config.CloudinaryConfig;
 import com.secondhand.ecommerce.exceptions.AppBaseException;
 import com.secondhand.ecommerce.exceptions.IllegalException;
 import com.secondhand.ecommerce.models.dto.products.ProductDto;
+import com.secondhand.ecommerce.models.dto.response.CompletedResponse;
 import com.secondhand.ecommerce.models.dto.response.ProductRespone;
 import com.secondhand.ecommerce.models.dto.users.AppUserBuilder;
 import com.secondhand.ecommerce.models.entity.AppUsers;
@@ -134,10 +135,20 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
     }
 
     @Override
-    public Optional<Product> deleteProductById(Long id) {
-        Optional<Product> deletedProduct = productRepository.findById(id);
+    public CompletedResponse deleteProductById(Long id) {
+
+        boolean present = productRepository.findById(id).isPresent();
+        if (!present) {
+            return new CompletedResponse(
+                    "Product is not present",
+                    OperationStatus.NOT_FOUND.getName());
+        }
         productRepository.deleteById(id);
-        return deletedProduct;
+
+        return new CompletedResponse(
+                "Product has been removed from store",
+                OperationStatus.SUCCESS.getName()
+        );
     }
 
     @Override
