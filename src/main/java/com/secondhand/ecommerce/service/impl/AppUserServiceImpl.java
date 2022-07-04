@@ -89,7 +89,7 @@ public class AppUserServiceImpl implements AppUserService {
 
         return new CompletedResponse(
                 "The user has not completed the profile",
-                OperationStatus.NOTCOMPLETED.getName());
+                OperationStatus.NOT_COMPLETED.getName());
     }
 
     @Override
@@ -132,6 +132,12 @@ public class AppUserServiceImpl implements AppUserService {
                 "Success update profile user",
                 profileUser,
                 OperationStatus.SUCCESS);
+    }
+
+    @Override
+    public Optional<AppUsers> loadUserById(Long id) {
+        return Optional.ofNullable(userRepository.findByUserId(id))
+                .orElseThrow(() -> new UsernameNotFoundException("User with id " + id + " not found"));
     }
 
     @Override

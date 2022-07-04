@@ -21,6 +21,12 @@ public class BaseResponse {
     private Object data;
     private OperationStatus status;
 
+    public BaseResponse(HttpStatus httpStatus, Object data, OperationStatus status) {
+        this.httpStatus = httpStatus;
+        this.data = data;
+        this.status = status;
+    }
+
     public BaseResponse(String message, OperationStatus status) {
         this.message = message;
         this.status = status;
@@ -41,6 +47,12 @@ public class BaseResponse {
     public BaseResponse(HttpStatus httpStatus, String message) {
         this.httpStatus = httpStatus;
         this.message = message;
+    }
+
+    public BaseResponse(HttpStatus httpStatus, String message, OperationStatus status) {
+        this.httpStatus = httpStatus;
+        this.message = message;
+        this.status = status;
     }
 
     public BaseResponse(HttpStatus httpStatus, String message, Object data) {

@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.math.BigInteger;
@@ -26,7 +28,8 @@ public class Product extends BaseEntity {
     @Column(name = "price")
     private BigInteger price;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ElementCollection
     @CollectionTable(name = "product_image",
             joinColumns = @JoinColumn(name = "product_id"))
     private List<String> productImages;
@@ -40,10 +43,10 @@ public class Product extends BaseEntity {
     private Categories category;
 
     @Column(name = "is_published")
-    private Boolean isPublished;
+    private Boolean isPublished = false;
 
     @Column(name = "is_sold")
-    private Boolean isSold;
+    private Boolean isSold = false;
 
     @Override
     public boolean equals(Object o) {

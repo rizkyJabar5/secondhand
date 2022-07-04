@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class ProductRespone {
+public class ProductResponse {
     private String username;
     private String productName;
     private String description;
@@ -18,13 +18,13 @@ public class ProductRespone {
     private String createdDate;
     private List<String> urlImageList;
 
-    public ProductRespone(String productName,
-                          String description,
-                          BigInteger price,
-                          String categoryName,
-                          String createdBy,
-                          String createdDate,
-                          List<String> urlImageList) {
+    public ProductResponse(String productName,
+                           String description,
+                           BigInteger price,
+                           String categoryName,
+                           String createdBy,
+                           String createdDate,
+                           List<String> urlImageList) {
         this.productName = productName;
         this.description = description;
         this.price = price;

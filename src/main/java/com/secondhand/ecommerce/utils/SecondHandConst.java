@@ -9,6 +9,8 @@ public class SecondHandConst {
     public static final String EMAIL_NOT_FOUND_MSG = "E-mail: %s is not found.";
     public static final String ROLE_IS_NOT_FOUND_MSG = "Error: Role %s is not found";
     public static final String USER_NOT_FOUND_MSG = "Error: User %s is not found";
+    public static final String PRODUCT_NOT_FOUND_MSG = "Error: Product %s is not found";
+
     public static final long EXPIRATION_TIME_JWT = 864000000; // 10 days
 
     public static final String BLANK_USERNAME = "Email tidak boleh kosong.";

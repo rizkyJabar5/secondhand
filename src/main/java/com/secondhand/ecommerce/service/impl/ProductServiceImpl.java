@@ -5,7 +5,9 @@ import com.secondhand.ecommerce.config.CloudinaryConfig;
 import com.secondhand.ecommerce.exceptions.AppBaseException;
 import com.secondhand.ecommerce.exceptions.IllegalException;
 import com.secondhand.ecommerce.models.dto.products.ProductDto;
-import com.secondhand.ecommerce.models.dto.response.ProductRespone;
+import com.secondhand.ecommerce.models.dto.products.ProductMapper;
+import com.secondhand.ecommerce.models.dto.response.CompletedResponse;
+import com.secondhand.ecommerce.models.dto.response.ProductResponse;
 import com.secondhand.ecommerce.models.dto.users.AppUserBuilder;
 import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.models.entity.Categories;
@@ -29,8 +31,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.secondhand.ecommerce.utils.SecondHandConst.EMAIL_NOT_FOUND_MSG;
+import static com.secondhand.ecommerce.utils.SecondHandConst.PRODUCT_NOT_FOUND_MSG;
 
 @Transactional
 @RequiredArgsConstructor
@@ -42,13 +46,38 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
     private final CategoriesService categoryService;
     private final CloudinaryConfig cloudinaryConfig;
 
+    private final ProductMapper productMapper;
+
     @Override
-    public List<Product> getProducts() {
-        return productRepository.findAll();
+    public BaseResponse getProductsByUserId(Long userId) {
+
+        List<ProductMapper> productUser = productRepository.findProductByAppUsers(userId)
+                .stream()
+                .map(productMapper::productToDto)
+                .collect(Collectors.toList());
+
+        if (productUser.isEmpty()) {
+            return new BaseResponse(HttpStatus.NOT_FOUND,
+                    "Product not found on user: " + userId,
+                    OperationStatus.NOT_FOUND);
+        }
+
+        return new BaseResponse(HttpStatus.OK,
+                "Product found: " + productUser.get(0).getPublishedBy(),
+                productUser,
+                OperationStatus.FOUND);
     }
 
-    public Optional<Product> getProductById(Long id) {
-        return productRepository.findById(id);
+    public BaseResponse getAllProducts() {
+        List<ProductMapper> collect = productRepository.findAll()
+                .stream()
+                .map(productMapper::productToDto)
+                .collect(Collectors.toList());
+
+        return new BaseResponse(HttpStatus.OK,
+                "Product will be to load",
+                collect,
+                OperationStatus.FOUND);
     }
 
     @Override
@@ -79,7 +108,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
             productRepository.save(createNewProduct);
         }
 
-        ProductRespone response = new ProductRespone(
+        ProductResponse response = new ProductResponse(
                 createNewProduct.getAppUsers().getEmail(),
                 createNewProduct.getProductName(),
                 createNewProduct.getDescription(),
@@ -118,7 +147,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
 
             productRepository.save(updatedProduct);
         }
-        ProductRespone response = new ProductRespone(
+        ProductResponse response = new ProductResponse(
                 updatedProduct.getProductName(),
                 updatedProduct.getDescription(),
                 updatedProduct.getPrice(),
@@ -134,10 +163,20 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
     }
 
     @Override
-    public Optional<Product> deleteProductById(Long id) {
-        Optional<Product> deletedProduct = productRepository.findById(id);
+    public CompletedResponse deleteProductById(Long id) {
+
+        boolean present = loadProductById(id).isPresent();
+        if (!present) {
+            return new CompletedResponse(
+                    "Product is not present",
+                    OperationStatus.NOT_FOUND.getName());
+        }
         productRepository.deleteById(id);
-        return deletedProduct;
+
+        return new CompletedResponse(
+                "Product has been removed from store",
+                OperationStatus.SUCCESS.getName()
+        );
     }
 
     @Override
@@ -145,8 +184,17 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         return null;
     }
 
+    @Override
     public Page<Product> getSortedPaginatedProducts(int page, int limit, Sort sort) {
         return super.getSortedPaginatedProducts(productRepository, page, limit, sort);
+    }
+
+    @Override
+    public Optional<ProductMapper> loadProductById(Long productId) {
+        return Optional.ofNullable(productRepository.findById(productId)
+                .map(productMapper::productToDto)
+                .orElseThrow(() -> new IllegalException(
+                        String.format(PRODUCT_NOT_FOUND_MSG, productId))));
     }
 
     private void uploadProductImage(MultipartFile[] image, List<String> images) {
