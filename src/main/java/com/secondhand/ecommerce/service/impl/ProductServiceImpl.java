@@ -145,6 +145,11 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         return null;
     }
 
+    @Override
+    public Page<Product> getAllProductPageByProductNameAndProductCategory(String productName, Categories categoryId, Pageable paging) {
+        return null;
+    }
+
     public Page<Product> getSortedPaginatedProducts(int page, int limit, Sort sort) {
         return super.getSortedPaginatedProducts(productRepository, page, limit, sort);
     }

@@ -25,4 +25,6 @@ public interface ProductService {
 
     Page<Product> getProductsPage(String productName, Categories category, Pageable pageable);
 
+    Page<Product> getAllProductPageByProductNameAndProductCategory(String productName, Categories categoryId, Pageable paging);
+
 }

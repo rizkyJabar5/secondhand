@@ -2,6 +2,7 @@ package com.secondhand.ecommerce.controller;
 
 import com.secondhand.ecommerce.models.dto.response.CompletedResponse;
 import com.secondhand.ecommerce.models.dto.users.ProfileUser;
+import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.service.AppUserService;
 import com.secondhand.ecommerce.utils.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -37,7 +39,12 @@ public class AppUserController {
         CompletedResponse response = userService.checkProfileUser(userId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
+    @GetMapping("/get-all-users")
+    public ResponseEntity<List<AppUsers>> getAllUsers(){
+        List<AppUsers> users = userService.getAllUsers();
+        return new ResponseEntity<>(users,HttpStatus.OK);
     }
 
 

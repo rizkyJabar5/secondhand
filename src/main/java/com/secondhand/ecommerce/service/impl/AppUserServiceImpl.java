@@ -136,6 +136,11 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
+    public List<AppUsers> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         if (StringUtils.isAnyBlank(username)) {
