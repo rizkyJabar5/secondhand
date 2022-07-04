@@ -89,7 +89,7 @@ public class AppUserServiceImpl implements AppUserService {
 
         return new CompletedResponse(
                 "The user has not completed the profile",
-                OperationStatus.NOTCOMPLETED.getName());
+                OperationStatus.NOT_COMPLETED.getName());
     }
 
     @Override

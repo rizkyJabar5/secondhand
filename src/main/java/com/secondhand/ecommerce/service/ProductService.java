@@ -1,6 +1,7 @@
 package com.secondhand.ecommerce.service;
 
 import com.secondhand.ecommerce.models.dto.products.ProductDto;
+import com.secondhand.ecommerce.models.dto.response.CompletedResponse;
 import com.secondhand.ecommerce.models.entity.Categories;
 import com.secondhand.ecommerce.models.entity.Product;
 import com.secondhand.ecommerce.utils.BaseResponse;
@@ -21,7 +22,7 @@ public interface ProductService {
 
     BaseResponse updateProduct(ProductDto product, MultipartFile[] image);
 
-    Optional<Product> deleteProductById(Long id);
+    CompletedResponse deleteProductById(Long id);
 
     Page<Product> getProductsPage(String productName, Categories category, Pageable pageable);
 
