@@ -39,8 +39,6 @@ public class AppUserController {
         CompletedResponse response = userService.checkProfileUser(userId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
-
     }
-
 
 }

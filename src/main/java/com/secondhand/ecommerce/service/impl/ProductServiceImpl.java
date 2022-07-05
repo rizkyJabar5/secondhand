@@ -212,12 +212,31 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
                         String.format(PRODUCT_NOT_FOUND_MSG, productId))));
     }
 
+    @Override
+    public Page<ProductMapper> getAllProductPageByProductNameAndCategory(String productName,
+                                                                         Long categoryId,
+                                                                         Pageable paging) {
+        if (productName == null && categoryId == null) {
+            Page<Product> findAllProduct = productRepository.findAll(paging);
+            return findAllProduct.map(productMapper::productToDto);
+        } else if (productName == null) {
+            Page<Product> byCategoryIdContaining = productRepository.findByCategoryIdContaining(categoryId, paging);
+            return byCategoryIdContaining.map(productMapper::productToDto);
+        } else if (categoryId == null) {
+            Page<Product> byProductNameContaining = productRepository.findByProductNameContaining(productName, paging);
+            return byProductNameContaining.map(productMapper::productToDto);
+        }
+
+        Page<Product> byProductNameContainingAndCategoryIdContaining = productRepository.findByProductNameContainingAndCategoryIdContaining(productName, categoryId, paging);
+        return byProductNameContainingAndCategoryIdContaining.map(productMapper::productToDto);
+    }
+
     private void uploadProductImage(MultipartFile[] image, List<String> images) {
         Arrays.stream(image)
                 .limit(4)
                 .filter(file -> {
                     if (file.isEmpty()) {
-                        throw new IllegalException("The image is required to create a new Product");
+                        throw new IllegalException("The file is required to create a new");
                     }
                     return true;
                 })

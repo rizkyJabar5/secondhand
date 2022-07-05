@@ -41,13 +41,6 @@ public class ProductController {
 
         BaseResponse baseResponse = productService.addProduct(request, images);
 
-        if (images.length >= 5) {
-            return new ResponseEntity<>(new BaseResponse(HttpStatus.BAD_REQUEST,
-                    "Maximum upload image not more than 4",
-                    null,
-                    OperationStatus.FAILURE), HttpStatus.BAD_REQUEST);
-        }
-
         return new ResponseEntity<>(baseResponse, HttpStatus.CREATED);
     }
 
@@ -81,9 +74,11 @@ public class ProductController {
         boolean isNotFound = response
                 .getStatus()
                 .equals(OperationStatus.NOT_FOUND.getName());
+
         if (isNotFound) {
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
