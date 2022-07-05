@@ -6,6 +6,7 @@ import com.secondhand.ecommerce.exceptions.AppBaseException;
 import com.secondhand.ecommerce.exceptions.IllegalException;
 import com.secondhand.ecommerce.models.dto.products.ProductDto;
 import com.secondhand.ecommerce.models.dto.products.ProductMapper;
+import com.secondhand.ecommerce.models.dto.products.ProductUpdate;
 import com.secondhand.ecommerce.models.dto.response.CompletedResponse;
 import com.secondhand.ecommerce.models.dto.response.ProductResponse;
 import com.secondhand.ecommerce.models.dto.users.AppUserBuilder;
@@ -102,6 +103,13 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
             createNewProduct.setCategory(categories);
             createNewProduct.setCreatedBy(appUsers.getEmail());
 
+            if (image.length >= 5) {
+                return new BaseResponse(HttpStatus.BAD_REQUEST,
+                        "Maximum upload image not more than 4",
+                        null,
+                        OperationStatus.FAILURE);
+            }
+
             uploadProductImage(image, images);
 
             createNewProduct.setProductImages(images);
@@ -125,7 +133,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
     }
 
     @Override
-    public BaseResponse updateProduct(ProductDto request, MultipartFile[] image) {
+    public BaseResponse updateProduct(ProductUpdate request, MultipartFile[] image) {
 
         boolean authenticated = SecurityUtils.isAuthenticated();
 
@@ -141,6 +149,13 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
             updatedProduct.setDescription(request.getDescription());
             updatedProduct.setPrice(request.getPrice());
             updatedProduct.setCategory(categories);
+
+            if (image.length >= 5) {
+                return new BaseResponse(HttpStatus.BAD_REQUEST,
+                        "Maximum upload image not more than 4",
+                        null,
+                        OperationStatus.FAILURE);
+            }
 
             uploadProductImage(image, images);
             updatedProduct.setProductImages(images);
@@ -202,7 +217,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
                 .limit(4)
                 .filter(file -> {
                     if (file.isEmpty()) {
-                        throw new IllegalException("The file is required to create a new");
+                        throw new IllegalException("The image is required to create a new Product");
                     }
                     return true;
                 })

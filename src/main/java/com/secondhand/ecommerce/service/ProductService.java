@@ -2,6 +2,7 @@ package com.secondhand.ecommerce.service;
 
 import com.secondhand.ecommerce.models.dto.products.ProductDto;
 import com.secondhand.ecommerce.models.dto.products.ProductMapper;
+import com.secondhand.ecommerce.models.dto.products.ProductUpdate;
 import com.secondhand.ecommerce.models.dto.response.CompletedResponse;
 import com.secondhand.ecommerce.models.entity.Categories;
 import com.secondhand.ecommerce.models.entity.Product;
@@ -21,7 +22,7 @@ public interface ProductService {
 
     BaseResponse addProduct(ProductDto product, MultipartFile[] image);
 
-    BaseResponse updateProduct(ProductDto product, MultipartFile[] image);
+    BaseResponse updateProduct(ProductUpdate product, MultipartFile... image);
 
     CompletedResponse deleteProductById(Long id);
 

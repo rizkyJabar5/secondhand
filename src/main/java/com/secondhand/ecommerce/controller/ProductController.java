@@ -1,6 +1,7 @@
 package com.secondhand.ecommerce.controller;
 
 import com.secondhand.ecommerce.models.dto.products.ProductDto;
+import com.secondhand.ecommerce.models.dto.products.ProductUpdate;
 import com.secondhand.ecommerce.models.dto.response.CompletedResponse;
 import com.secondhand.ecommerce.models.enums.OperationStatus;
 import com.secondhand.ecommerce.service.ProductService;
@@ -31,9 +32,10 @@ public class ProductController {
                 HttpStatus.OK);
     }
 
+    @Operation(summary = "Add new product")
     @PostMapping(value = "/add",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> addProduct(@ModelAttribute ProductDto request,
                                         @RequestParam MultipartFile[] images) {
 
@@ -49,24 +51,19 @@ public class ProductController {
         return new ResponseEntity<>(baseResponse, HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Update existing product with id")
     @PutMapping(value = "/update",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateProduct(@ModelAttribute ProductDto product,
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> updateProduct(@ModelAttribute ProductUpdate product,
                                            @RequestParam MultipartFile[] images) {
 
         BaseResponse baseResponse = productService.updateProduct(product, images);
 
-        if (images.length >= 5) {
-            return new ResponseEntity<>(new BaseResponse(HttpStatus.BAD_REQUEST,
-                    "Maximum upload image not more than 4",
-                    null,
-                    OperationStatus.FAILURE), HttpStatus.BAD_REQUEST);
-        }
-
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 
+    @Operation(summary = "Update existing product with id product")
     @GetMapping("/show/{userId}")
     public ResponseEntity<?> getProductsByUserId(@PathVariable Long userId) {
 
@@ -75,6 +72,7 @@ public class ProductController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Operation(summary = "Delete existing product with id product")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable long id) {
 
