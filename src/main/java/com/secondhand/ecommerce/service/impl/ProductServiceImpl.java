@@ -63,7 +63,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         }
 
         return new BaseResponse(HttpStatus.OK,
-                "Product found: " + productUser.get(0).getPublishedBy(),
+                "Product found: " + productUser.get(0).getAddedBy(),
                 productUser,
                 OperationStatus.FOUND);
     }
