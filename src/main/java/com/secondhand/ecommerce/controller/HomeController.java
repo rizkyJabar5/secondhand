@@ -3,6 +3,7 @@ package com.secondhand.ecommerce.controller;
 
 import com.secondhand.ecommerce.models.dto.products.ProductMapper;
 import com.secondhand.ecommerce.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,7 @@ import static com.secondhand.ecommerce.utils.SecondHandConst.HOME_PAGE;
 public class HomeController {
     private final ProductService productService;
 
+    @Operation(summary = "Sorting product by price, with pagination, and filter by name and category id")
     @ModelAttribute
     @GetMapping
     public ResponseEntity<Map<String, Object>> home(

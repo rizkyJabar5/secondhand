@@ -46,7 +46,6 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
     private final AppUserService userService;
     private final CategoriesService categoryService;
     private final CloudinaryConfig cloudinaryConfig;
-
     private final ProductMapper productMapper;
 
     @Override
@@ -66,18 +65,6 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         return new BaseResponse(HttpStatus.OK,
                 "Product found: " + productUser.get(0).getAddedBy(),
                 productUser,
-                OperationStatus.FOUND);
-    }
-
-    public BaseResponse getAllProducts() {
-        List<ProductMapper> collect = productRepository.findAll()
-                .stream()
-                .map(productMapper::productToDto)
-                .collect(Collectors.toList());
-
-        return new BaseResponse(HttpStatus.OK,
-                "Product will be to load",
-                collect,
                 OperationStatus.FOUND);
     }
 
@@ -194,11 +181,9 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         );
     }
 
-    @Override
-    public Page<Product> getProductsPage(String productName, Categories category, Pageable pageable) {
-        return null;
-    }
-
+    /**
+     * UnUseless method
+     */
     @Override
     public Page<Product> getSortedPaginatedProducts(int page, int limit, Sort sort) {
         return super.getSortedPaginatedProducts(productRepository, page, limit, sort);
@@ -216,18 +201,22 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
     public Page<ProductMapper> getAllProductPageByProductNameAndCategory(String productName,
                                                                          Long categoryId,
                                                                          Pageable paging) {
-        if (productName == null && categoryId == null) {
+
+        boolean productNullOrEmpty = productName == null || productName.isEmpty();
+        boolean categoryNullOrEmpty = categoryId == null || org.apache.commons.lang3.ObjectUtils.isEmpty(categoryId);
+
+        if (productNullOrEmpty && categoryNullOrEmpty) {
             Page<Product> findAllProduct = productRepository.findAll(paging);
             return findAllProduct.map(productMapper::productToDto);
-        } else if (productName == null) {
-            Page<Product> byCategoryIdContaining = productRepository.findByCategoryIdContaining(categoryId, paging);
+        } else if (productNullOrEmpty) {
+            Page<Product> byCategoryIdContaining = productRepository.findByCategoryId(categoryId, paging);
             return byCategoryIdContaining.map(productMapper::productToDto);
-        } else if (categoryId == null) {
-            Page<Product> byProductNameContaining = productRepository.findByProductNameContaining(productName, paging);
+        } else if (categoryNullOrEmpty) {
+            Page<Product> byProductNameContaining = productRepository.findByProductName(productName, paging);
             return byProductNameContaining.map(productMapper::productToDto);
         }
 
-        Page<Product> byProductNameContainingAndCategoryIdContaining = productRepository.findByProductNameContainingAndCategoryIdContaining(productName, categoryId, paging);
+        Page<Product> byProductNameContainingAndCategoryIdContaining = productRepository.findByProductNameContainingIgnoreCaseAndCategoryId(productName, categoryId, paging);
         return byProductNameContainingAndCategoryIdContaining.map(productMapper::productToDto);
     }
 
