@@ -49,6 +49,7 @@ public final class AppUserBuilder implements UserDetails {
                 .email(user.getUsername())
                 .phoneNumber(user.getPhoneNumber())
                 .joinDate(user.getJoinDate())
+                .imageUrl(user.getImageUrl())
                 .accountNonExpired(user.isAccountNonExpired())
                 .accountNonLocked(user.isAccountNonLocked())
                 .credentialsNonExpired(user.isCredentialsNonExpired())
