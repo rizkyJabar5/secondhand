@@ -82,4 +82,13 @@ public class ProductController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Operation(summary = "Published new product with id product")
+    @PutMapping("/publish/{productId}")
+    public ResponseEntity<?> publishProduct(@PathVariable Long productId) {
+
+        BaseResponse response = productService.publishedProduct(productId);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }
