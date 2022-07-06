@@ -1,9 +1,6 @@
 package com.secondhand.ecommerce.controller.handlers;
 
-import com.secondhand.ecommerce.exceptions.AppBaseException;
-import com.secondhand.ecommerce.exceptions.AppsException;
-import com.secondhand.ecommerce.exceptions.DataViolationException;
-import com.secondhand.ecommerce.exceptions.IllegalException;
+import com.secondhand.ecommerce.exceptions.*;
 import com.secondhand.ecommerce.models.enums.OperationStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +23,15 @@ public class ControllerAdvisor extends ResponseStatusExceptionHandler {
         response.put("message", illegalException.getMessage());
         response.put("status", OperationStatus.FAILURE);
         response.put("code", HttpStatus.BAD_REQUEST.value());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NullDataStoreException.class)
+    public ResponseEntity<Object> nullHandler(NullDataStoreException nullPointerException) {
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", nullPointerException.getMessage());
+        response.put("code", HttpStatus.NOT_FOUND);
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }

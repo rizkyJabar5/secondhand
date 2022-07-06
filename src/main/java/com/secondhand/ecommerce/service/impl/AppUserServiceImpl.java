@@ -2,6 +2,7 @@ package com.secondhand.ecommerce.service.impl;
 
 import com.cloudinary.utils.ObjectUtils;
 import com.secondhand.ecommerce.config.CloudinaryConfig;
+import com.secondhand.ecommerce.exceptions.AppBaseException;
 import com.secondhand.ecommerce.exceptions.DataViolationException;
 import com.secondhand.ecommerce.exceptions.IllegalException;
 import com.secondhand.ecommerce.models.dto.response.CompletedResponse;
@@ -79,17 +80,12 @@ public class AppUserServiceImpl implements AppUserService {
             throw new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, userId));
         }
 
-        AppUsers completedUser = userRepository.checkProfileUser(userId);
-
-        if (completedUser == null) {
-            return new CompletedResponse(
-                    "The User is completed to update their profile",
-                    OperationStatus.COMPLETED.getName());
-        }
+        userRepository.checkProfileUser(userId)
+                .orElseThrow(() -> new AppBaseException("The user has not completed the profile"));
 
         return new CompletedResponse(
-                "The user has not completed the profile",
-                OperationStatus.NOT_COMPLETED.getName());
+                "The User is completed to update their profile",
+                OperationStatus.COMPLETED.getName());
     }
 
     @Override
@@ -107,22 +103,42 @@ public class AppUserServiceImpl implements AppUserService {
                 .equals(profileUser.getUserId());
 
         if (appUsers != null && equalsPrincipal) {
-            Address address = new Address();
-            appUsers.setFullName(profileUser.getName());
-            address.setCity(profileUser.getCity());
-            address.setStreet(profileUser.getStreet());
-            appUsers.setAddress(address);
-            appUsers.setPhoneNumber(profileUser.getPhoneNumber());
 
-            if (image.isEmpty()) {
+            if (appUsers.getAddress() == null) {
+                Address address = new Address();
+                address.setCity(profileUser.getCity());
+                address.setStreet(profileUser.getStreet());
+                appUsers.setAddress(address);
+            }
+
+            if (profileUser.getStreet() != null) {
+                Address address = appUsers.getAddress();
+                address.setStreet(profileUser.getStreet());
+                address.setCity(address.getCity());
+                appUsers.setAddress(address);
+            }
+
+            if (profileUser.getCity() != null) {
+                Address address = appUsers.getAddress();
+                address.setCity(profileUser.getCity());
+                address.setStreet(address.getStreet());
+                appUsers.setAddress(address);
+            }
+
+            if (profileUser.getName() != null) {
+                appUsers.setFullName(profileUser.getName());
+            }
+            if (profileUser.getPhoneNumber() != null) {
+                appUsers.setPhoneNumber(profileUser.getPhoneNumber());
+            }
+            if (image != null && !image.isEmpty()) {
                 // Todo: ditambahkan argument untuk menghapus image profile user di cloudinary
-                appUsers.setImageUrl(null);
-            } else {
                 Map uploadResult = cloudinary.upload(image,
                         ObjectUtils.asMap("resourceType", "auto"));
                 profileUser.setImageProfile(uploadResult.get("url").toString());
                 appUsers.setImageUrl(profileUser.getImageProfile());
             }
+
             userRepository.save(appUsers);
         } else {
             throw new DataViolationException("You're not required to access this profile");
