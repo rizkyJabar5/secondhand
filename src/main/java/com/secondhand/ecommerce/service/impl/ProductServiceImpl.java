@@ -181,6 +181,40 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         );
     }
 
+    @Override
+    public BaseResponse publishedProduct(Long productId) {
+        Product publish = productRepository.findById(productId)
+                .orElseThrow(() -> new AppBaseException("Product not found"));
+
+        AppUserBuilder userDetails = SecurityUtils.getAuthenticatedUserDetails();
+
+        List<Product> productByUsers = productRepository
+                .findProductByAppUsers(Objects.requireNonNull(userDetails)
+                        .getUserId());
+
+        String addedBy = publish.getCreatedBy();
+        String createdBy = productByUsers.get(0).getCreatedBy();
+
+        if (!Objects.equals(createdBy, addedBy)) {
+            return new BaseResponse(HttpStatus.BAD_REQUEST,
+                    "Product it's not your own",
+                    OperationStatus.FAILURE);
+        }
+
+        if (publish.getIsPublished().equals(true)) {
+            return new BaseResponse(HttpStatus.NOT_ACCEPTABLE,
+                    "Product is already published",
+                    OperationStatus.FAILURE);
+        }
+
+        publish.setIsPublished(true);
+        productRepository.save(publish);
+
+        return new BaseResponse(HttpStatus.OK,
+                "Product " + productId + " has been published.",
+                OperationStatus.SUCCESS);
+    }
+
     /**
      * UnUseless method
      */

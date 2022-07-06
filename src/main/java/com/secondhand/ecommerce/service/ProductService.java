@@ -23,6 +23,8 @@ public interface ProductService {
 
     CompletedResponse deleteProductById(Long id);
 
+    BaseResponse publishedProduct(Long productId);
+
     Page<Product> getSortedPaginatedProducts(int page, int limit, Sort sort);
 
     Optional<ProductMapper> loadProductById(Long id);
