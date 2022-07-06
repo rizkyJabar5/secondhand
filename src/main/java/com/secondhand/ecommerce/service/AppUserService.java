@@ -23,5 +23,5 @@ public interface AppUserService extends UserDetailsService, HasLogger {
 
     Optional<AppUsers> loadUserById(Long id);
 
-
+    AppUsers findByUserId(Long userId);
 }

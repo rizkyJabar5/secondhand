@@ -220,6 +220,11 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         return byProductNameContainingAndCategoryIdContaining.map(productMapper::productToDto);
     }
 
+    @Override
+    public Product getProductById(Long productId) {
+        return productRepository.findProductById(productId);
+    }
+
     private void uploadProductImage(MultipartFile[] image, List<String> images) {
         Arrays.stream(image)
                 .limit(4)
