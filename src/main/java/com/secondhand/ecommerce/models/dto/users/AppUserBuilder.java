@@ -16,12 +16,13 @@ import java.util.*;
 public final class AppUserBuilder implements UserDetails {
 
     private Long userId;
-    private String fullName;
     private String email;
+    private String fullName;
     private String password;
     private Address address;
     private Date joinDate;
     private String phoneNumber;
+    private String imageUrl;
     private boolean accountNonExpired;
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;

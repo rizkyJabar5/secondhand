@@ -1,15 +1,13 @@
 package com.secondhand.ecommerce.security.authentication.login;
 
 import com.secondhand.ecommerce.models.dto.users.AppUserBuilder;
+import com.secondhand.ecommerce.models.entity.Address;
 import com.secondhand.ecommerce.security.SecurityUtils;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 import static com.secondhand.ecommerce.utils.SecondHandConst.TOKEN_PREFIX;
@@ -21,10 +19,13 @@ public class LoginJwtResponse implements Serializable {
 
     private Long id;
     private String accessToken;
+    private String fullName;
     private String email;
     private String type;
     private Date joinDate;
-    private List<String> roles;
+    private Address address;
+    private String phoneNumber;
+    private String imageUrl;
 
     /**
      * Builds jwtResponseBuilder object from the specified userDetails.
@@ -52,16 +53,18 @@ public class LoginJwtResponse implements Serializable {
         }
 
         if (Objects.nonNull(localUserDetails)) {
-            List<String> roleList = new ArrayList<>();
-            for (GrantedAuthority authority : localUserDetails.getAuthorities()) {
-                roleList.add(authority.getAuthority());
-            }
+//            List<String> roleList = new ArrayList<>();
+//            for (GrantedAuthority authority : localUserDetails.getAuthorities()) {
+//                roleList.add(authority.getAuthority());
+//            }
             return LoginJwtResponse.builder()
                     .accessToken(jwToken)
                     .id(localUserDetails.getUserId())
                     .email(localUserDetails.getEmail())
                     .type(TOKEN_PREFIX)
-                    .roles(roleList)
+                    .address(localUserDetails.getAddress())
+                    .phoneNumber(localUserDetails.getPhoneNumber())
+                    .imageUrl(localUserDetails.getImageUrl())
                     .joinDate(localUserDetails.getJoinDate())
                     .build();
         }
