@@ -21,7 +21,9 @@ public class ProductMapper {
     private BigInteger price;
     private Long categoryId;
     private String categoryName;
-    private String publishedBy;
+    private String addedBy;
+    private boolean isPublished;
+    private boolean isSold;
     private List<String> productImages;
 
     public ProductMapper productToDto(Product entity) {
@@ -31,7 +33,9 @@ public class ProductMapper {
         price = entity.getPrice();
         categoryId = entity.getCategory().getId();
         categoryName = entity.getCategory().getName().getName();
-        publishedBy = entity.getCreatedBy();
+        addedBy = entity.getCreatedBy();
+        isPublished = entity.getIsPublished();
+        isSold = entity.getIsSold();
         productImages = entity.getProductImages();
 
         return new ProductMapper(productId,
@@ -40,7 +44,9 @@ public class ProductMapper {
                 price,
                 categoryId,
                 categoryName,
-                publishedBy,
+                addedBy,
+                isPublished,
+                isSold,
                 productImages);
     }
 }

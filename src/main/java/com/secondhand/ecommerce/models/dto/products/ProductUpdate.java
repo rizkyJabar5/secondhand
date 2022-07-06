@@ -11,8 +11,9 @@ import java.math.BigInteger;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductDto {
+public class ProductUpdate {
 
+    private Long productId;
     private String productName;
     private String description;
     private BigInteger price;

@@ -4,6 +4,7 @@ import com.secondhand.ecommerce.models.dto.response.CompletedResponse;
 import com.secondhand.ecommerce.models.dto.users.ProfileUser;
 import com.secondhand.ecommerce.service.AppUserService;
 import com.secondhand.ecommerce.utils.BaseResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ public class AppUserController {
 
     private final AppUserService userService;
 
+    @Operation(summary = "Update existing user with id and equals principal")
     @PutMapping(value = "/profile-user",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -33,14 +35,13 @@ public class AppUserController {
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
+    @Operation(summary = "check user profile for complete data")
     @GetMapping("/check-data-user/{id}")
     public ResponseEntity<?> getCheckProfileUsers(@PathVariable("id") Long userId) {
 
         CompletedResponse response = userService.checkProfileUser(userId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
-
     }
-
 
 }

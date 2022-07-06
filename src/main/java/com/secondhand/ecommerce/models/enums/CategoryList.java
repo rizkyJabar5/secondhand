@@ -2,11 +2,11 @@ package com.secondhand.ecommerce.models.enums;
 
 public enum CategoryList {
 
-    HOBI("Hobi"),
-    KENDARAAN("Kendaraan"),
-    BAJU("Baju"),
-    ELEKTRONIK("Elektronik"),
-    KESEHATAN("Kesehatan");
+    Hobi("Hobi"),
+    Kendaraan("Kendaraan"),
+    Baju("Baju"),
+    Elektronik("Elektronik"),
+    Kesehatan("Kesehatan");
 
     private final String name;
 

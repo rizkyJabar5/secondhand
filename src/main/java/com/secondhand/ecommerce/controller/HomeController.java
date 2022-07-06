@@ -1,24 +1,21 @@
 package com.secondhand.ecommerce.controller;
 
 
-import com.secondhand.ecommerce.models.entity.Categories;
-import com.secondhand.ecommerce.models.entity.Product;
-import com.secondhand.ecommerce.repository.ProductRepository;
-import com.secondhand.ecommerce.service.CategoriesService;
+import com.secondhand.ecommerce.models.dto.products.ProductMapper;
 import com.secondhand.ecommerce.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.secondhand.ecommerce.utils.SecondHandConst.HOME_PAGE;
 
@@ -26,41 +23,31 @@ import static com.secondhand.ecommerce.utils.SecondHandConst.HOME_PAGE;
 @RequiredArgsConstructor
 @RequestMapping(HOME_PAGE)
 public class HomeController {
-
-    private final CategoriesService categoriesService;
     private final ProductService productService;
-    private final ProductRepository productRepository;
 
-    //Sort, Seacrhing, Filter with Name
+    @Operation(summary = "Sorting product by price, with pagination, and filter by name and category id")
+    @ModelAttribute
     @GetMapping
-    public Page<Product> home(
-            @RequestParam(defaultValue = "", required = false) String productName,
-            @RequestParam(defaultValue = "", required = false) Categories category,
-            @RequestParam int page,
-            @RequestParam int size,
-            @RequestParam(defaultValue = "name, asc", required = false) String[] sort) {
+    public ResponseEntity<Map<String, Object>> home(
+            @RequestParam(required = false) String productName,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int size) {
 
-        List<Sort.Order> orders = new ArrayList<>();
-        if (sort[0].contains(",")) {
-            for (String sortOrder : sort) {
-                String[] _sort = sortOrder.split(",");
-                orders.add(new Sort.Order(Sort.Direction.fromString(_sort[1]), _sort[0]));
-            }
-        } else {
-            orders.add(new Sort.Order(Sort.Direction.fromString(sort[1]), sort[0]));
+        try {
+            Pageable paging = PageRequest.of(page - 1, size, Sort.by("price"));
+
+            Page<ProductMapper> productPage = productService.getAllProductPageByProductNameAndCategory(productName, categoryId, paging);
+            List<ProductMapper> products = productPage.getContent();
+            Map<String, Object> response = new HashMap<>();
+            response.put("products", products);
+            response.put("currentPage", productPage.getNumber() + 1);
+            response.put("totalProducts", productPage.getTotalElements());
+            response.put("totalPages", productPage.getTotalPages());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return productRepository.findByProductNameIgnoreCaseAndCategoryIgnoreCase(
-                productName,
-                category,
-                PageRequest.of(page, size, Sort.by(orders)));
     }
 
-    @GetMapping("/categories")
-    public ResponseEntity<?> getAllCategories() {
-
-        return new ResponseEntity<>(
-                categoriesService.findAllCategories(),
-                HttpStatus.OK);
-    }
 }
