@@ -62,6 +62,7 @@ public class LoginJwtResponse implements Serializable {
                     .id(localUserDetails.getUserId())
                     .email(localUserDetails.getEmail())
                     .type(TOKEN_PREFIX)
+                    .fullName(localUserDetails.getFullName())
                     .address(localUserDetails.getAddress())
                     .phoneNumber(localUserDetails.getPhoneNumber())
                     .imageUrl(localUserDetails.getImageUrl())
