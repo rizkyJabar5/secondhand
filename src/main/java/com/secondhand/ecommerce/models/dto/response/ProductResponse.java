@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class ProductResponse {
-    private String username;
+    private Long productId;
     private String productName;
     private String description;
     private BigInteger price;
@@ -17,6 +17,8 @@ public class ProductResponse {
     private String createdBy;
     private String createdDate;
     private List<String> urlImageList;
+    private boolean isPublished;
+    private boolean isSold;
 
     public ProductResponse(String productName,
                            String description,
@@ -24,7 +26,9 @@ public class ProductResponse {
                            String categoryName,
                            String createdBy,
                            String createdDate,
-                           List<String> urlImageList) {
+                           List<String> urlImageList,
+                           boolean isPublished,
+                           boolean isSold) {
         this.productName = productName;
         this.description = description;
         this.price = price;
@@ -32,5 +36,7 @@ public class ProductResponse {
         this.createdBy = createdBy;
         this.createdDate = createdDate;
         this.urlImageList = urlImageList;
+        this.isPublished = isPublished;
+        this.isSold = isSold;
     }
 }
