@@ -12,7 +12,6 @@ import java.util.List;
 @Transactional
 public interface OffersRepository extends JpaRepository<Offers, Long> {
 
-
     @Query("select o from Offers o where o.user.userId=?1")
     List<Offers> findByUserId(Long user);
 }

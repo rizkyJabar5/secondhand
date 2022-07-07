@@ -38,7 +38,6 @@ public class OffersController {
         return new ResponseEntity(response, HttpStatus.OK);
     }
 
-
     @PutMapping("/status")
     public ResponseEntity<BaseResponse> updateStatus(
             @ModelAttribute OfferUpdate request) {
@@ -49,24 +48,16 @@ public class OffersController {
 //        offersService.updatePrice(offerId);
 //        return new ResponseEntity(HttpStatus.OK);
 //    }
-//
-//    @PutMapping("/rejected-status/{offerId}")
-//    public ResponseEntity<OfferResponse> rejectStatus(@PathVariable("offerId") Long offerId){
-//        offersService.rejectedStatus(offerId);
-//        return new ResponseEntity(HttpStatus.OK);
-//    }
 
 //    @GetMapping("/historySeller")
 
-    @GetMapping("/history-buyer/{userId}")
-    public ResponseEntity <?> historySeller(@PathVariable Long userId){
+    @GetMapping("/seller/interested/{userId}")
+    public ResponseEntity <?> interested(@PathVariable Long userId){
         BaseResponse response = offersService.getOfferByUserId(userId);
         return new ResponseEntity<>(
                 response,
                 HttpStatus.OK);
     }
-
-
 
 
 }
