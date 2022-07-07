@@ -1,11 +1,13 @@
 package com.secondhand.ecommerce.models.entity;
 
+import com.secondhand.ecommerce.models.enums.OfferStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,26 +15,19 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Offers {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "offer_id", nullable = false)
-    private Long offerId;
+public class Offers extends BaseEntity{
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
-    private AppUsers userId;
+    private AppUsers user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
-    private Product productId;
+    private Product product;
 
     @Column(name = "offer_negotiated")
-    private Long offerNegotiated;
+    private BigInteger offerNegotiated;
 
     @Column(name = "status")
-    private String offerStatus;
-
-    @Column(name = "local_date_time", columnDefinition = "TIMESTAMP")
-    private LocalDateTime localDateTime;
+    private OfferStatus offerStatus = OfferStatus.Waiting;
 }

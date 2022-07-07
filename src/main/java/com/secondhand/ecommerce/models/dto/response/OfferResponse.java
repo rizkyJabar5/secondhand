@@ -1,26 +1,28 @@
 package com.secondhand.ecommerce.models.dto.response;
 
+import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.models.entity.Offers;
 import lombok.Data;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Data
 public class OfferResponse {
 
-    private Long userId;
     private Long productId;
     private Long offerId;
-    private Long offerNegotiated;
+    private BigInteger offerNegotiated;
     private String offerStatus;
-    private LocalDateTime localDateTime;
+    private String buyer;
+    private String timestamp;
 
     public OfferResponse(Offers offer) {
-        this.userId = offer.getUserId().getUserId();
-        this.productId = offer.getProductId().getId();
-        this.offerId = offer.getOfferId();
+        this.productId = offer.getProduct().getId();
+        this.offerId = offer.getId();
         this.offerNegotiated = offer.getOfferNegotiated();
-        this.offerStatus = offer.getOfferStatus();
-        this.localDateTime = offer.getLocalDateTime();
+        this.offerStatus = offer.getOfferStatus().name();
+        this.buyer = offer.getCreatedBy();
+        this.timestamp = offer.getCreatedDate().toString();
     }
 }

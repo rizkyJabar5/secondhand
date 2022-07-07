@@ -1,14 +1,12 @@
 package com.secondhand.ecommerce.service;
 
+import com.secondhand.ecommerce.models.dto.offers.OfferSave;
+import com.secondhand.ecommerce.models.dto.offers.OfferUpdate;
 import com.secondhand.ecommerce.models.entity.Offers;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
+import com.secondhand.ecommerce.utils.BaseResponse;
 
 public interface OffersService {
-    //    void deleteOffersById(Offers id);
-    void saveOffer(Long offerId, Long userId, Long productId, Long offerNegotiated, String offerStatus, LocalDateTime dateTime);
-    void acceptedStatus(Long offerId);
-    Optional<Offers> findOfferById(Long offerId);
-    void rejectedStatus(Long offerId);
+    BaseResponse saveOffer(OfferSave request);
+    BaseResponse updateOffer(OfferUpdate update);
+    BaseResponse getOfferByUserId(Long userId);
 }
