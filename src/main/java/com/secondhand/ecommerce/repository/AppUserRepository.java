@@ -19,8 +19,8 @@ public interface AppUserRepository extends JpaRepository<AppUsers, Long> {
     @Query(value =
             "select a from AppUsers a " +
                     "where a.userId = ?1 " +
-                    "and a.address.city is null " +
-                    "and a.address.street is null " +
-                    "and a.phoneNumber is null")
-    AppUsers checkProfileUser(Long userId);
+                    "and a.address.city is not null " +
+                    "and a.address.street is not null " +
+                    "and a.phoneNumber is not null")
+    Optional<AppUsers> checkProfileUser(Long userId);
 }
