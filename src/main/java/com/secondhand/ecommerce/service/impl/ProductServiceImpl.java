@@ -129,25 +129,33 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         Product updatedProduct = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new AppBaseException("Product not found"));
 
-        Categories categories = categoryService.loadCategoryById(request.getCategoryId());
-
         List<String> images = new ArrayList<>();
 
         if (authenticated) {
-            updatedProduct.setProductName(request.getProductName());
-            updatedProduct.setDescription(request.getDescription());
-            updatedProduct.setPrice(request.getPrice());
-            updatedProduct.setCategory(categories);
-
-            if (image.length >= 5) {
-                return new BaseResponse(HttpStatus.BAD_REQUEST,
-                        "Maximum upload image not more than 4",
-                        null,
-                        OperationStatus.FAILURE);
+            if (request.getProductName() != null) {
+                updatedProduct.setProductName(request.getProductName());
+            }
+            if (request.getDescription() != null) {
+                updatedProduct.setDescription(request.getDescription());
+            }
+            if (request.getPrice() != null) {
+                updatedProduct.setPrice(request.getPrice());
+            }
+            if (request.getCategoryId() != null) {
+                Categories categories = categoryService.loadCategoryById(request.getCategoryId());
+                updatedProduct.setCategory(categories);
             }
 
-            uploadProductImage(image, images);
-            updatedProduct.setProductImages(images);
+            if (image != null) {
+                if (image.length > 4) {
+                    return new BaseResponse(HttpStatus.BAD_REQUEST,
+                            "Maximum upload image not more than 4",
+                            null,
+                            OperationStatus.FAILURE);
+                }
+                uploadProductImage(image, images);
+                updatedProduct.setProductImages(images);
+            }
 
             productRepository.save(updatedProduct);
         }
@@ -193,14 +201,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
 
         AppUserBuilder userDetails = SecurityUtils.getAuthenticatedUserDetails();
 
-        List<Product> productByUsers = productRepository
-                .findProductByAppUsers(Objects.requireNonNull(userDetails)
-                        .getUserId());
-
-        String addedBy = publish.getCreatedBy();
-        String createdBy = productByUsers.get(0).getCreatedBy();
-
-        if (!Objects.equals(createdBy, addedBy)) {
+        if (!Objects.equals(publish.getId(), Objects.requireNonNull(userDetails).getUserId())) {
             return new BaseResponse(HttpStatus.BAD_REQUEST,
                     "Product it's not your own",
                     OperationStatus.FAILURE);
@@ -259,19 +260,18 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         return byProductNameContainingAndCategoryIdContaining.map(productMapper::productToDto);
     }
 
-    private void uploadProductImage(MultipartFile[] image, List<String> images) {
-        Arrays.stream(image)
-                .limit(4)
-                .filter(file -> {
-                    if (file.isEmpty()) {
-                        throw new IllegalException("The file is required to create a new");
-                    }
-                    return true;
-                })
-                .forEach(file -> {
-                    Map uploadResult = cloudinaryConfig.upload(file,
-                            ObjectUtils.asMap("resourcetype", "auto"));
-                    images.add(uploadResult.get("url").toString());
-                });
+    private void uploadProductImage(MultipartFile[] images, List<String> urlImages) {
+
+        if (images != null && images.length > 0) {
+
+            for (MultipartFile image : images) {
+                if (image.isEmpty()) {
+                    throw new IllegalException("The image is required to create a new a product.");
+                }
+                Map uploadResult = cloudinaryConfig.upload(image,
+                        ObjectUtils.asMap("resourcetype", "auto"));
+                urlImages.add(uploadResult.get("url").toString());
+            }
+        }
     }
 }
