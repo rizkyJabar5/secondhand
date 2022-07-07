@@ -25,4 +25,7 @@ public class OfferResponse {
         this.buyer = offer.getCreatedBy();
         this.timestamp = offer.getCreatedDate().toString();
     }
+    public OfferResponse(String offerStatus){
+        this.offerStatus = offerStatus;
+    }
 }

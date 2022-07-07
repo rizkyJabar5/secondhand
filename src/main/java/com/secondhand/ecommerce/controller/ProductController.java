@@ -58,7 +58,8 @@ public class ProductController {
 
     @Operation(summary = "Update existing product with id product")
     @GetMapping("/show/{userId}")
-    public ResponseEntity<?> getProductsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<?> getProductsByUserId(
+            @PathVariable Long userId) {
 
         BaseResponse response = productService.getProductsByUserId(userId);
 

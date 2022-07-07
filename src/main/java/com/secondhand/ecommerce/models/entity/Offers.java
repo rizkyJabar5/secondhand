@@ -30,4 +30,7 @@ public class Offers extends BaseEntity{
 
     @Column(name = "status")
     private OfferStatus offerStatus = OfferStatus.Waiting;
+
+    public void setStatusProcess(OfferStatus accepted) {
+    }
 }

@@ -1,9 +1,7 @@
 package com.secondhand.ecommerce.service.impl;
 
-import com.secondhand.ecommerce.exceptions.AppBaseException;
 import com.secondhand.ecommerce.models.dto.offers.OfferMapper;
 import com.secondhand.ecommerce.models.dto.offers.OfferSave;
-import com.secondhand.ecommerce.models.dto.offers.OfferUpdate;
 import com.secondhand.ecommerce.models.dto.response.OfferResponse;
 import com.secondhand.ecommerce.models.dto.users.AppUserBuilder;
 import com.secondhand.ecommerce.models.entity.AppUsers;
@@ -21,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,6 +48,11 @@ public class OfferServiceImpl implements OffersService {
                 OperationStatus.SUCCESS);
     }
 
+    @Override
+    public BaseResponse updateOffer(Long offerId) {
+        return null;
+    }
+
 //    @Override
 //    public void updatePrice(Long offerId) {
 //        Offers update = offersRepository.findById(offerId)
@@ -58,8 +60,8 @@ public class OfferServiceImpl implements OffersService {
 //        update.setOfferNegotiated();
 //    }
 
-    @Override
-    public BaseResponse updateOffer(OfferUpdate update) {
+//    @Override
+//    public BaseResponse updateOffer(Long offerId) {
 //        boolean authenticated = SecurityUtils.isAuthenticated();
 //
 //        Offers updatedOffers = offersRepository.findById(update.getOfferId())
@@ -67,15 +69,15 @@ public class OfferServiceImpl implements OffersService {
 //        if (authenticated){
 //            updatedOffers.setOfferStatus(update.getOfferStatus());
 //        }
-        Offers offers = offersRepository.findById(update.getOfferId()).get();
-        offers.getOfferStatus();
-        offersRepository.save(offers);
-
-        return new BaseResponse(HttpStatus.OK,
-                "Your bid price has been successfully sent to the seller",
-                new OfferResponse(offers),
-                OperationStatus.SUCCESS);
-    }
+//        Offers offers = offersRepository.findById(update.getOfferId()).get();
+//        offers.getOfferStatus();
+//        offersRepository.save(offers);
+//
+//        return new BaseResponse(HttpStatus.OK,
+//                "Your bid price has been successfully sent to the seller",
+//                new OfferResponse(offers),
+//                OperationStatus.SUCCESS);
+//    }
 
     @Override
     public BaseResponse getOfferByUserId(Long userId) {
@@ -96,5 +98,19 @@ public class OfferServiceImpl implements OffersService {
                 OperationStatus.FOUND);
     }
 
+    @Override
+    public Offers findByOfferId(Long offerId) {
+        return offersRepository.findByOfferId(offerId);
+    }
 
+    @Override
+    public BaseResponse updateStatusOffer(Offers offers, Long offerId) {
+        Offers updateOffers = offersRepository.findByOfferId(offers.getId());
+        updateOffers.setOfferStatus(offers.getOfferStatus());
+        OfferResponse response = new OfferResponse(offers.getOfferStatus().toString());
+        return new BaseResponse(HttpStatus.OK,
+                "Success to update status",
+                response,
+                OperationStatus.SUCCESS);
+    }
 }
