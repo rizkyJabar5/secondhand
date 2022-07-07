@@ -49,7 +49,7 @@ public class ProductController {
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> updateProduct(@ModelAttribute ProductUpdate product,
-                                           @RequestParam MultipartFile[] images) {
+                                           @RequestParam(required = false) MultipartFile[] images) {
 
         BaseResponse baseResponse = productService.updateProduct(product, images);
 
