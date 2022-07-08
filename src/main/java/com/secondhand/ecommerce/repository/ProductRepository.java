@@ -15,22 +15,29 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    @Query("select  p from Product p where p.category.id =:categoryId and p.isPublished = true")
+    @Query("select  p from Product p " +
+            "where p.category.id =:categoryId " +
+            "and p.isPublished = true " +
+            "and p.isSold = false ")
     Page<Product> findByCategoryId(Long categoryId, Pageable pageable);
 
     @NonNull
-    @Query("select p from Product p where p.isPublished = true")
+    @Query("select p from Product p " +
+            "where p.isPublished = true " +
+            "and p.isSold = false")
     Page<Product> findAll(@NonNull Pageable pageable);
 
     @Query("select p from Product p " +
             "where upper (p.productName) like upper (concat('%', ?1, '%'))" +
-            "and p.isPublished = true")
+            "and p.isPublished = true " +
+            "and p.isSold = false")
     Page<Product> findByProductName(String productName, Pageable pageable);
 
     @Query("select p from Product p " +
             "where upper(p.productName) like upper(concat('%', ?1, '%')) " +
             "and p.category.id = ?2 " +
-            "and p.isPublished = true")
+            "and p.isPublished = true " +
+            "and p.isSold = false")
     Page<Product> findByProductNameContainingIgnoreCaseAndCategoryId(String productName, Long categoryId, Pageable pageable);
 
     @Query("select p from Product p where p.appUsers.userId = ?1")

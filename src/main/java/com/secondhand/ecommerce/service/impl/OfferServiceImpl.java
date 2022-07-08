@@ -4,11 +4,11 @@ import com.secondhand.ecommerce.exceptions.AppBaseException;
 import com.secondhand.ecommerce.models.dto.offers.OfferMapper;
 import com.secondhand.ecommerce.models.dto.offers.OfferSave;
 import com.secondhand.ecommerce.models.dto.offers.OfferUpdate;
-import com.secondhand.ecommerce.models.dto.response.OfferResponse;
 import com.secondhand.ecommerce.models.dto.users.AppUserBuilder;
 import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.models.entity.Offers;
 import com.secondhand.ecommerce.models.entity.Product;
+import com.secondhand.ecommerce.models.enums.OfferStatus;
 import com.secondhand.ecommerce.models.enums.OperationStatus;
 import com.secondhand.ecommerce.repository.OffersRepository;
 import com.secondhand.ecommerce.security.SecurityUtils;
@@ -59,10 +59,8 @@ public class OfferServiceImpl implements OffersService {
             offers.setProduct(product);
             offers.setOfferNegotiated(request.getPriceNegotiated());
 
-            boolean sameProduct = Objects.equals(offers.getProduct().getId(), product.getId());
-            boolean sameBuyer = Objects.equals(offers.getUser().getUserId(), buyer);
-
             boolean present = offersRepository.findByUserIdAndProduct(buyer, product.getId()).isPresent();
+
             if (Objects.deepEquals(buyer, seller)) {
                 return new BaseResponse(HttpStatus.BAD_REQUEST,
                         "You can't bid on your own product",
@@ -86,19 +84,37 @@ public class OfferServiceImpl implements OffersService {
     public BaseResponse updateOffer(OfferUpdate request) {
 
         boolean authenticated = SecurityUtils.isAuthenticated();
+        AppUserBuilder userDetails = SecurityUtils.getAuthenticatedUserDetails();
 
         Offers updatedOffers = offersRepository.findById(request.getOfferId())
                 .orElseThrow(() -> new AppBaseException("Offer not found"));
 
+        Long selerId = updatedOffers.getProduct().getAppUsers().getUserId();
 
-        if (authenticated) {
-            updatedOffers.setOfferStatus(request.getOfferStatus());
-            offersRepository.save(updatedOffers);
+        if (authenticated && Objects.equals(selerId, userDetails.getUserId())) {
+            if (request.getOfferStatus().equals(OfferStatus.Accepted)) {
+                updatedOffers.setOfferStatus(OfferStatus.Accepted);
+
+                offersRepository.save(updatedOffers);
+
+            } else if (request.getOfferStatus().equals(OfferStatus.Rejected)) {
+                updatedOffers.setOfferStatus(OfferStatus.Rejected);
+                offersRepository.save(updatedOffers);
+
+                return new BaseResponse(HttpStatus.OK,
+                        "Offer has been rejected.",
+                        updatedOffers.getOfferStatus(),
+                        OperationStatus.SUCCESS);
+            }
+        } else {
+            return new BaseResponse(HttpStatus.BAD_REQUEST,
+                    "You must be authenticated or you must be seller to accept offer.",
+                    OperationStatus.SUCCESS);
         }
 
         return new BaseResponse(HttpStatus.OK,
-                "Your bid price has been successfully sent to the seller",
-                new OfferResponse(updatedOffers),
+                "Offer has been accepted, please call your buyer.",
+                updatedOffers.getOfferStatus(),
                 OperationStatus.SUCCESS);
     }
 

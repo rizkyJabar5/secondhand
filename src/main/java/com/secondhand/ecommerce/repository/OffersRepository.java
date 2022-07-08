@@ -13,7 +13,7 @@ import java.util.Optional;
 @Transactional
 public interface OffersRepository extends JpaRepository<Offers, Long> {
 
-    @Query("select o from Offers o where o.user.userId=?1")
+    @Query("select o from Offers o where o.product.appUsers.userId=?1")
     List<Offers> findByUserId(Long user);
 
     @Query("select o from Offers o where o.user.userId=?1 and o.product.id=?2  ")
