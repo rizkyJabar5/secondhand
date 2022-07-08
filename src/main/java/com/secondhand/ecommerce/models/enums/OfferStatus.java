@@ -4,7 +4,8 @@ public enum OfferStatus {
 
     Waiting("Waiting"),
     Accepted("Accepted"),
-    Rejected("Rejected");
+    Rejected("Rejected"),
+    Done("Done");
 
     private String name;
 

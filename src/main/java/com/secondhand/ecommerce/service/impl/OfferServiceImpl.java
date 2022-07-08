@@ -11,6 +11,7 @@ import com.secondhand.ecommerce.models.entity.Product;
 import com.secondhand.ecommerce.models.enums.OfferStatus;
 import com.secondhand.ecommerce.models.enums.OperationStatus;
 import com.secondhand.ecommerce.repository.OffersRepository;
+import com.secondhand.ecommerce.repository.ProductRepository;
 import com.secondhand.ecommerce.security.SecurityUtils;
 import com.secondhand.ecommerce.service.AppUserService;
 import com.secondhand.ecommerce.service.OffersService;
@@ -35,6 +36,8 @@ public class OfferServiceImpl implements OffersService {
     private final AppUserService userService;
     private final ProductService productService;
     private final OfferMapper offerMapper;
+
+    private final ProductRepository productRepository;
 
     @Override
     public BaseResponse saveOffer(OfferSave request) {
@@ -136,6 +139,38 @@ public class OfferServiceImpl implements OffersService {
                 "Offer found " + productOffer.get(0).getBuyer(),
                 productOffer,
                 OperationStatus.FOUND);
+    }
+
+    @Override
+    public BaseResponse updateStatusProduct(Long offerId) {
+
+        AppUserBuilder userDetails = SecurityUtils.getAuthenticatedUserDetails();
+        boolean authenticated = SecurityUtils.isAuthenticated();
+
+        Offers updatedOffers = offersRepository.findById(offerId)
+                .orElseThrow(() -> new AppBaseException("Offer not found"));
+
+        Product product = productRepository.findById(updatedOffers.getProduct().getId())
+                .orElseThrow(() -> new AppBaseException("Product not found"));
+
+        Long sellerLogin = Objects.requireNonNull(userDetails).getUserId();
+        Long sellerId = updatedOffers.getProduct().getAppUsers().getUserId();
+
+        if (authenticated && Objects.equals(sellerId, sellerLogin)) {
+            updatedOffers.setOfferStatus(OfferStatus.Done);
+            product.setIsSold(true);
+
+            productRepository.save(product);
+            offersRepository.save(updatedOffers);
+        } else {
+            return new BaseResponse(HttpStatus.BAD_REQUEST,
+                    "You must be authenticated or you must be seller to accept offer.",
+                    OperationStatus.SUCCESS);
+        }
+
+        return new BaseResponse(HttpStatus.OK,
+                "Your product has been successfully sold.",
+                OperationStatus.SUCCESS);
     }
 
 }
