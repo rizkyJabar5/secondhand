@@ -260,6 +260,13 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         return byProductNameContainingAndCategoryIdContaining.map(productMapper::productToDto);
     }
 
+    @Override
+    public Product getProductById(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        String.format(PRODUCT_NOT_FOUND_MSG, productId)));
+    }
+
     private void uploadProductImage(MultipartFile[] images, List<String> urlImages) {
 
         if (images != null && images.length > 0) {
