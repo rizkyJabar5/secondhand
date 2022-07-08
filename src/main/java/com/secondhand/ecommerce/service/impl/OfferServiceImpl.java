@@ -89,9 +89,10 @@ public class OfferServiceImpl implements OffersService {
         Offers updatedOffers = offersRepository.findById(request.getOfferId())
                 .orElseThrow(() -> new AppBaseException("Offer not found"));
 
-        Long selerId = updatedOffers.getProduct().getAppUsers().getUserId();
+        Long sellerId = updatedOffers.getProduct().getAppUsers().getUserId();
+        Long sellerLogin = Objects.requireNonNull(userDetails).getUserId();
 
-        if (authenticated && Objects.equals(selerId, userDetails.getUserId())) {
+        if (authenticated && Objects.equals(sellerId, sellerLogin)) {
             if (request.getOfferStatus().equals(OfferStatus.Accepted)) {
                 updatedOffers.setOfferStatus(OfferStatus.Accepted);
 
