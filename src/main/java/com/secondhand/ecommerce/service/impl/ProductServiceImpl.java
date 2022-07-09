@@ -201,7 +201,8 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
 
         AppUserBuilder userDetails = SecurityUtils.getAuthenticatedUserDetails();
 
-        if (!Objects.equals(publish.getId(), Objects.requireNonNull(userDetails).getUserId())) {
+        Long userId = publish.getAppUsers().getUserId();
+        if (!Objects.equals(userId, Objects.requireNonNull(userDetails).getUserId())) {
             return new BaseResponse(HttpStatus.BAD_REQUEST,
                     "Product it's not your own",
                     OperationStatus.FAILURE);
