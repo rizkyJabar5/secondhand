@@ -83,8 +83,8 @@ public class ProductController {
     }
 
     @Operation(summary = "Published new product with id product")
-    @PutMapping("/publish/{productId}")
-    public ResponseEntity<?> publishProduct(@PathVariable Long productId) {
+    @PutMapping("/publish")
+    public ResponseEntity<?> publishProduct(@RequestParam Long productId) {
 
         BaseResponse response = productService.publishedProduct(productId);
 
