@@ -32,7 +32,7 @@ public class HomeController {
             @RequestParam(required = false) String productName,
             @RequestParam(required = false) Long categoryId,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "5") int size) {
+            @RequestParam(defaultValue = "12") int size) {
 
         try {
             Pageable paging = PageRequest.of(page - 1, size, Sort.by("price"));
