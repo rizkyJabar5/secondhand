@@ -18,6 +18,7 @@ public class OfferMapper {
     private Long productId;
     private String productName;
     private BigInteger price;
+    private Long categoryId;
     private String buyer;
     private String seller;
     private List<String> productImages;
@@ -27,6 +28,7 @@ public class OfferMapper {
         productId = entity.getProduct().getId();
         productName = entity.getProduct().getProductName();
         price = entity.getProduct().getPrice();
+        categoryId=entity.getProduct().getCategory().getId();
         buyer = entity.getCreatedBy();
         seller = entity.getProduct().getCreatedBy();
         productImages = entity.getProduct().getProductImages();
@@ -34,6 +36,7 @@ public class OfferMapper {
                 productId,
                 productName,
                 price,
+                categoryId,
                 buyer,
                 seller,
                 productImages);
