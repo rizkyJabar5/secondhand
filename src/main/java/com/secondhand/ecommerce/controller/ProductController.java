@@ -23,15 +23,6 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @Operation(summary = "List product by id")
-    @GetMapping("/{productId}")
-    public ResponseEntity<?> getProductById(@PathVariable Long productId) {
-
-        return new ResponseEntity<>(
-                productService.loadProductById(productId),
-                HttpStatus.OK);
-    }
-
     @Operation(summary = "Add new product")
     @PostMapping(value = "/add",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
