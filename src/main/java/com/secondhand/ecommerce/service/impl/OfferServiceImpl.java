@@ -159,6 +159,7 @@ public class OfferServiceImpl implements OffersService {
         if (authenticated && Objects.equals(sellerId, sellerLogin)) {
             updatedOffers.setOfferStatus(OfferStatus.Done);
             product.setIsSold(true);
+            product.setIsPublished(false);
 
             productRepository.save(product);
             offersRepository.save(updatedOffers);

@@ -25,6 +25,8 @@ public interface ProductService {
 
     BaseResponse publishedProduct(Long productId);
 
+    BaseResponse getProductIsSoldByUser(Long userId);
+
     Page<Product> getSortedPaginatedProducts(int page, int limit, Sort sort);
 
     Optional<ProductMapper> loadProductById(Long id);

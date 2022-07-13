@@ -50,4 +50,13 @@ public class HomeController {
         }
     }
 
+    @Operation(summary = "Detail product by id")
+    @GetMapping("/{productId}")
+    public ResponseEntity<?> getProductById(@PathVariable Long productId) {
+
+        return new ResponseEntity<>(
+                productService.loadProductById(productId),
+                HttpStatus.OK);
+    }
+
 }

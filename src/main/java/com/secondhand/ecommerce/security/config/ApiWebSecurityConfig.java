@@ -38,7 +38,7 @@ public class ApiWebSecurityConfig {
         //PUBLIC End points
         http.authorizeRequests()
                 .antMatchers("/api/v1/auth/**",
-                        SWAGGER_API, SWAGGER_API_DOCS, HOME_PAGE).permitAll()
+                        SWAGGER_API, SWAGGER_API_DOCS, HOME_PAGE+"/**").permitAll()
 
                 //Authenticated request
                 .anyRequest()

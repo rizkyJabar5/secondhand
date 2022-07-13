@@ -22,6 +22,9 @@ public class ProductMapper {
     private Long categoryId;
     private String categoryName;
     private String addedBy;
+    private String userName;
+    private String city;
+    private String photoProfile;
     private boolean isPublished;
     private boolean isSold;
     private List<String> productImages;
@@ -34,6 +37,9 @@ public class ProductMapper {
         categoryId = entity.getCategory().getId();
         categoryName = entity.getCategory().getName().getName();
         addedBy = entity.getCreatedBy();
+        userName = entity.getAppUsers().getFullName();
+        city = entity.getAppUsers().getAddress().getCity();
+        photoProfile = entity.getAppUsers().getImageUrl();
         isPublished = entity.getIsPublished();
         isSold = entity.getIsSold();
         productImages = entity.getProductImages();
@@ -45,6 +51,9 @@ public class ProductMapper {
                 categoryId,
                 categoryName,
                 addedBy,
+                userName,
+                city,
+                photoProfile,
                 isPublished,
                 isSold,
                 productImages);

@@ -222,6 +222,24 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
                 OperationStatus.SUCCESS);
     }
 
+    @Override
+    public BaseResponse getProductIsSoldByUser(Long userId) {
+
+        List<ProductMapper> productUser = productRepository.findProductisSoldByUsers(userId)
+                .stream()
+                .map(productMapper::productToDto)
+                .collect(Collectors.toList());
+
+        if (productUser.isEmpty()) {
+            return new BaseResponse(HttpStatus.NOT_FOUND,
+                    "Your product has not been sold",
+                    OperationStatus.NOT_FOUND);
+        }
+
+        return new BaseResponse(HttpStatus.FOUND,
+                "your sold product was found");
+    }
+
     /**
      * UnUseless method
      */
