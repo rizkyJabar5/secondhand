@@ -19,7 +19,7 @@
 //
 //    @PostMapping("/send")
 //    public ResponseEntity<Void> sendMessage(@RequestBody TextMessageDTO textMessageDTO) {
-//        template.convertAndSend("/topic/message", textMessageDTO);
+//        template.convertAndSend("/topic", textMessageDTO);
 //        return new ResponseEntity<>(HttpStatus.OK);
 //    }
 //
@@ -27,7 +27,6 @@
 //    public void receiveMessage(@Payload TextMessageDTO textMessageDTO) {
 //        // receive message from client
 //    }
-//
 //
 //    @SendTo("/topic/message")
 //    public TextMessageDTO broadcastMessage(@Payload TextMessageDTO textMessageDTO) {

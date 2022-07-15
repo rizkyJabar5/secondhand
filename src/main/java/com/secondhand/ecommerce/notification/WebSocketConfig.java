@@ -19,7 +19,7 @@
 //    @Override
 //    public void registerStompEndpoints(StompEndpointRegistry registry) {
 //        // with sockjs
-//        registry.addEndpoint("/ws-message").setAllowedOriginPatterns("*").withSockJS();
+////        registry.addEndpoint("/ws-message").setAllowedOriginPatterns("*").withSockJS();
 //        // without sockjs
 //        registry.addEndpoint("/ws-message").setAllowedOriginPatterns("*");
 //    }

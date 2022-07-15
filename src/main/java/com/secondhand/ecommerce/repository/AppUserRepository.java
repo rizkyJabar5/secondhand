@@ -23,4 +23,7 @@ public interface AppUserRepository extends JpaRepository<AppUsers, Long> {
                     "and a.address.street is not null " +
                     "and a.phoneNumber is not null")
     Optional<AppUsers> checkProfileUser(Long userId);
+
+    AppUsers findUserByUserId(Long userId);
 }
+

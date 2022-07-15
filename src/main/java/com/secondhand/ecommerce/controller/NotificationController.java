@@ -1,38 +1,46 @@
 package com.secondhand.ecommerce.controller;
 
-import com.secondhand.ecommerce.models.dto.notification.NotificationRequestDto;
-import com.secondhand.ecommerce.models.dto.notification.SubscriptionRequestDto;
+import com.secondhand.ecommerce.models.dto.response.MessageResponse;
+import com.secondhand.ecommerce.models.dto.response.NotificationResponse;
+import com.secondhand.ecommerce.models.entity.AppUsers;
+import com.secondhand.ecommerce.models.entity.Notification;
 import com.secondhand.ecommerce.service.NotificationService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Tag(name = "Notification", description = "API for processing various operations with Notification entity")
 @RestController
-@RequestMapping("/notification")
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/notification")
 public class NotificationController {
 
-    @Autowired
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
-    @PostMapping("/subscribe")
-    public void subscribeToTopic(@RequestBody SubscriptionRequestDto subscriptionRequestDto) {
-        notificationService.subscribeToTopic(subscriptionRequestDto);
+    @GetMapping("/get/{userId}")
+    public ResponseEntity<?>getNotification(@PathVariable Long userId){
+        List<Notification> notifications = notificationService.getNotification(userId);
+        List<NotificationResponse> notificationResponses =
+                notifications.stream()
+                        .map(notification -> {
+                            if (notification.getOfferId() == null){
+                                return new NotificationResponse(notification, notification.getProductId());
+                            }else return new NotificationResponse(notification, notification.getProductId(),notification.getOfferId());
+                        }).collect(Collectors.toList());
+        return new ResponseEntity<>(notificationResponses, HttpStatus.OK);
     }
 
-    @PostMapping("/unsubscribe")
-    public void unsubscribeFromTopic(SubscriptionRequestDto subscriptionRequestDto) {
-        notificationService.unsubscribeFromTopic(subscriptionRequestDto);
+    @PostMapping("/read/{notifId}")
+    public ResponseEntity<MessageResponse> readNotif (@PathVariable Long notifId){
+        notificationService.updateIsRead(notifId);
+        return ResponseEntity.ok(new MessageResponse("Notification read successfully"));
     }
 
-    @PostMapping("/token")
-    public String sendPnsToDevice(@RequestBody NotificationRequestDto notificationRequestDto) {
-        return notificationService.sendPnsToDevice(notificationRequestDto);
-    }
-
-    @PostMapping("/topic")
-    public String sendPnsToTopic(@RequestBody NotificationRequestDto notificationRequestDto) {
-        return notificationService.sendPnsToTopic(notificationRequestDto);
-    }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,4 +19,5 @@ public interface OffersRepository extends JpaRepository<Offers, Long> {
 
     @Query("select o from Offers o where o.user.userId=?1 and o.product.id=?2  ")
     Optional<Offers> findByUserIdAndProduct(Long user, Long productId);
+
 }
