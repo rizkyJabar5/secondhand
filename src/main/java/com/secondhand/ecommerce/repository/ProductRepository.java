@@ -45,4 +45,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("select p from Product p where p.appUsers.userId = ?1 and p.isSold = true")
     List<Product> findProductisSoldByUsers(Long userId);
+
+    @Query("select count(p) from Product p where p.appUsers = ?1")
+    Long countByAppUsers(Long userId);
 }

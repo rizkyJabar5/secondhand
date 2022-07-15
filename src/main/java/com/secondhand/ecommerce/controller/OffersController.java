@@ -53,4 +53,24 @@ public class OffersController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Operation(summary = "Get offers for by id")
+    @GetMapping("/seller/{offerId}")
+    public ResponseEntity<?> getOfferById(@PathVariable Long offerId) {
+        BaseResponse response = offersService.loadOfferById(offerId);
+
+        return new ResponseEntity<>(
+                response,
+                HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get offers by product id")
+    @GetMapping("/seller/offer/{productId}")
+    public ResponseEntity<?> getOfferProductById(@PathVariable Long productId) {
+        BaseResponse response = offersService.getOfferSellerByProductId(productId);
+
+        return new ResponseEntity<>(
+                response,
+                HttpStatus.OK);
+    }
+
 }
