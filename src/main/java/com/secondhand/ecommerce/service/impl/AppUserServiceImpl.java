@@ -162,6 +162,10 @@ public class AppUserServiceImpl implements AppUserService {
         return userRepository.findUserByUserId(userId);
     }
 
+    @Override
+    public void updateUsersPassword(String password, Long userId) {
+        userRepository.updatePassword(passwordEncoder.encode(password),userId);
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
