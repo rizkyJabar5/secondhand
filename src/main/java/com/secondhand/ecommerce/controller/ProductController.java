@@ -82,4 +82,13 @@ public class ProductController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Operation(summary = "find product is sold for seller")
+    @GetMapping("/sold/{userId}")
+    public ResponseEntity<?> getProductIsSoldByUser(@PathVariable Long userId) {
+
+        BaseResponse response = productService.getProductIsSoldByUser(userId);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }
