@@ -8,6 +8,7 @@ import com.secondhand.ecommerce.exceptions.IllegalException;
 import com.secondhand.ecommerce.models.dto.response.CompletedResponse;
 import com.secondhand.ecommerce.models.dto.users.AppUserBuilder;
 import com.secondhand.ecommerce.models.dto.users.ProfileUser;
+import com.secondhand.ecommerce.models.dto.users.UpdatePasswordRequest;
 import com.secondhand.ecommerce.models.entity.Address;
 import com.secondhand.ecommerce.models.entity.AppRoles;
 import com.secondhand.ecommerce.models.entity.AppUsers;
@@ -152,9 +153,32 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public Optional<AppUsers> loadUserById(Long id) {
-        return Optional.ofNullable(userRepository.findByUserId(id))
+    public AppUsers loadUserById(Long id) {
+        return userRepository.findByUserId(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User with id " + id + " not found"));
+    }
+
+    @Override
+    public BaseResponse updateUsersPassword(Long userId, UpdatePasswordRequest passwordRequest) {
+
+        AppUsers users = loadUserById(userId);
+        if (passwordRequest.getNewPassword().equals(passwordRequest.getRetypePassword())) {
+            if (passwordEncoder.matches(passwordRequest.getOldPassword(), users.getPassword())) {
+                userRepository.updatePassword(passwordEncoder.encode(passwordRequest.getNewPassword()), userId);
+
+                return new BaseResponse(HttpStatus.OK,
+                        "Password berhasil diganti!",
+                        OperationStatus.SUCCESS);
+            } else
+                return new BaseResponse(HttpStatus.BAD_REQUEST,
+                        "Password salah!",
+                        OperationStatus.FAILURE);
+
+        }
+
+        return new BaseResponse(HttpStatus.BAD_REQUEST,
+                "Password harus sama",
+                OperationStatus.FAILURE);
     }
 
     @Override

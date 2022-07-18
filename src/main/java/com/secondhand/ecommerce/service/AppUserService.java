@@ -2,6 +2,7 @@ package com.secondhand.ecommerce.service;
 
 import com.secondhand.ecommerce.models.dto.response.CompletedResponse;
 import com.secondhand.ecommerce.models.dto.users.ProfileUser;
+import com.secondhand.ecommerce.models.dto.users.UpdatePasswordRequest;
 import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.security.authentication.login.LoginRequest;
 import com.secondhand.ecommerce.utils.BaseResponse;
@@ -21,6 +22,7 @@ public interface AppUserService extends UserDetailsService, HasLogger {
 
     BaseResponse updateProfileUser(ProfileUser profileUser, MultipartFile image);
 
-    Optional<AppUsers> loadUserById(Long id);
+    AppUsers loadUserById(Long id);
 
+    BaseResponse updateUsersPassword(Long userId, UpdatePasswordRequest passwordRequest);
 }

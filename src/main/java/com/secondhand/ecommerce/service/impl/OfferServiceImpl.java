@@ -14,6 +14,7 @@ import com.secondhand.ecommerce.repository.OffersRepository;
 import com.secondhand.ecommerce.repository.ProductRepository;
 import com.secondhand.ecommerce.security.SecurityUtils;
 import com.secondhand.ecommerce.service.AppUserService;
+import com.secondhand.ecommerce.service.NotificationService;
 import com.secondhand.ecommerce.service.OffersService;
 import com.secondhand.ecommerce.service.ProductService;
 import com.secondhand.ecommerce.utils.BaseResponse;
@@ -32,12 +33,15 @@ import static com.secondhand.ecommerce.utils.SecondHandConst.EMAIL_NOT_FOUND_MSG
 @RequiredArgsConstructor
 public class OfferServiceImpl implements OffersService {
 
+    private static final String OFFER_NOT_FOUND = "Offer not found";
+
     private final OffersRepository offersRepository;
     private final AppUserService userService;
     private final ProductService productService;
     private final OfferMapper offerMapper;
-
+    private final NotificationService notificationService;
     private final ProductRepository productRepository;
+    private String title = "Penawaran Produk";
 
     @Override
     public BaseResponse saveOffer(OfferSave request) {
@@ -54,8 +58,6 @@ public class OfferServiceImpl implements OffersService {
         Long buyer = userDetails.getUserId();
         Long seller = product.getAppUsers().getUserId();
 
-//        BigInteger priceNegotiatedMax = product.getPrice();
-//        priceNegotiatedMax = priceNegotiatedMax.divide(100).multiply(100);
         if (authenticated) {
             offers.setUser(users);
             offers.setCreatedBy(users.getEmail());
@@ -75,6 +77,9 @@ public class OfferServiceImpl implements OffersService {
             }
 
             offersRepository.save(offers);
+            offers = offersRepository.findById(offers.getId()).get();
+            notificationService.saveNotification(title, offers, product, buyer);
+            notificationService.saveNotification(title, offers, product, seller);
         }
 
         return new BaseResponse(HttpStatus.OK,
@@ -90,7 +95,7 @@ public class OfferServiceImpl implements OffersService {
         AppUserBuilder userDetails = SecurityUtils.getAuthenticatedUserDetails();
 
         Offers updatedOffers = offersRepository.findById(request.getOfferId())
-                .orElseThrow(() -> new AppBaseException("Offer not found"));
+                .orElseThrow(() -> new AppBaseException(OFFER_NOT_FOUND));
 
         Long sellerId = updatedOffers.getProduct().getAppUsers().getUserId();
         Long sellerLogin = Objects.requireNonNull(userDetails).getUserId();
@@ -142,13 +147,30 @@ public class OfferServiceImpl implements OffersService {
     }
 
     @Override
+    public BaseResponse getOfferSellerByProductId(Long productId) {
+        List<OfferMapper> collect = offersRepository.findByProductId(productId)
+                .stream()
+                .map(offerMapper::offerToDto)
+                .collect(Collectors.toList());
+        if (collect.isEmpty()) {
+            return new BaseResponse(HttpStatus.NOT_FOUND,
+                    "Offers not found on product: " + productId,
+                    OperationStatus.NOT_FOUND);
+        }
+
+        return new BaseResponse(HttpStatus.FOUND,
+                "your product gets an offer of " + offersRepository.countByProductId(productId),
+                collect);
+    }
+
+    @Override
     public BaseResponse updateStatusProduct(Long offerId) {
 
         AppUserBuilder userDetails = SecurityUtils.getAuthenticatedUserDetails();
         boolean authenticated = SecurityUtils.isAuthenticated();
 
         Offers updatedOffers = offersRepository.findById(offerId)
-                .orElseThrow(() -> new AppBaseException("Offer not found"));
+                .orElseThrow(() -> new AppBaseException(OFFER_NOT_FOUND));
 
         Product product = productRepository.findById(updatedOffers.getProduct().getId())
                 .orElseThrow(() -> new AppBaseException("Product not found"));
@@ -172,6 +194,34 @@ public class OfferServiceImpl implements OffersService {
         return new BaseResponse(HttpStatus.OK,
                 "Your product has been successfully sold.",
                 OperationStatus.SUCCESS);
+    }
+
+//    @Override
+//    public BaseResponse getStatusOffer(Long userId, Long offerId) {
+//        Product product = productService.getProductById(.getProductId());
+//
+//        UserDetails userDetails = SecurityUtils.getAuthenticatedUserDetails();
+//        boolean present = offersRepository.findByUserIdAndProduct(userId, product.getId());
+//        return new BaseResponse(HttpStatus.FOUND,
+//                "Your offer has been found"
+//                ) ;
+//    }
+
+    @Override
+    public BaseResponse loadOfferById(Long offerId) {
+        OfferMapper offers = offersRepository.findById(offerId)
+                .map(offerMapper::offerToDto)
+                .orElseThrow(() -> new AppBaseException(OFFER_NOT_FOUND));
+
+        return new BaseResponse(HttpStatus.FOUND,
+                "Offer with id " + offerId,
+                offers);
+    }
+
+    @Override
+    public Offers getOfferById(Long offerId) {
+        return offersRepository.findById(offerId)
+                .orElseThrow(() -> new AppBaseException(OFFER_NOT_FOUND));
     }
 
 }

@@ -16,10 +16,7 @@ import com.secondhand.ecommerce.models.entity.Product;
 import com.secondhand.ecommerce.models.enums.OperationStatus;
 import com.secondhand.ecommerce.repository.ProductRepository;
 import com.secondhand.ecommerce.security.SecurityUtils;
-import com.secondhand.ecommerce.service.AppUserService;
-import com.secondhand.ecommerce.service.CategoriesService;
-import com.secondhand.ecommerce.service.Datatable;
-import com.secondhand.ecommerce.service.ProductService;
+import com.secondhand.ecommerce.service.*;
 import com.secondhand.ecommerce.utils.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -47,6 +44,8 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
     private final CategoriesService categoryService;
     private final CloudinaryConfig cloudinaryConfig;
     private final ProductMapper productMapper;
+
+    private final NotificationService notificationService;
 
     @Override
     public BaseResponse getProductsByUserId(Long userId) {
@@ -213,13 +212,14 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
                     "Product is already published",
                     OperationStatus.FAILURE);
         }
-
         publish.setIsPublished(true);
         productRepository.save(publish);
-
+        notificationService.saveNotification("Berhasil diterbitkan", publish, userId);
         return new BaseResponse(HttpStatus.OK,
                 "Product " + productId + " has been published.",
                 OperationStatus.SUCCESS);
+
+
     }
 
     @Override

@@ -22,6 +22,7 @@ public class Product extends BaseEntity {
     @Column(name = "product_name")
     private String productName;
 
+    @Lob
     @Column(name = "description")
     private String description;
 
