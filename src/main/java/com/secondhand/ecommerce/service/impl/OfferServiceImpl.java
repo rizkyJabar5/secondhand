@@ -4,6 +4,7 @@ import com.secondhand.ecommerce.exceptions.AppBaseException;
 import com.secondhand.ecommerce.models.dto.offers.OfferMapper;
 import com.secondhand.ecommerce.models.dto.offers.OfferSave;
 import com.secondhand.ecommerce.models.dto.offers.OfferUpdate;
+import com.secondhand.ecommerce.models.dto.products.ProductMapper;
 import com.secondhand.ecommerce.models.dto.users.AppUserBuilder;
 import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.models.entity.Offers;
@@ -25,7 +26,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.secondhand.ecommerce.utils.SecondHandConst.EMAIL_NOT_FOUND_MSG;
@@ -42,6 +42,7 @@ public class OfferServiceImpl implements OffersService {
     private final OfferMapper offerMapper;
     private final NotificationService notificationService;
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
     private String title = "Penawaran Produk";
 
     @Override
@@ -139,16 +140,14 @@ public class OfferServiceImpl implements OffersService {
 
     @Override
     public BaseResponse getOfferByUserId(Long userId) {
-        Set<OfferMapper> productOffer = offersRepository.findByUserId(userId)
+        List<ProductMapper> productOffer = productRepository.findByUserId(userId)
                 .stream()
-                .filter(o -> {
-                    Long id = o.getProduct().getId();
-                    long l = offersRepository.countByProductId(id);
-                    return l > 1;
-                })
-                .map(offerMapper::offerToDto)
-                .collect(Collectors.toSet());
-        productOffer.forEach(offer -> offer.);
+                .map(productMapper::productToDto)
+                .collect(Collectors.toList());
+//        Set<OfferMapper> productOffer = offersRepository.findByUserId(userId)
+//                .stream()
+//                .map(offerMapper::offerToDto)
+//                .collect(Collectors.toSet());
         if (productOffer.isEmpty()) {
             return new BaseResponse(HttpStatus.NOT_FOUND,
                     "Offers not found on user: " + userId,

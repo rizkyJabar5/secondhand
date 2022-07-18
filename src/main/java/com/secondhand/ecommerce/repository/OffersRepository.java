@@ -8,23 +8,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Repository
 @Transactional
 public interface OffersRepository extends JpaRepository<Offers, Long> {
-
-    @Query("select o from Offers o where o.product.appUsers.userId=?1")
-    Set<Offers> findByUserId(Long user);
 
     @Query("select o from Offers o where o.product.id=?1")
     List<Offers> findByProductId(Long productId);
 
     @Query("select o from Offers o where o.user.userId=?1 and o.product.id=?2  ")
     Optional<Offers> findByUserIdAndProduct(Long user, Long productId);
-
-    @Query("select o from Offers o where o.user.userId=?1")
-    Offers findStatusByBuyerId(Long userId);
 
     @Query("select count(o) from Offers o where o.product.id = ?1")
     long countByProductId(Long productId);
