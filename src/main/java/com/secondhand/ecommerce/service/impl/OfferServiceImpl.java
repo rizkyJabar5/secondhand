@@ -28,6 +28,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.secondhand.ecommerce.utils.SecondHandConst.EMAIL_NOT_FOUND_MSG;
+import static com.secondhand.ecommerce.utils.SecondHandConst.TITLE_NOTIFICATION;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +42,6 @@ public class OfferServiceImpl implements OffersService {
     private final OfferMapper offerMapper;
     private final NotificationService notificationService;
     private final ProductRepository productRepository;
-    private String title = "Penawaran Produk";
 
     @Override
     public BaseResponse saveOffer(OfferSave request) {
@@ -77,9 +77,10 @@ public class OfferServiceImpl implements OffersService {
             }
 
             offersRepository.save(offers);
-            offers = offersRepository.findById(offers.getId()).get();
-            notificationService.saveNotification(title, offers, product, buyer);
-            notificationService.saveNotification(title, offers, product, seller);
+            offers = offersRepository.findById(offers.getId())
+                    .orElseThrow(() -> new AppBaseException(OFFER_NOT_FOUND));
+            notificationService.saveNotification(TITLE_NOTIFICATION, offers, product, buyer);
+            notificationService.saveNotification(TITLE_NOTIFICATION, offers, product, seller);
         }
 
         return new BaseResponse(HttpStatus.OK,
@@ -128,7 +129,7 @@ public class OfferServiceImpl implements OffersService {
     }
 
     @Override
-    public BaseResponse getOfferByUserId(Long userId) {
+    public BaseResponse getOfferBySellerId(Long userId) {
         List<OfferMapper> productOffer = offersRepository.findByUserId(userId)
                 .stream()
                 .map(offerMapper::offerToDto)
@@ -193,6 +194,7 @@ public class OfferServiceImpl implements OffersService {
 
         return new BaseResponse(HttpStatus.OK,
                 "Your product has been successfully sold.",
+                offerId,
                 OperationStatus.SUCCESS);
     }
 

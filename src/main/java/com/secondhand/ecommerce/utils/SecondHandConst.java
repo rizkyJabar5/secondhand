@@ -24,7 +24,7 @@ public class SecondHandConst {
     public static final String SWAGGER_API = "/swagger-ui/**";
     public static final String HOME_PAGE = "/api/v1/home";
 
-
+    public static final String TITLE_NOTIFICATION = "Penawaran Produk";
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 

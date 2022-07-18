@@ -38,7 +38,7 @@ public class OffersController {
     @Operation(summary = "Get offers for seller with id seller")
     @GetMapping("/seller/interested/{userId}")
     public ResponseEntity<BaseResponse> interested(@PathVariable Long userId) {
-        BaseResponse response = offersService.getOfferByUserId(userId);
+        BaseResponse response = offersService.getOfferBySellerId(userId);
 
         return new ResponseEntity<>(
                 response,

@@ -10,7 +10,7 @@ public interface OffersService {
 
     BaseResponse updateOffer(OfferUpdate request);
 
-    BaseResponse getOfferByUserId(Long userId);
+    BaseResponse getOfferBySellerId(Long userId);
 
     BaseResponse getOfferSellerByProductId(Long productId);
 
