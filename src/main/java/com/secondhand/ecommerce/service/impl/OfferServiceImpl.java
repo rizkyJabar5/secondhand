@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.secondhand.ecommerce.utils.SecondHandConst.EMAIL_NOT_FOUND_MSG;
@@ -77,7 +78,8 @@ public class OfferServiceImpl implements OffersService {
             }
 
             offersRepository.save(offers);
-            offers = offersRepository.findById(offers.getId()).get();
+            offers = offersRepository.findById(offers.getId())
+                    .orElseThrow(() -> new AppBaseException(OFFER_NOT_FOUND));
             notificationService.saveNotification(title, offers, product, buyer);
             notificationService.saveNotification(title, offers, product, seller);
         }
@@ -114,6 +116,14 @@ public class OfferServiceImpl implements OffersService {
                         "Offer has been rejected.",
                         updatedOffers.getOfferStatus(),
                         OperationStatus.SUCCESS);
+            } else if (request.getOfferStatus().equals(OfferStatus.Waiting)) {
+                updatedOffers.setOfferStatus(OfferStatus.Waiting);
+                offersRepository.save(updatedOffers);
+
+                return new BaseResponse(HttpStatus.OK,
+                        "Offer has been Waiting.",
+                        updatedOffers.getOfferStatus(),
+                        OperationStatus.SUCCESS);
             }
         } else {
             return new BaseResponse(HttpStatus.BAD_REQUEST,
@@ -129,19 +139,26 @@ public class OfferServiceImpl implements OffersService {
 
     @Override
     public BaseResponse getOfferByUserId(Long userId) {
-        List<OfferMapper> productOffer = offersRepository.findByUserId(userId)
+        Set<OfferMapper> productOffer = offersRepository.findByUserId(userId)
                 .stream()
+                .filter(o -> {
+                    Long id = o.getProduct().getId();
+                    long l = offersRepository.countByProductId(id);
+                    return l > 1;
+                })
                 .map(offerMapper::offerToDto)
-                .collect(Collectors.toList());
-
+                .collect(Collectors.toSet());
+        productOffer.forEach(offer -> offer.);
         if (productOffer.isEmpty()) {
             return new BaseResponse(HttpStatus.NOT_FOUND,
                     "Offers not found on user: " + userId,
                     OperationStatus.NOT_FOUND);
         }
 
+        long l = offersRepository.countOffersByProductUser(userId);
+
         return new BaseResponse(HttpStatus.OK,
-                "Offer found " + productOffer.get(0).getBuyer(),
+                "Offer found " + l,
                 productOffer,
                 OperationStatus.FOUND);
     }
