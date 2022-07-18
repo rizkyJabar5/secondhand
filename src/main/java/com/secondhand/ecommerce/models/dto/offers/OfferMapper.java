@@ -19,11 +19,14 @@ public class OfferMapper {
     private Long productId;
     private String productName;
     private BigInteger price;
+    private Long categoryId;
     private BigInteger priceOffer;
     private String buyer;
     private String cityBuyer;
+    private String avatarBuyer;
     private String seller;
     private String citySeller;
+    private String avatarSeller;
     private String dateCreated;
     private OfferStatus statusOffer;
     private List<String> productImages;
@@ -45,11 +48,14 @@ public class OfferMapper {
         productId = entity.getProduct().getId();
         productName = entity.getProduct().getProductName();
         price = entity.getProduct().getPrice();
+        categoryId = entity.getProduct().getCategory().getId();
         priceOffer = entity.getOfferNegotiated();
         buyer = entity.getUser().getFullName();
         cityBuyer = entity.getUser().getAddress().getCity();
+        avatarBuyer = entity.getUser().getImageUrl();
         seller = entity.getProduct().getCreatedBy();
         citySeller = entity.getProduct().getAppUsers().getAddress().getCity();
+        avatarSeller = entity.getProduct().getAppUsers().getImageUrl();
         dateCreated = entity.getCreatedDate().toString();
         statusOffer = entity.getOfferStatus();
         productImages = entity.getProduct().getProductImages();
@@ -57,28 +63,16 @@ public class OfferMapper {
                 productId,
                 productName,
                 price,
+                categoryId,
                 priceOffer,
                 buyer,
                 cityBuyer,
+                avatarBuyer,
                 seller,
                 citySeller,
+                avatarSeller,
                 dateCreated,
                 statusOffer,
                 productImages);
     }
-
-    public OfferMapper offerProduct(Offers entity) {
-        offerId = entity.getId();
-        productId = entity.getProduct().getId();
-        productName = entity.getProduct().getProductName();
-        price = entity.getProduct().getPrice();
-        priceOffer = entity.getOfferNegotiated();
-        buyer = entity.getUser().getFullName();
-        cityBuyer = entity.getUser().getAddress().getCity();
-        dateCreated = entity.getCreatedDate().toString();
-
-        return new OfferMapper(productName, price, priceOffer, cityBuyer, dateCreated);
-
-    }
-
 }

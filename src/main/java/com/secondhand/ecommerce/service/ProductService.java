@@ -11,8 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
-
 public interface ProductService {
 
     BaseResponse getProductsByUserId(Long userId);
@@ -29,7 +27,7 @@ public interface ProductService {
 
     Page<Product> getSortedPaginatedProducts(int page, int limit, Sort sort);
 
-    Optional<ProductMapper> loadProductById(Long id);
+    BaseResponse loadProductById(Long id);
 
     Page<ProductMapper> getAllProductPageByProductNameAndCategory(String productName, Long categoryId, Pageable paging);
 

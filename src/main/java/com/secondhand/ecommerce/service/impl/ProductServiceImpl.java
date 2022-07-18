@@ -12,8 +12,11 @@ import com.secondhand.ecommerce.models.dto.response.ProductResponse;
 import com.secondhand.ecommerce.models.dto.users.AppUserBuilder;
 import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.models.entity.Categories;
+import com.secondhand.ecommerce.models.entity.Offers;
 import com.secondhand.ecommerce.models.entity.Product;
+import com.secondhand.ecommerce.models.enums.OfferStatus;
 import com.secondhand.ecommerce.models.enums.OperationStatus;
+import com.secondhand.ecommerce.repository.OffersRepository;
 import com.secondhand.ecommerce.repository.ProductRepository;
 import com.secondhand.ecommerce.security.SecurityUtils;
 import com.secondhand.ecommerce.service.*;
@@ -44,7 +47,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
     private final CategoriesService categoryService;
     private final CloudinaryConfig cloudinaryConfig;
     private final ProductMapper productMapper;
-
+    private final OffersRepository offersRepository;
     private final NotificationService notificationService;
 
     @Override
@@ -80,14 +83,19 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         Categories categories = categoryService.loadCategoryById(request.getCategoryId());
 
         List<String> images = new ArrayList<>();
+        Long countProductUser = productRepository.countByAppUsers(appUsers.getUserId());
 
         if (authenticated) {
+            if (countProductUser >= 4) {
+                throw new IllegalException("You've reached the maximum upload product. Max post is 4!");
+            }
             createNewProduct.setAppUsers(appUsers);
             createNewProduct.setProductName(request.getProductName());
             createNewProduct.setPrice(request.getPrice());
             createNewProduct.setDescription(request.getDescription());
             createNewProduct.setCategory(categories);
             createNewProduct.setCreatedBy(appUsers.getEmail());
+            createNewProduct.setIsPublished(true);
 
             if (image.length >= 5) {
                 return new BaseResponse(HttpStatus.BAD_REQUEST,
@@ -100,6 +108,9 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
 
             createNewProduct.setProductImages(images);
             productRepository.save(createNewProduct);
+        } else {
+            return new BaseResponse(HttpStatus.BAD_REQUEST,
+                    "You must be authenticated");
         }
 
         ProductResponse response = new ProductResponse(
@@ -179,7 +190,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
     @Override
     public CompletedResponse deleteProductById(Long id) {
 
-        boolean present = loadProductById(id).isPresent();
+        boolean present = productRepository.findById(id).isPresent();
         if (!present) {
             return new CompletedResponse(
                     "Product is not present",
@@ -249,11 +260,35 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
     }
 
     @Override
-    public Optional<ProductMapper> loadProductById(Long productId) {
-        return Optional.ofNullable(productRepository.findById(productId)
+    public BaseResponse loadProductById(Long productId) {
+
+        ProductMapper mapper = productRepository.findById(productId)
                 .map(productMapper::productToDto)
                 .orElseThrow(() -> new IllegalException(
-                        String.format(PRODUCT_NOT_FOUND_MSG, productId))));
+                        String.format(PRODUCT_NOT_FOUND_MSG, productId)));
+
+        AppUserBuilder userDetails = SecurityUtils.getAuthenticatedUserDetails();
+        boolean authenticated = SecurityUtils.isAuthenticated();
+
+        if (authenticated) {
+            Optional<Offers> buyerIdAndProduct = offersRepository.findByUserIdAndProduct(
+                    Objects.requireNonNull(userDetails).getUserId(),
+                    productId);
+            boolean present = buyerIdAndProduct.isPresent();
+            if (present) {
+                OfferStatus offerStatus = buyerIdAndProduct.get().getOfferStatus();
+                if (offerStatus.equals(OfferStatus.Waiting)) {
+                    return new BaseResponse(HttpStatus.OK,
+                            "Waiting",
+                            mapper);
+                }
+            }
+        }
+
+        return new BaseResponse(HttpStatus.OK,
+                "Product found by id: " + productId,
+                mapper,
+                OperationStatus.FOUND);
     }
 
     @Override
