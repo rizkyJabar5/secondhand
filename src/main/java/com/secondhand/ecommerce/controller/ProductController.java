@@ -27,8 +27,8 @@ public class ProductController {
     @PostMapping(value = "/add",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> addProduct(@ModelAttribute ProductDto request,
-                                        @RequestParam MultipartFile[] images) {
+    public ResponseEntity<BaseResponse> addaddProduct(@ModelAttribute ProductDto request,
+                                                      @RequestParam MultipartFile[] images) {
 
         BaseResponse baseResponse = productService.addProduct(request, images);
 
@@ -39,8 +39,8 @@ public class ProductController {
     @PutMapping(value = "/update",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> updateProduct(@ModelAttribute ProductUpdate product,
-                                           @RequestParam(required = false) MultipartFile[] images) {
+    public ResponseEntity<BaseResponse> updateProduct(@ModelAttribute ProductUpdate product,
+                                                      @RequestParam(required = false) MultipartFile[] images) {
 
         BaseResponse baseResponse = productService.updateProduct(product, images);
 
@@ -49,7 +49,7 @@ public class ProductController {
 
     @Operation(summary = "Update existing product with id product")
     @GetMapping("/show/{userId}")
-    public ResponseEntity<?> getProductsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<BaseResponse> getProductsByUserId(@PathVariable Long userId) {
 
         BaseResponse response = productService.getProductsByUserId(userId);
 
@@ -58,7 +58,7 @@ public class ProductController {
 
     @Operation(summary = "Delete existing product with id product")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable long id) {
+    public ResponseEntity<CompletedResponse> deleteProduct(@PathVariable long id) {
 
         CompletedResponse response = productService.deleteProductById(id);
 
@@ -75,7 +75,7 @@ public class ProductController {
 
     @Operation(summary = "Published new product with id product")
     @PutMapping("/publish")
-    public ResponseEntity<?> publishProduct(@RequestParam Long productId) {
+    public ResponseEntity<BaseResponse> publishProduct(@RequestParam Long productId) {
 
         BaseResponse response = productService.publishedProduct(productId);
 
@@ -84,12 +84,11 @@ public class ProductController {
 
     @Operation(summary = "find product is sold for seller")
     @GetMapping("/sold/{userId}")
-    public ResponseEntity<?> getProductIsSoldByUser(@PathVariable Long userId) {
+    public ResponseEntity<BaseResponse> getProductIsSoldByUser(@PathVariable Long userId) {
 
         BaseResponse response = productService.getProductIsSold(userId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 
 }

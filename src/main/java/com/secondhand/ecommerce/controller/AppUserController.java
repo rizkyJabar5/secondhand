@@ -38,7 +38,7 @@ public class AppUserController {
 
     @Operation(summary = "check user profile for complete data")
     @GetMapping("/check-data-user/{id}")
-    public ResponseEntity<?> getCheckProfileUsers(@PathVariable("id") Long userId) {
+    public ResponseEntity<CompletedResponse> getCheckProfileUsers(@PathVariable("id") Long userId) {
 
         CompletedResponse response = userService.checkProfileUser(userId);
 

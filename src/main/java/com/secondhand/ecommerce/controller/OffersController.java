@@ -20,7 +20,7 @@ public class OffersController {
 
     @Operation(summary = "Add offer from buyer to seller with default value = Waiting")
     @PostMapping(value = "/buyer/add-offers")
-    public ResponseEntity<?> addOffer(@ModelAttribute OfferSave request) {
+    public ResponseEntity<BaseResponse> addOffer(@ModelAttribute OfferSave request) {
 
         BaseResponse response = offersService.saveOffer(request);
 
@@ -37,7 +37,7 @@ public class OffersController {
 
     @Operation(summary = "Get offers for seller with id seller")
     @GetMapping("/seller/interested/{userId}")
-    public ResponseEntity<?> interested(@PathVariable Long userId) {
+    public ResponseEntity<BaseResponse> interested(@PathVariable Long userId) {
         BaseResponse response = offersService.getOfferByUserId(userId);
 
         return new ResponseEntity<>(
@@ -47,7 +47,7 @@ public class OffersController {
 
     @Operation(summary = "Seller confirm if offer is done, status product will be change isSold = true, with value by offerId")
     @PutMapping("/seller/update-product/{offerId}")
-    public ResponseEntity<?> updateProductIsSold(@PathVariable Long offerId) {
+    public ResponseEntity<BaseResponse> updateProductIsSold(@PathVariable Long offerId) {
         BaseResponse response = offersService.updateStatusProduct(offerId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -55,7 +55,7 @@ public class OffersController {
 
     @Operation(summary = "Get offers for by id")
     @GetMapping("/seller/{offerId}")
-    public ResponseEntity<?> getOfferById(@PathVariable Long offerId) {
+    public ResponseEntity<BaseResponse> getOfferById(@PathVariable Long offerId) {
         BaseResponse response = offersService.loadOfferById(offerId);
 
         return new ResponseEntity<>(
@@ -65,7 +65,7 @@ public class OffersController {
 
     @Operation(summary = "Get offers by product id")
     @GetMapping("/seller/offer/{productId}")
-    public ResponseEntity<?> getOfferProductById(@PathVariable Long productId) {
+    public ResponseEntity<BaseResponse> getOfferProductById(@PathVariable Long productId) {
         BaseResponse response = offersService.getOfferSellerByProductId(productId);
 
         return new ResponseEntity<>(

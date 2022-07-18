@@ -22,7 +22,7 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @GetMapping("/get/{userId}")
-    public ResponseEntity<?> getNotification(@PathVariable Long userId) {
+    public ResponseEntity<List<NotificationResponse>> getNotification(@PathVariable Long userId) {
         List<Notification> notifications = notificationService.getNotification(userId);
         List<NotificationResponse> notificationResponses =
                 notifications.stream()

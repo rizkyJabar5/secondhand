@@ -3,6 +3,7 @@ package com.secondhand.ecommerce.controller;
 
 import com.secondhand.ecommerce.models.dto.products.ProductMapper;
 import com.secondhand.ecommerce.service.ProductService;
+import com.secondhand.ecommerce.utils.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -52,10 +53,11 @@ public class HomeController {
 
     @Operation(summary = "Detail product by id")
     @GetMapping("/{productId}")
-    public ResponseEntity<?> getProductById(@PathVariable Long productId) {
+    public ResponseEntity<BaseResponse> getProductById(@PathVariable Long productId) {
 
+        BaseResponse response = productService.loadProductById(productId);
         return new ResponseEntity<>(
-                productService.loadProductById(productId),
+                response,
                 HttpStatus.OK);
     }
 
