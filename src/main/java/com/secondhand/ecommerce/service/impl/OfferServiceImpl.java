@@ -14,6 +14,7 @@ import com.secondhand.ecommerce.repository.OffersRepository;
 import com.secondhand.ecommerce.repository.ProductRepository;
 import com.secondhand.ecommerce.security.SecurityUtils;
 import com.secondhand.ecommerce.service.AppUserService;
+import com.secondhand.ecommerce.service.NotificationService;
 import com.secondhand.ecommerce.service.OffersService;
 import com.secondhand.ecommerce.service.ProductService;
 import com.secondhand.ecommerce.utils.BaseResponse;
@@ -38,7 +39,9 @@ public class OfferServiceImpl implements OffersService {
     private final AppUserService userService;
     private final ProductService productService;
     private final OfferMapper offerMapper;
+    private final NotificationService notificationService;
     private final ProductRepository productRepository;
+    private String title = "Penawaran Produk";
 
     @Override
     public BaseResponse saveOffer(OfferSave request) {
@@ -54,7 +57,6 @@ public class OfferServiceImpl implements OffersService {
 
         Long buyer = userDetails.getUserId();
         Long seller = product.getAppUsers().getUserId();
-
 
         if (authenticated) {
             offers.setUser(users);
@@ -75,6 +77,9 @@ public class OfferServiceImpl implements OffersService {
             }
 
             offersRepository.save(offers);
+            offers = offersRepository.findById(offers.getId()).get();
+            notificationService.saveNotification(title, offers, product, buyer);
+            notificationService.saveNotification(title, offers, product, seller);
         }
 
         return new BaseResponse(HttpStatus.OK,

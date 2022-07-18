@@ -2,6 +2,7 @@ package com.secondhand.ecommerce.controller;
 
 import com.secondhand.ecommerce.models.dto.response.CompletedResponse;
 import com.secondhand.ecommerce.models.dto.users.ProfileUser;
+import com.secondhand.ecommerce.models.dto.users.UpdatePasswordRequest;
 import com.secondhand.ecommerce.service.AppUserService;
 import com.secondhand.ecommerce.utils.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,6 +43,17 @@ public class AppUserController {
         CompletedResponse response = userService.checkProfileUser(userId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Change password user")
+    @PostMapping("/change-password/{userId}")
+    public ResponseEntity<BaseResponse> updateUsersPassword(
+            @PathVariable("userId") Long userId,
+            UpdatePasswordRequest passwordRequest) {
+
+        BaseResponse response = userService.updateUsersPassword(userId, passwordRequest);
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
 }
