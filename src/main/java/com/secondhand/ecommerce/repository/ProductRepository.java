@@ -48,4 +48,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("select count(p) from Product p where p.appUsers.userId = ?1")
     Long countByAppUsers(Long userId);
+
+    @Query(value =
+            "select DISTINCT ON (products.id) products.* " +
+                    "from products " +
+                    "inner join offers " +
+                    "on offers.product_id = products.id " +
+                    "where products.user_id=?1", nativeQuery = true)
+    List<Product> findByUserId(Long userId);
+
 }

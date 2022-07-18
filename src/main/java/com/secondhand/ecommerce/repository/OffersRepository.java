@@ -13,18 +13,15 @@ import java.util.Optional;
 @Transactional
 public interface OffersRepository extends JpaRepository<Offers, Long> {
 
-    @Query("select o from Offers o where o.product.appUsers.userId=?1")
-    List<Offers> findByUserId(Long user);
-
     @Query("select o from Offers o where o.product.id=?1")
-    List<Offers> findByProductId(Long user);
+    List<Offers> findByProductId(Long productId);
 
     @Query("select o from Offers o where o.user.userId=?1 and o.product.id=?2  ")
     Optional<Offers> findByUserIdAndProduct(Long user, Long productId);
 
-    @Query("select o from Offers o where o.user.userId=?1")
-    Offers findStatusByBuyerId(Long userId);
-
     @Query("select count(o) from Offers o where o.product.id = ?1")
     long countByProductId(Long productId);
+
+    @Query("select count(o) from Offers o where o.product.appUsers.userId = ?1")
+    long countOffersByProductUser(Long userId);
 }

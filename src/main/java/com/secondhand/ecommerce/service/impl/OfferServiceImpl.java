@@ -4,6 +4,7 @@ import com.secondhand.ecommerce.exceptions.AppBaseException;
 import com.secondhand.ecommerce.models.dto.offers.OfferMapper;
 import com.secondhand.ecommerce.models.dto.offers.OfferSave;
 import com.secondhand.ecommerce.models.dto.offers.OfferUpdate;
+import com.secondhand.ecommerce.models.dto.products.ProductMapper;
 import com.secondhand.ecommerce.models.dto.users.AppUserBuilder;
 import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.models.entity.Offers;
@@ -42,6 +43,7 @@ public class OfferServiceImpl implements OffersService {
     private final OfferMapper offerMapper;
     private final NotificationService notificationService;
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
 
     @Override
     public BaseResponse saveOffer(OfferSave request) {
@@ -115,6 +117,14 @@ public class OfferServiceImpl implements OffersService {
                         "Offer has been rejected.",
                         updatedOffers.getOfferStatus(),
                         OperationStatus.SUCCESS);
+            } else if (request.getOfferStatus().equals(OfferStatus.Waiting)) {
+                updatedOffers.setOfferStatus(OfferStatus.Waiting);
+                offersRepository.save(updatedOffers);
+
+                return new BaseResponse(HttpStatus.OK,
+                        "Offer has been Waiting.",
+                        updatedOffers.getOfferStatus(),
+                        OperationStatus.SUCCESS);
             }
         } else {
             return new BaseResponse(HttpStatus.BAD_REQUEST,
@@ -130,9 +140,9 @@ public class OfferServiceImpl implements OffersService {
 
     @Override
     public BaseResponse getOfferBySellerId(Long userId) {
-        List<OfferMapper> productOffer = offersRepository.findByUserId(userId)
+        List<ProductMapper> productOffer = productRepository.findByUserId(userId)
                 .stream()
-                .map(offerMapper::offerToDto)
+                .map(productMapper::productToDto)
                 .collect(Collectors.toList());
 
         if (productOffer.isEmpty()) {
@@ -141,8 +151,10 @@ public class OfferServiceImpl implements OffersService {
                     OperationStatus.NOT_FOUND);
         }
 
+        long l = offersRepository.countOffersByProductUser(userId);
+
         return new BaseResponse(HttpStatus.OK,
-                "Offer found " + productOffer.get(0).getBuyer(),
+                "Offer found " + l,
                 productOffer,
                 OperationStatus.FOUND);
     }
@@ -197,17 +209,6 @@ public class OfferServiceImpl implements OffersService {
                 offerId,
                 OperationStatus.SUCCESS);
     }
-
-//    @Override
-//    public BaseResponse getStatusOffer(Long userId, Long offerId) {
-//        Product product = productService.getProductById(.getProductId());
-//
-//        UserDetails userDetails = SecurityUtils.getAuthenticatedUserDetails();
-//        boolean present = offersRepository.findByUserIdAndProduct(userId, product.getId());
-//        return new BaseResponse(HttpStatus.FOUND,
-//                "Your offer has been found"
-//                ) ;
-//    }
 
     @Override
     public BaseResponse loadOfferById(Long offerId) {
