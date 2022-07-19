@@ -47,7 +47,7 @@ public class ProductController {
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 
-    @Operation(summary = "Update existing product with id product")
+    @Operation(summary = "Show product seller")
     @GetMapping("/show/{userId}")
     public ResponseEntity<BaseResponse> getProductsByUserId(@PathVariable Long userId) {
 

@@ -40,13 +40,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "and p.isSold = false")
     Page<Product> findByProductNameContainingIgnoreCaseAndCategoryId(String productName, Long categoryId, Pageable pageable);
 
-    @Query("select p from Product p where p.appUsers.userId = ?1")
+    @Query("select p from Product p where p.appUsers.userId = ?1 and p.isSold = false")
     List<Product> findProductByAppUsers(Long user);
 
     @Query("select p from Product p where p.appUsers.userId = ?1 and p.isSold = true")
     List<Product> findProductIsSoldByUsers(Long userId);
 
-    @Query("select count(p) from Product p where p.appUsers.userId = ?1")
+    @Query("select count(p) from Product p where p.appUsers.userId = ?1 and p.isSold = false")
     Long countByAppUsers(Long userId);
 
     @Query(value =
