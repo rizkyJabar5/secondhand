@@ -30,6 +30,7 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setTitle(title);
         notification.setOfferId(offer);
         notification.setProductId(product);
+        notification.getCreatedDate();
         notificationRepository.save(notification);
     }
 
@@ -40,6 +41,7 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setUserId(users);
         notification.setTitle(title);
         notification.setProductId(product);
+        notification.getCreatedDate();
         notificationRepository.save(notification);
 
     }

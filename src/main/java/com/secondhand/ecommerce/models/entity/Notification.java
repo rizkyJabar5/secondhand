@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -35,5 +37,10 @@ public class Notification {
     private AppUsers userId;
 
     private Boolean isRead = false;
+
+    @CreatedDate
+    @Column(name = "created_date", nullable = false)
+    private Date createdDate = new Date(System.currentTimeMillis());
+
 }
 

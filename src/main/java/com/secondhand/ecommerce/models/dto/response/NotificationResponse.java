@@ -17,6 +17,7 @@ public class NotificationResponse {
     private BigInteger price;
     private String url;
     private Long userId;
+    private String createdDate;
 
     public NotificationResponse() {
 
@@ -31,6 +32,7 @@ public class NotificationResponse {
         this.price = product.getPrice();
         this.url = product.getProductImages().get(0);
         this.userId = notification.getUserId().getUserId();
+        this.createdDate = notification.getCreatedDate().toString();
     }
 
     public NotificationResponse(Notification notification, Product product) {
