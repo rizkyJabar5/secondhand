@@ -16,7 +16,10 @@ public interface OffersRepository extends JpaRepository<Offers, Long> {
     @Query("select o from Offers o where o.product.id=?1")
     List<Offers> findByProductId(Long productId);
 
-    @Query("select o from Offers o where o.user.userId=?1 and o.product.id=?2  ")
+    @Query("select o from Offers o " +
+            "where o.user.userId=?1 " +
+            "and o.product.id=?2 " +
+            "and o.offerStatus = com.secondhand.ecommerce.models.enums.OfferStatus.Rejected")
     Optional<Offers> findByUserIdAndProduct(Long user, Long productId);
 
     @Query("select count(o) from Offers o where o.product.id = ?1")
