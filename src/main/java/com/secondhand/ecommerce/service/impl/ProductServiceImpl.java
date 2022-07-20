@@ -287,11 +287,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
                 OfferStatus offerStatus = buyerIdAndProduct.get().getOfferStatus();
                 if (offerStatus.equals(OfferStatus.Waiting)) {
                     return new BaseResponse(HttpStatus.OK,
-                            "Waiting",
-                            mapper);
-                } else if (offerStatus.equals(OfferStatus.Rejected)) {
-                    return new BaseResponse(HttpStatus.OK,
-                            "rejected",
+                            OfferStatus.Waiting.name(),
                             mapper);
                 }
             }

@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.secondhand.ecommerce.utils.SecondHandConst.EMAIL_NOT_FOUND_MSG;
@@ -66,16 +67,22 @@ public class OfferServiceImpl implements OffersService {
             offers.setProduct(product);
             offers.setOfferNegotiated(request.getPriceNegotiated());
 
-            boolean present = offersRepository.findByUserIdAndProduct(buyer, product.getId()).isPresent();
+            Optional<Offers> buyerIdAndProduct = offersRepository.findBuyerIdAndProductId(
+                    buyer,
+                    product.getId());
+            boolean present = buyerIdAndProduct.isPresent();
 
             if (Objects.deepEquals(buyer, seller)) {
                 return new BaseResponse(HttpStatus.BAD_REQUEST,
                         "You can't bid on your own product",
                         OperationStatus.FAILURE);
             } else if (present) {
-                return new BaseResponse(HttpStatus.BAD_REQUEST,
-                        "You have made an offer, please wait for confirmation from the seller",
-                        OperationStatus.FAILURE);
+                boolean equals = Objects.equals(buyerIdAndProduct.get().getOfferStatus(), OfferStatus.Waiting);
+                if (equals) {
+                    return new BaseResponse(HttpStatus.BAD_REQUEST,
+                            "You have made an offer, please wait for confirmation from the seller",
+                            OperationStatus.FAILURE);
+                }
             }
 
             offersRepository.save(offers);
