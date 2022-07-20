@@ -10,12 +10,10 @@ import com.secondhand.ecommerce.models.dto.products.ProductUpdate;
 import com.secondhand.ecommerce.models.dto.response.CompletedResponse;
 import com.secondhand.ecommerce.models.dto.response.ProductResponse;
 import com.secondhand.ecommerce.models.dto.users.AppUserBuilder;
-import com.secondhand.ecommerce.models.entity.AppUsers;
-import com.secondhand.ecommerce.models.entity.Categories;
-import com.secondhand.ecommerce.models.entity.Offers;
-import com.secondhand.ecommerce.models.entity.Product;
+import com.secondhand.ecommerce.models.entity.*;
 import com.secondhand.ecommerce.models.enums.OfferStatus;
 import com.secondhand.ecommerce.models.enums.OperationStatus;
+import com.secondhand.ecommerce.repository.NotificationRepository;
 import com.secondhand.ecommerce.repository.OffersRepository;
 import com.secondhand.ecommerce.repository.ProductRepository;
 import com.secondhand.ecommerce.security.SecurityUtils;
@@ -49,6 +47,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
     private final ProductMapper productMapper;
     private final OffersRepository offersRepository;
     private final NotificationService notificationService;
+    private final NotificationRepository notificationRepository;
 
     @Override
     public BaseResponse getProductsByUserId(Long userId) {
@@ -203,6 +202,8 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
                     "Product is not present",
                     OperationStatus.NOT_FOUND.getName());
         }
+        Notification notification = notificationRepository.findNotificationByProductId(id);
+        notificationRepository.delete(notification);
         productRepository.deleteById(id);
 
         return new CompletedResponse(
@@ -284,12 +285,9 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
                     productId);
             boolean present = buyerIdAndProduct.isPresent();
             if (present) {
-//                OfferStatus offerStatus = buyerIdAndProduct.get().getOfferStatus();
-//                if (offerStatus.equals(OfferStatus.Waiting)) {
                 return new BaseResponse(HttpStatus.OK,
                         OfferStatus.Waiting.name(),
                         mapper);
-//                }
             }
         }
 
