@@ -107,8 +107,6 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
 
             createNewProduct.setProductImages(images);
             productRepository.save(createNewProduct);
-            createNewProduct = productRepository.findById(createNewProduct.getId())
-                    .orElseThrow(() -> new AppBaseException(PRODUCT_NOT_FOUND_MSG));
             notificationService.saveNotification(
                     "Berhasil diterbitkan",
                     createNewProduct,
