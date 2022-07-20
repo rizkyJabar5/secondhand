@@ -279,7 +279,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         boolean authenticated = SecurityUtils.isAuthenticated();
 
         if (authenticated) {
-            Optional<Offers> buyerIdAndProduct = offersRepository.findByUserIdAndProduct(
+            Optional<Offers> buyerIdAndProduct = offersRepository.findBuyerIdAndProductId(
                     Objects.requireNonNull(userDetails).getUserId(),
                     productId);
             boolean present = buyerIdAndProduct.isPresent();
