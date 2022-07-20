@@ -112,8 +112,8 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
                     .orElseThrow(() -> new AppBaseException(PRODUCT_NOT_FOUND_MSG));
             notificationService.saveNotification(
                     "Berhasil diterbitkan",
-                    createNewProduct,
-                    countProductUser);
+                    createNewProduct
+            );
 
         } else {
             return new BaseResponse(HttpStatus.BAD_REQUEST,
@@ -232,7 +232,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         }
         publish.setIsPublished(true);
         productRepository.save(publish);
-        notificationService.saveNotification("Berhasil diterbitkan", publish, userId);
+        notificationService.saveNotification("Berhasil diterbitkan", publish);
         return new BaseResponse(HttpStatus.OK,
                 "Product " + productId + " has been published.",
                 OperationStatus.SUCCESS);

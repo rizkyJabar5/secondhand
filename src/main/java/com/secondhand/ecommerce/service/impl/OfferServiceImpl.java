@@ -88,8 +88,8 @@ public class OfferServiceImpl implements OffersService {
             offersRepository.save(offers);
             offers = offersRepository.findById(offers.getId())
                     .orElseThrow(() -> new AppBaseException(OFFER_NOT_FOUND));
-            notificationService.saveNotification(TITLE_NOTIFICATION, offers, product, buyer);
-            notificationService.saveNotification(TITLE_NOTIFICATION, offers, product, seller);
+            notificationService.saveNotification(TITLE_NOTIFICATION, offers, product);
+            notificationService.saveNotification(TITLE_NOTIFICATION, offers, product);
         }
 
         return new BaseResponse(HttpStatus.OK,
