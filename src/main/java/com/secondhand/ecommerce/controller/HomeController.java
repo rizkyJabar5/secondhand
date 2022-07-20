@@ -35,20 +35,20 @@ public class HomeController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "12") int size) {
 
-        try {
-            Pageable paging = PageRequest.of(page - 1, size, Sort.by("price"));
+//        try {
+        Pageable paging = PageRequest.of(page - 1, size, Sort.by("price"));
 
-            Page<ProductMapper> productPage = productService.getAllProductPageByProductNameAndCategory(productName, categoryId, paging);
-            List<ProductMapper> products = productPage.getContent();
-            Map<String, Object> response = new HashMap<>();
-            response.put("products", products);
-            response.put("currentPage", productPage.getNumber() + 1);
-            response.put("totalProducts", productPage.getTotalElements());
-            response.put("totalPages", productPage.getTotalPages());
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Page<ProductMapper> productPage = productService.getAllProductPageByProductNameAndCategory(productName, categoryId, paging);
+        List<ProductMapper> products = productPage.getContent();
+        Map<String, Object> response = new HashMap<>();
+        response.put("products", products);
+        response.put("currentPage", productPage.getNumber() + 1);
+        response.put("totalProducts", productPage.getTotalElements());
+        response.put("totalPages", productPage.getTotalPages());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
     }
 
     @Operation(summary = "Detail product by id")
