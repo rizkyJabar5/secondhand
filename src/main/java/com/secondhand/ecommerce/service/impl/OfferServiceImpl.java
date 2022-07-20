@@ -77,12 +77,12 @@ public class OfferServiceImpl implements OffersService {
                         "You can't bid on your own product",
                         OperationStatus.FAILURE);
             } else if (present) {
-                boolean equals = Objects.equals(buyerIdAndProduct.get().getOfferStatus(), OfferStatus.Waiting);
-                if (equals) {
-                    return new BaseResponse(HttpStatus.BAD_REQUEST,
-                            "You have made an offer, please wait for confirmation from the seller",
-                            OperationStatus.FAILURE);
-                }
+//                boolean equals = Objects.equals(buyerIdAndProduct.get().getOfferStatus(), OfferStatus.Waiting);
+//                if (equals) {
+                return new BaseResponse(HttpStatus.BAD_REQUEST,
+                        "You have made an offer, please wait for confirmation from the seller",
+                        OperationStatus.FAILURE);
+//                }
             }
 
             offersRepository.save(offers);
