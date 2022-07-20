@@ -289,6 +289,10 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
                     return new BaseResponse(HttpStatus.OK,
                             "Waiting",
                             mapper);
+                } else if (offerStatus.equals(OfferStatus.Rejected)) {
+                    return new BaseResponse(HttpStatus.OK,
+                            "rejected",
+                            mapper);
                 }
             }
         }
