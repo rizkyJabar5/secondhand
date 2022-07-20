@@ -38,8 +38,12 @@ public class ProductMapper {
         categoryName = entity.getCategory().getName().getName();
         addedBy = entity.getCreatedBy();
         userName = entity.getAppUsers().getFullName();
-        city = entity.getAppUsers().getAddress().getCity();
-        photoProfile = entity.getAppUsers().getImageUrl();
+        if (city != null) {
+            city = entity.getAppUsers().getAddress().getCity();
+        }
+        if (photoProfile != null) {
+            photoProfile = entity.getAppUsers().getImageUrl();
+        }
         isPublished = entity.getIsPublished();
         isSold = entity.getIsSold();
         productImages = entity.getProductImages();
