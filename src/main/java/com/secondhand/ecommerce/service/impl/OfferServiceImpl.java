@@ -51,45 +51,43 @@ public class OfferServiceImpl implements OffersService {
 
         final AppUserBuilder userDetails = SecurityUtils.getAuthenticatedUserDetails();
         boolean authenticated = SecurityUtils.isAuthenticated();
-        AppUsers users = userService.findUserByEmail(Objects.requireNonNull(userDetails).getEmail())
+        AppUsers buyer = userService.findUserByEmail(Objects.requireNonNull(userDetails).getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException(
                         String.format(EMAIL_NOT_FOUND_MSG, userDetails.getEmail())));
 
         Product product = productService.getProductById(request.getProductId());
         Offers offers = new Offers();
 
-        Long buyer = userDetails.getUserId();
-        Long seller = product.getAppUsers().getUserId();
+        Long buyerId = userDetails.getUserId();
+        Long sellerId = product.getAppUsers().getUserId();
 
         if (authenticated) {
-            offers.setUser(users);
-            offers.setCreatedBy(users.getEmail());
+            offers.setUser(buyer);
+            offers.setCreatedBy(buyer.getEmail());
             offers.setProduct(product);
             offers.setOfferNegotiated(request.getPriceNegotiated());
 
             Optional<Offers> buyerIdAndProduct = offersRepository.findBuyerIdAndProductId(
-                    buyer,
+                    buyerId,
                     product.getId());
             boolean present = buyerIdAndProduct.isPresent();
 
-            if (Objects.deepEquals(buyer, seller)) {
+            if (Objects.deepEquals(buyerId, sellerId)) {
                 return new BaseResponse(HttpStatus.BAD_REQUEST,
                         "You can't bid on your own product",
                         OperationStatus.FAILURE);
             } else if (present) {
-//                boolean equals = Objects.equals(buyerIdAndProduct.get().getOfferStatus(), OfferStatus.Waiting);
-//                if (equals) {
                 return new BaseResponse(HttpStatus.BAD_REQUEST,
                         "You have made an offer, please wait for confirmation from the seller",
                         OperationStatus.FAILURE);
-//                }
             }
 
             offersRepository.save(offers);
             offers = offersRepository.findById(offers.getId())
                     .orElseThrow(() -> new AppBaseException(OFFER_NOT_FOUND));
-            notificationService.saveNotification(TITLE_NOTIFICATION, offers, product);
-            notificationService.saveNotification(TITLE_NOTIFICATION, offers, product);
+            notificationService.saveNotification(TITLE_NOTIFICATION, offers, product, buyer);
+            AppUsers seller = product.getAppUsers();
+            notificationService.saveNotification(TITLE_NOTIFICATION, offers, product, seller);
         }
 
         return new BaseResponse(HttpStatus.OK,

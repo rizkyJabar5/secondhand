@@ -1,24 +1,18 @@
 package com.secondhand.ecommerce.service.impl;
 
 
-import com.secondhand.ecommerce.models.dto.users.AppUserBuilder;
 import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.models.entity.Notification;
 import com.secondhand.ecommerce.models.entity.Offers;
 import com.secondhand.ecommerce.models.entity.Product;
 import com.secondhand.ecommerce.repository.NotificationRepository;
-import com.secondhand.ecommerce.security.SecurityUtils;
 import com.secondhand.ecommerce.service.AppUserService;
 import com.secondhand.ecommerce.service.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-
-import static com.secondhand.ecommerce.utils.SecondHandConst.EMAIL_NOT_FOUND_MSG;
 
 @Service
 @RequiredArgsConstructor
@@ -28,43 +22,27 @@ public class NotificationServiceImpl implements NotificationService {
     private final AppUserService usersService;
 
     @Override
-    public void saveNotification(String title, Offers offer, Product product) {
-        AppUserBuilder builder = SecurityUtils.getAuthenticatedUserDetails();
-        boolean authenticated = SecurityUtils.isAuthenticated();
-        AppUsers appUsers = usersService.findUserByEmail(Objects.requireNonNull(builder).getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        String.format(EMAIL_NOT_FOUND_MSG, builder.getEmail())));
-        if (authenticated) {
-            Notification notification = new Notification();
+    public void saveNotification(String title, Offers offer, Product product, AppUsers users) {
 
-            notification.setAppUser(appUsers);
-            notification.setTitle(title);
-            notification.setOffers(offer);
-            notification.setProduct(product);
+        Notification notification = new Notification();
 
-            notificationRepository.save(notification);
-        }
-
+        notification.setAppUser(users);
+        notification.setTitle(title);
+        notification.setOffers(offer);
+        notification.setProduct(product);
+        notificationRepository.save(notification);
     }
 
     @Override
-    public void saveNotification(String title, Product product) {
-        AppUserBuilder builder = SecurityUtils.getAuthenticatedUserDetails();
-        boolean authenticated = SecurityUtils.isAuthenticated();
-        AppUsers appUsers = usersService.findUserByEmail(Objects.requireNonNull(builder).getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        String.format(EMAIL_NOT_FOUND_MSG, builder.getEmail())));
+    public void saveNotification(String title, Product product, AppUsers users) {
 
-        if (authenticated) {
-            Notification notification = new Notification();
+        Notification notification = new Notification();
 
-            notification.setAppUser(appUsers);
-            notification.setTitle(title);
-            notification.setProduct(product);
+        notification.setAppUser(users);
+        notification.setTitle(title);
+        notification.setProduct(product);
 
-            notificationRepository.save(notification);
-        }
-
+        notificationRepository.save(notification);
     }
 
     @Override

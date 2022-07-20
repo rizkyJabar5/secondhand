@@ -29,8 +29,8 @@ public class NotificationController {
                         .map(notification -> {
                             if (notification.getOffers() == null) {
                                 return new NotificationResponse(notification, notification.getProduct());
-                            } else
-                                return new NotificationResponse(notification, notification.getProduct(), notification.getOffers());
+                            }
+                            return new NotificationResponse(notification, notification.getProduct(), notification.getOffers());
                         }).collect(Collectors.toList());
         return new ResponseEntity<>(notificationResponses, HttpStatus.OK);
     }
