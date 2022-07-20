@@ -27,10 +27,10 @@ public class NotificationController {
         List<NotificationResponse> notificationResponses =
                 notifications.stream()
                         .map(notification -> {
-                            if (notification.getOfferId() == null) {
-                                return new NotificationResponse(notification, notification.getProductId());
+                            if (notification.getOffers() == null) {
+                                return new NotificationResponse(notification, notification.getProduct());
                             } else
-                                return new NotificationResponse(notification, notification.getProductId(), notification.getOfferId());
+                                return new NotificationResponse(notification, notification.getProduct(), notification.getOffers());
                         }).collect(Collectors.toList());
         return new ResponseEntity<>(notificationResponses, HttpStatus.OK);
     }

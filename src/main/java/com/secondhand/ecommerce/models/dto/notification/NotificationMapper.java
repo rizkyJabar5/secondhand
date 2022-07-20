@@ -24,12 +24,12 @@ public class NotificationMapper {
 
     public NotificationMapper notifProduct(Notification entity) {
         notifeId = entity.getNotifId();
-        productId = entity.getProductId().getId();
-        userId = entity.getUserId().getUserId();
+        productId = entity.getProduct().getId();
+        userId = entity.getAppUser().getUserId();
         title = entity.getTitle();
-        productName = entity.getProductId().getProductName();
-        price = entity.getProductId().getPrice();
-        productImages = entity.getProductId().getProductImages();
+        productName = entity.getProduct().getProductName();
+        price = entity.getProduct().getPrice();
+        productImages = entity.getProduct().getProductImages();
         return new NotificationMapper(notifeId, productId, userId, title, productName, price, productImages);
     }
 

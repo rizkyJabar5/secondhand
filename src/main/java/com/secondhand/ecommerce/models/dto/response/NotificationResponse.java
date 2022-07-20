@@ -31,7 +31,7 @@ public class NotificationResponse {
         this.productName = product.getProductName();
         this.price = product.getPrice();
         this.url = product.getProductImages().get(0);
-        this.userId = notification.getUserId().getUserId();
+        this.userId = notification.getAppUser().getUserId();
         this.createdDate = notification.getCreatedDate().toString();
     }
 
@@ -41,6 +41,6 @@ public class NotificationResponse {
         this.productName = product.getProductName();
         this.price = product.getPrice();
         this.url = product.getProductImages().get(0);
-        this.userId = notification.getUserId().getUserId();
+        this.userId = notification.getAppUser().getUserId();
     }
 }

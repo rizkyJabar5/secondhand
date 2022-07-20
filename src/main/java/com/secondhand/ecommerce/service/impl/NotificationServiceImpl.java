@@ -36,11 +36,11 @@ public class NotificationServiceImpl implements NotificationService {
                         String.format(EMAIL_NOT_FOUND_MSG, builder.getEmail())));
         if (authenticated) {
             Notification notification = new Notification();
-            
-            notification.setUserId(appUsers);
+
+            notification.setAppUser(appUsers);
             notification.setTitle(title);
-            notification.setOfferId(offer);
-            notification.setProductId(product);
+            notification.setOffers(offer);
+            notification.setProduct(product);
 
             notificationRepository.save(notification);
         }
@@ -58,9 +58,9 @@ public class NotificationServiceImpl implements NotificationService {
         if (authenticated) {
             Notification notification = new Notification();
 
-            notification.setUserId(appUsers);
+            notification.setAppUser(appUsers);
             notification.setTitle(title);
-            notification.setProductId(product);
+            notification.setProduct(product);
 
             notificationRepository.save(notification);
         }
