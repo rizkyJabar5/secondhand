@@ -35,10 +35,12 @@ public class NotificationResponse {
 
     public NotificationResponse(Notification notification, Product product) {
         this.notifId = notification.getNotifId();
+        this.title = notification.getTitle();
         this.isRead = notification.getIsRead();
         this.productName = product.getProductName();
         this.price = product.getPrice();
         this.url = product.getProductImages().get(0);
         this.userId = notification.getAppUser().getUserId();
+        this.createdDate = notification.getCreatedDate().toString();
     }
 }
