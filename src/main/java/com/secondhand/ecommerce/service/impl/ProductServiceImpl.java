@@ -282,8 +282,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
             Optional<Offers> buyerIdAndProduct = offersRepository.findBuyerIdAndProductId(
                     Objects.requireNonNull(userDetails).getUserId(),
                     productId);
-            boolean present = buyerIdAndProduct.isPresent();
-            if (present) {
+            if (buyerIdAndProduct.isPresent()) {
                 OfferStatus offerStatus = buyerIdAndProduct.get().getOfferStatus();
                 if (offerStatus.equals(OfferStatus.Waiting)) {
                     return new BaseResponse(HttpStatus.OK,
