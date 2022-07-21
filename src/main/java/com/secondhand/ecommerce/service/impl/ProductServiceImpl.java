@@ -304,6 +304,40 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
         boolean productNullOrEmpty = productName == null || productName.isEmpty();
         boolean categoryNullOrEmpty = categoryId == null || org.apache.commons.lang3.ObjectUtils.isEmpty(categoryId);
 
+        AppUserBuilder userDetails = SecurityUtils.getAuthenticatedUserDetails();
+        boolean authenticated = SecurityUtils.isAuthenticated();
+
+        if (authenticated) {
+            if (productNullOrEmpty && categoryNullOrEmpty) {
+                Page<Product> productWithoutOwnUser = productRepository.findAllWithUserId(
+                        Objects.requireNonNull(userDetails).getUserId(),
+                        paging);
+
+                return productWithoutOwnUser.map(productMapper::productToDto);
+            } else if (productNullOrEmpty) {
+                Page<Product> productWithoutOwnUser = productRepository.findByCategoryIdWithUserId(
+                        categoryId,
+                        Objects.requireNonNull(userDetails).getUserId(),
+                        paging);
+
+                return productWithoutOwnUser.map(productMapper::productToDto);
+            } else if (categoryNullOrEmpty) {
+                Page<Product> productWithoutOwnUser = productRepository.findByProductNameWithUserId(
+                        Objects.requireNonNull(userDetails).getUserId(),
+                        productName,
+                        paging);
+
+                return productWithoutOwnUser.map(productMapper::productToDto);
+            }
+            Page<Product> byProductNameContainingAndCategoryIdContaining = productRepository.findByProductNameAndCategoryIdWithUserId(
+                    productName,
+                    categoryId,
+                    Objects.requireNonNull(userDetails).getUserId(),
+                    paging);
+
+            return byProductNameContainingAndCategoryIdContaining.map(productMapper::productToDto);
+        }
+
         if (productNullOrEmpty && categoryNullOrEmpty) {
             Page<Product> findAllProduct = productRepository.findAll(paging);
             return findAllProduct.map(productMapper::productToDto);
