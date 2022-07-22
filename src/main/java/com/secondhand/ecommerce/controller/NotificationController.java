@@ -1,6 +1,6 @@
 package com.secondhand.ecommerce.controller;
 
-import com.secondhand.ecommerce.models.dto.response.MessageResponse;
+import com.secondhand.ecommerce.models.dto.response.CompletedResponse;
 import com.secondhand.ecommerce.models.dto.response.NotificationResponse;
 import com.secondhand.ecommerce.models.entity.Notification;
 import com.secondhand.ecommerce.service.NotificationService;
@@ -35,10 +35,11 @@ public class NotificationController {
         return new ResponseEntity<>(notificationResponses, HttpStatus.OK);
     }
 
-    @PostMapping("/read/{notifId}")
-    public ResponseEntity<MessageResponse> readNotif(@PathVariable Long notifId) {
-        notificationService.updateIsRead(notifId);
-        return ResponseEntity.ok(new MessageResponse("Notification read successfully"));
+    @PutMapping("/read/{notifId}")
+    public ResponseEntity<CompletedResponse> readNotif(@PathVariable Long notifId) {
+        CompletedResponse response = notificationService.updateIsRead(notifId);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

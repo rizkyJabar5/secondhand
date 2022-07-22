@@ -1,10 +1,12 @@
 package com.secondhand.ecommerce.service.impl;
 
 
+import com.secondhand.ecommerce.models.dto.response.CompletedResponse;
 import com.secondhand.ecommerce.models.entity.AppUsers;
 import com.secondhand.ecommerce.models.entity.Notification;
 import com.secondhand.ecommerce.models.entity.Offers;
 import com.secondhand.ecommerce.models.entity.Product;
+import com.secondhand.ecommerce.models.enums.OperationStatus;
 import com.secondhand.ecommerce.repository.NotificationRepository;
 import com.secondhand.ecommerce.service.AppUserService;
 import com.secondhand.ecommerce.service.NotificationService;
@@ -12,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,12 +47,17 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void updateIsRead(Long notifId) {
-        Optional<Notification> notification = notificationRepository.findById(notifId);
-        notification.ifPresent(notification1 -> {
-            notification1.setIsRead(true);
-            notificationRepository.save(notification1);
-        });
+    public CompletedResponse updateIsRead(Long notifId) {
+        Notification notification = notificationRepository.findById(notifId)
+                .orElseThrow(() -> new IllegalArgumentException("Notification not found"));
+        notification.setIsRead(true);
+        notificationRepository.save(notification);
+
+        return new CompletedResponse(
+                "Notification read successfully",
+                OperationStatus.SUCCESS.getName()
+        );
+
     }
 
     @Override
