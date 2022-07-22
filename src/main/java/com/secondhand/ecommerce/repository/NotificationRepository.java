@@ -12,7 +12,7 @@ import java.util.List;
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
     @Query("select n from Notification n where n.appUser.userId=?1 order by n.createdDate desc")
-    List<Notification> findNotif(Long userId);
+    List<Notification> findNotificationUser(Long userId);
 
     @Query("select n from Notification n where n.product.id = ?1")
     Notification findNotificationByProductId(Long productId);

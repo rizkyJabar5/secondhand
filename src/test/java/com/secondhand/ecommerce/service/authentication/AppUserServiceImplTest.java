@@ -20,7 +20,6 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith({MockitoExtension.class})
 class AppUserServiceImplTest {
 
-
     @MockBean
     AppUserRepository userRepository;
 
