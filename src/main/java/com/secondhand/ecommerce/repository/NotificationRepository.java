@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    @Query("select n from Notification n where n.appUser.userId=?1")
+    @Query("select n from Notification n where n.appUser.userId=?1 order by n.createdDate desc")
     List<Notification> findNotif(Long userId);
 
     @Query("select n from Notification n where n.product.id = ?1")
