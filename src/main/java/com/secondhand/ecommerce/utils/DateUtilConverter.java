@@ -15,6 +15,6 @@ public class DateUtilConverter {
     }
 
     public static LocalDateTime toLocalDate(Date dateToConvert) {
-        return LocalDateTime.ofInstant(dateToConvert.toInstant(), ZoneId.systemDefault());
+        return LocalDateTime.ofInstant(dateToConvert.toInstant(), (ZoneId) ZoneId.getAvailableZoneIds());
     }
 }
