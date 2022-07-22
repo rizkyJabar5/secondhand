@@ -3,7 +3,6 @@ package com.secondhand.ecommerce.utils;
 import java.util.regex.Pattern;
 
 public class SecondHandConst {
-
     public static final String EMAIL_ALREADY_TAKEN = "E-mail has already taken by other user";
 
     public static final String EMAIL_NOT_FOUND_MSG = "E-mail: %s is not found.";
@@ -16,6 +15,7 @@ public class SecondHandConst {
     public static final String BLANK_USERNAME = "Email tidak boleh kosong.";
 
     public static final String TOKEN_PREFIX = "Bearer ";
+
 
     //List url
     public static final String AUTHENTICATION_URL = "/api/v1/auth";

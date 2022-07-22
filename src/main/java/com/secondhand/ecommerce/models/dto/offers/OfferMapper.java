@@ -2,12 +2,15 @@ package com.secondhand.ecommerce.models.dto.offers;
 
 import com.secondhand.ecommerce.models.entity.Offers;
 import com.secondhand.ecommerce.models.enums.OfferStatus;
+import com.secondhand.ecommerce.utils.DateUtilConverter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -31,19 +34,10 @@ public class OfferMapper {
     private OfferStatus statusOffer;
     private List<String> productImages;
 
-    public OfferMapper(String productName,
-                       BigInteger price,
-                       BigInteger priceOffer,
-                       String cityBuyer,
-                       String dateCreated) {
-        this.productName = productName;
-        this.price = price;
-        this.priceOffer = priceOffer;
-        this.cityBuyer = cityBuyer;
-        this.dateCreated = dateCreated;
-    }
-
     public OfferMapper offerToDto(Offers entity) {
+        Date createdDate = entity.getCreatedDate();
+        LocalDateTime date = DateUtilConverter.toLocalDate(createdDate);
+
         offerId = entity.getId();
         productId = entity.getProduct().getId();
         productName = entity.getProduct().getProductName();
@@ -56,7 +50,7 @@ public class OfferMapper {
         seller = entity.getProduct().getCreatedBy();
         citySeller = entity.getProduct().getAppUsers().getAddress().getCity();
         avatarSeller = entity.getProduct().getAppUsers().getImageUrl();
-        dateCreated = entity.getCreatedDate().toString();
+        dateCreated = date.toString();
         statusOffer = entity.getOfferStatus();
         productImages = entity.getProduct().getProductImages();
         return new OfferMapper(offerId,
