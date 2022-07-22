@@ -3,10 +3,12 @@ package com.secondhand.ecommerce.security.authentication.login;
 import com.secondhand.ecommerce.models.dto.users.AppUserBuilder;
 import com.secondhand.ecommerce.models.entity.Address;
 import com.secondhand.ecommerce.security.SecurityUtils;
+import com.secondhand.ecommerce.utils.DateUtilConverter;
 import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
@@ -22,7 +24,7 @@ public class LoginJwtResponse implements Serializable {
     private String fullName;
     private String email;
     private String type;
-    private Date joinDate;
+    private String joinDate;
     private Address address;
     private String phoneNumber;
     private String imageUrl;
@@ -48,15 +50,16 @@ public class LoginJwtResponse implements Serializable {
                                                     AppUserBuilder userDetails) {
 
         AppUserBuilder localUserDetails = userDetails;
+
         if (Objects.isNull(localUserDetails)) {
             localUserDetails = SecurityUtils.getAuthenticatedUserDetails();
         }
 
         if (Objects.nonNull(localUserDetails)) {
-//            List<String> roleList = new ArrayList<>();
-//            for (GrantedAuthority authority : localUserDetails.getAuthorities()) {
-//                roleList.add(authority.getAuthority());
-//            }
+            Date date = localUserDetails.getJoinDate();
+            LocalDateTime localDateTime = DateUtilConverter.toLocalDate(date);
+            String formatDate = localDateTime.format(DateUtilConverter.formatter());
+
             return LoginJwtResponse.builder()
                     .accessToken(jwToken)
                     .id(localUserDetails.getUserId())
@@ -66,7 +69,7 @@ public class LoginJwtResponse implements Serializable {
                     .address(localUserDetails.getAddress())
                     .phoneNumber(localUserDetails.getPhoneNumber())
                     .imageUrl(localUserDetails.getImageUrl())
-                    .joinDate(localUserDetails.getJoinDate())
+                    .joinDate(formatDate)
                     .build();
         }
         return LoginJwtResponse.builder().build();

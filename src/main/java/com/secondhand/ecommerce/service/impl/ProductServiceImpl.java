@@ -118,17 +118,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
                     "You must be authenticated");
         }
 
-        ProductResponse response = new ProductResponse(
-                createNewProduct.getId(),
-                createNewProduct.getProductName(),
-                createNewProduct.getDescription(),
-                createNewProduct.getPrice(),
-                createNewProduct.getCategory().getName().name(),
-                createNewProduct.getCreatedBy(),
-                createNewProduct.getCreatedDate().toString(),
-                images,
-                createNewProduct.getIsPublished(),
-                createNewProduct.getIsSold());
+        ProductResponse response = new ProductResponse(createNewProduct);
 
         return new BaseResponse(HttpStatus.CREATED,
                 "Success to create new product",
@@ -174,17 +164,7 @@ public class ProductServiceImpl extends Datatable<Product, Long> implements Prod
 
             productRepository.save(updatedProduct);
         }
-        ProductResponse response = new ProductResponse(
-                updatedProduct.getId(),
-                updatedProduct.getProductName(),
-                updatedProduct.getDescription(),
-                updatedProduct.getPrice(),
-                updatedProduct.getCategory().getName().name(),
-                updatedProduct.getCreatedBy(),
-                updatedProduct.getCreatedDate().toString(),
-                images,
-                updatedProduct.getIsPublished(),
-                updatedProduct.getIsSold());
+        ProductResponse response = new ProductResponse(updatedProduct);
 
         return new BaseResponse(HttpStatus.OK,
                 "Success to updated product",

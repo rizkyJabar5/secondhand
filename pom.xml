@@ -135,6 +135,14 @@
             <version>1.32.2</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.google.code.bean-matchers/bean-matchers -->
+        <dependency>
+            <groupId>com.google.code.bean-matchers</groupId>
+            <artifactId>bean-matchers</artifactId>
+            <version>0.14</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

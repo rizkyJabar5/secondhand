@@ -3,10 +3,13 @@ package com.secondhand.ecommerce.models.dto.response;
 import com.secondhand.ecommerce.models.entity.Notification;
 import com.secondhand.ecommerce.models.entity.Offers;
 import com.secondhand.ecommerce.models.entity.Product;
+import com.secondhand.ecommerce.utils.DateUtilConverter;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -22,6 +25,10 @@ public class NotificationResponse {
     private String createdDate;
 
     public NotificationResponse(Notification notification, Product product, Offers offer) {
+        Date date = notification.getCreatedDate();
+        LocalDateTime localDateTime = DateUtilConverter.toLocalDate(date);
+        String formatDate = localDateTime.format(DateUtilConverter.formatter());
+
         this.notifId = notification.getNotifId();
         this.title = notification.getTitle();
         this.isRead = notification.getIsRead();
@@ -30,10 +37,14 @@ public class NotificationResponse {
         this.price = product.getPrice();
         this.url = product.getProductImages().get(0);
         this.userId = notification.getAppUser().getUserId();
-        this.createdDate = notification.getCreatedDate().toString();
+        this.createdDate = formatDate;
     }
 
     public NotificationResponse(Notification notification, Product product) {
+        Date date = notification.getCreatedDate();
+        LocalDateTime localDateTime = DateUtilConverter.toLocalDate(date);
+        String formatDate = localDateTime.format(DateUtilConverter.formatter());
+
         this.notifId = notification.getNotifId();
         this.title = notification.getTitle();
         this.isRead = notification.getIsRead();
@@ -41,6 +52,6 @@ public class NotificationResponse {
         this.price = product.getPrice();
         this.url = product.getProductImages().get(0);
         this.userId = notification.getAppUser().getUserId();
-        this.createdDate = notification.getCreatedDate().toString();
+        this.createdDate = formatDate;
     }
 }
