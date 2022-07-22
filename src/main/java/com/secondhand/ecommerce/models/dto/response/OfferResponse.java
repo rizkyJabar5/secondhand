@@ -21,13 +21,12 @@ public class OfferResponse {
     public OfferResponse(Offers offer) {
         Date date = offer.getCreatedDate();
         LocalDateTime localDateTime = DateUtilConverter.toLocalDate(date);
-        String formatDate = localDateTime.format(DateUtilConverter.formatter());
 
         this.productId = offer.getProduct().getId();
         this.offerId = offer.getId();
         this.offerNegotiated = offer.getOfferNegotiated();
         this.offerStatus = offer.getOfferStatus().name();
         this.buyer = offer.getCreatedBy();
-        this.timestamp = formatDate;
+        this.timestamp = localDateTime.toString();
     }
 }

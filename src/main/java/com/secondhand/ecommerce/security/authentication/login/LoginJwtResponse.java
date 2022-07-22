@@ -58,7 +58,6 @@ public class LoginJwtResponse implements Serializable {
         if (Objects.nonNull(localUserDetails)) {
             Date date = localUserDetails.getJoinDate();
             LocalDateTime localDateTime = DateUtilConverter.toLocalDate(date);
-            String formatDate = localDateTime.format(DateUtilConverter.formatter());
 
             return LoginJwtResponse.builder()
                     .accessToken(jwToken)
@@ -69,7 +68,7 @@ public class LoginJwtResponse implements Serializable {
                     .address(localUserDetails.getAddress())
                     .phoneNumber(localUserDetails.getPhoneNumber())
                     .imageUrl(localUserDetails.getImageUrl())
-                    .joinDate(formatDate)
+                    .joinDate(localDateTime.toString())
                     .build();
         }
         return LoginJwtResponse.builder().build();

@@ -27,7 +27,6 @@ public class NotificationResponse {
     public NotificationResponse(Notification notification, Product product, Offers offer) {
         Date date = notification.getCreatedDate();
         LocalDateTime localDateTime = DateUtilConverter.toLocalDate(date);
-        String formatDate = localDateTime.format(DateUtilConverter.formatter());
 
         this.notifId = notification.getNotifId();
         this.title = notification.getTitle();
@@ -37,13 +36,12 @@ public class NotificationResponse {
         this.price = product.getPrice();
         this.url = product.getProductImages().get(0);
         this.userId = notification.getAppUser().getUserId();
-        this.createdDate = formatDate;
+        this.createdDate = localDateTime.toString();
     }
 
     public NotificationResponse(Notification notification, Product product) {
         Date date = notification.getCreatedDate();
         LocalDateTime localDateTime = DateUtilConverter.toLocalDate(date);
-        String formatDate = localDateTime.format(DateUtilConverter.formatter());
 
         this.notifId = notification.getNotifId();
         this.title = notification.getTitle();
@@ -52,6 +50,6 @@ public class NotificationResponse {
         this.price = product.getPrice();
         this.url = product.getProductImages().get(0);
         this.userId = notification.getAppUser().getUserId();
-        this.createdDate = formatDate;
+        this.createdDate = localDateTime.toString();
     }
 }

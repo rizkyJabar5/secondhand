@@ -37,7 +37,6 @@ public class OfferMapper {
     public OfferMapper offerToDto(Offers entity) {
         Date createdDate = entity.getCreatedDate();
         LocalDateTime date = DateUtilConverter.toLocalDate(createdDate);
-        String formatDate = date.format(DateUtilConverter.formatter());
 
         offerId = entity.getId();
         productId = entity.getProduct().getId();
@@ -51,7 +50,7 @@ public class OfferMapper {
         seller = entity.getProduct().getCreatedBy();
         citySeller = entity.getProduct().getAppUsers().getAddress().getCity();
         avatarSeller = entity.getProduct().getAppUsers().getImageUrl();
-        dateCreated = formatDate;
+        dateCreated = date.toString();
         statusOffer = entity.getOfferStatus();
         productImages = entity.getProduct().getProductImages();
         return new OfferMapper(offerId,

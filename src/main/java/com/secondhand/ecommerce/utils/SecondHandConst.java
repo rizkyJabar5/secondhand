@@ -3,8 +3,6 @@ package com.secondhand.ecommerce.utils;
 import java.util.regex.Pattern;
 
 public class SecondHandConst {
-    public static final String TIMESTAMP = "dd-MM-yyyy HH:mm:ss";
-
     public static final String EMAIL_ALREADY_TAKEN = "E-mail has already taken by other user";
 
     public static final String EMAIL_NOT_FOUND_MSG = "E-mail: %s is not found.";

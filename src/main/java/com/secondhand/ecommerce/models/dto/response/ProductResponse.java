@@ -27,7 +27,6 @@ public class ProductResponse {
     public ProductResponse(Product product) {
         Date date = product.getCreatedDate();
         LocalDateTime localDateTime = DateUtilConverter.toLocalDate(date);
-        String formatDate = localDateTime.format(DateUtilConverter.formatter());
 
         this.productId = product.getId();
         this.productName = product.getProductName();
@@ -35,7 +34,7 @@ public class ProductResponse {
         this.price = product.getPrice();
         this.categoryName = product.getCategory().getName().getName();
         this.createdBy = product.getCreatedBy();
-        this.createdDate = formatDate;
+        this.createdDate = localDateTime.toString();
         this.urlImageList = product.getProductImages();
         this.isPublished = product.getIsPublished();
         this.isSold = product.getIsSold();
