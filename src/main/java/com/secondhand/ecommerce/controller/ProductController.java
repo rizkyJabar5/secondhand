@@ -27,8 +27,8 @@ public class ProductController {
     @PostMapping(value = "/add",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<BaseResponse> addaddProduct(@ModelAttribute ProductDto request,
-                                                      @RequestParam MultipartFile[] images) {
+    public ResponseEntity<BaseResponse> addProduct(@ModelAttribute ProductDto request,
+                                                   @RequestParam MultipartFile[] images) {
 
         BaseResponse baseResponse = productService.addProduct(request, images);
 
